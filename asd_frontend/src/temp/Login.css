@@ -1,0 +1,93 @@
+/* 공통 */
+
+body {
+  /*나무 사진 미정이라 임시로*/
+  background-color: rgb(138, 194, 148);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+form.login-form button:hover {
+  background-color: green;
+}
+
+/* 선생님 화면 (1920x1080 기준) */
+@media (min-width: 1080px) {
+  form.login-form {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  form.login-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+    box-sizing: border-box;
+  }
+
+  form.login-form button {
+    padding: 12px;
+    margin: 20px;
+    background-color: #bbb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  form.login-form {
+    width: 400px;
+    padding: 40px;
+  }
+}
+
+/* 학생 화면 (375x700 기준) */
+@media (max-width: 700px) {
+  form.login-form input {
+    width: 300px;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 15px;
+  }
+
+  form.login-form button {
+    width: 100px;
+    padding: 12px;
+    margin: 30px;
+    background-color: green;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  #info__birth {
+    width: 300px;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-radius: 5px;
+  }
+  .info select {
+    width: 100px;
+    height: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: white;
+    cursor: pointer;
+  }
+}
