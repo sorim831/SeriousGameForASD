@@ -2,6 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./Register.css";
 
 function Register() {
+  /*
+  require("dotenv").config({
+    path: ".env",
+  });
+  */
+  const address = process.env.REACT_APP_BACKEND_ADDRESS;
+  console.log(address);
+
   const [Student, setStudent] = useState(false);
 
   const [studentYear, setStudentYear] = useState([]);
@@ -75,7 +83,7 @@ function Register() {
     ).padStart(2, "0")}-${String(studentBirthday.day).padStart(2, "0")}`;
 
     try {
-      const response = await fetch("http://localhost:8000/student_register", {
+      const response = await fetch(`${address}/student_register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -102,7 +110,7 @@ function Register() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8000/teacher_register", {
+      const response = await fetch(`${address}/teacher_register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -130,16 +138,13 @@ function Register() {
   // 선생 : 중복 체크 버튼 클릭 시 동작
   const handleCheckId = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8000/teacher_register/checkid",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ teacher_id: teacherId }),
-        }
-      );
+      const response = await fetch(`${address}/teacher_register/checkid`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ teacher_id: teacherId }),
+      });
 
       const data = await response.json();
 
@@ -243,13 +248,13 @@ function Register() {
               <input
                 type="text"
                 name="id"
-                class="inputId"
+                className="inputId"
                 placeholder="아이디"
                 onChange={(e) => setTeacherId(e.target.value)}
               />
               <button
                 type="button"
-                class="checkIdButton"
+                className="checkIdButton"
                 onClick={handleCheckId}
               >
                 중복 ID 체크
