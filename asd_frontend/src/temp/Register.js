@@ -8,7 +8,7 @@ function Register() {
   });
   */
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
-  console.log(address);
+  //console.log(address);
 
   const [Student, setStudent] = useState(false);
 

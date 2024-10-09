@@ -2,9 +2,12 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+//const bodyParser = require("body-parser");
 
 const studentregisterRouter = require("./routes/student_register");
 const teacherregisterRouter = require("./routes/teacher_register");
+const studentloginRouter = require("./routes/student_login");
+const teacherloginRouter = require("./routes/teacher_login");
 
 const cors = require("cors");
 
@@ -28,5 +31,7 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/student_register", studentregisterRouter);
 app.use("/teacher_register", teacherregisterRouter);
+app.use("/student_login", studentloginRouter);
+app.use("/teacher_login", teacherloginRouter);
 
 module.exports = app;

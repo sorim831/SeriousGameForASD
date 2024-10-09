@@ -1,28 +1,38 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../lib/db"); // MySQL 연결
+const db = require("../lib/db");
 
-router.post("/student_login", (req, res) => {
-  const { name, birthday } = req.body;
+router.post("/", async (req, res) => {
+  const { student_name, student_birthday } = req.body;
 
-  const birthdayFormatted = birthday.replace(/-/g, "");
-  const studentId = `${name}_${birthdayFormatted}`;
+  const birthdayFormatted = student_birthday.replace(/-/g, "");
+  //const studentId = `${name}_${birthdayFormatted}`;
 
-  // student_table에서 Student_id를 확인하도록 수정
-  const query = `SELECT * FROM student_table WHERE student_id = ?`;
+  const query = "loginStudent";
 
-  db.query(query, [studentId], (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).send("로그인 중 오류 발생");
+  try {
+    const result = await db.query(query, [student_name, birthdayFormatted]);
+    if (!student_name || !student_birthday) {
+      return res.send({
+        success: false,
+        message: "이름과 생일을 모두 입력해주세요.",
+      });
     }
     if (result.length > 0) {
-      res.send("로그인 성공");
-      return res.redirect("/temp");
+      return res.send({
+        success: true,
+        message: `${student_name}님, 환영합니다!`,
+      });
     } else {
-      res.status(401).send("이름 또는 생일이 유효하지 않습니다");
+      res.send({
+        success: false,
+        message: "이름 또는 생일이 유효하지 않습니다",
+      });
     }
-  });
+  } catch (err) {
+    console.error(err);
+    res.send({ success: false, message: "로그인 중 오류 발생" });
+  }
 });
 
 module.exports = router;

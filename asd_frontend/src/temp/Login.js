@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import "./Login.css";
 
 function Login() {
+  const address = process.env.REACT_APP_BACKEND_ADDRESS;
+
   const [Student, setStudent] = useState(false);
   const [studentYear, setStudentYear] = useState([]);
   const [studentMonth, setStudentMonth] = useState([]);
@@ -12,6 +14,10 @@ function Login() {
     month: "",
     day: "",
   });
+
+  const [teacherId, setTeacherId] = useState("");
+  const [teacherPassword, setTeacherPassword] = useState("");
+  //const [teacherName, setTeacherName] = useState("");
 
   // 반응형 웹 생성
   useEffect(() => {
@@ -27,7 +33,12 @@ function Login() {
     };
   }, []);
 
-  // 생년월일 옵션 동적 생성
+  // 학생 : 생년월일 선택 핸들러
+  const handleStudentBirthdayChange = (e) => {
+    setStudentBirthday({ ...studentBirthday, [e.target.name]: e.target.value });
+  };
+
+  // 학생 : 생년월일 옵션 동적 생성
   useEffect(() => {
     const years = [];
     const months = [];
@@ -46,7 +57,77 @@ function Login() {
     setStudentDay(days);
   }, []);
 
-  // 로그인 처리 함수
+  // 학생 : 로그인 처리 함수
+  const handleStudentLogin = async (e) => {
+    e.preventDefault();
+    console.log("Login function called"); // 함수 호출 로그 추가
+
+    const fullBirthday = `${studentBirthday.year}-${String(
+      studentBirthday.month
+    ).padStart(2, "0")}-${String(studentBirthday.day).padStart(2, "0")}`;
+
+    try {
+      const response = await fetch(`${address}/student_login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          student_name: studentName,
+          student_birthday: fullBirthday,
+        }),
+      });
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `HTTP error! status: ${response.status}, message: ${errorText}`
+        );
+      }
+
+      const result = await response.json();
+      alert(result.message);
+      if (result.success) {
+        window.location.href = "/home";
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      alert("학생 로그인 중 오류 발생");
+    }
+  };
+
+  // 선생 : 로그인 처리 함수
+  const handleTeacherLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`${address}/teacher_login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          teacher_id: teacherId,
+          teacher_password: teacherPassword,
+        }),
+      });
+
+      const result = await response.json();
+      alert(result.message);
+      if (result.success) {
+        window.location.href = "/home";
+      }
+    } catch (error) {
+      console.error("Error details:", error);
+      if (
+        error.name === "TypeError" &&
+        error.message.includes("Failed to fetch")
+      ) {
+        alert(
+          `네트워크 연결 오류: 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.
+          ${error.message}`
+        );
+      }
+    }
+  };
 
   // 회원가입 버튼 누르면 회원가입 페이지로 이동
   const RegisterBtn = () => {
@@ -58,12 +139,25 @@ function Login() {
       {Student ? (
         // 학생 화면: 이름과 생년월일 입력
         <>
-          <form className="login-form">
+          <form
+            className="login-form"
+            action="/student_login"
+            onSubmit={handleStudentLogin}
+          >
             <p>
-              <input type="text" name="name" placeholder="이름" />
+              <input
+                type="text"
+                name="name"
+                placeholder="이름"
+                onChange={(e) => setStudentName(e.target.value)}
+              />
             </p>
             <div className="info" id="info__birth">
-              <select className="box" id="birth-year">
+              <select
+                className="box"
+                name="year"
+                onChange={handleStudentBirthdayChange}
+              >
                 <option disabled selected>
                   출생 연도
                 </option>
@@ -73,7 +167,11 @@ function Login() {
                   </option>
                 ))}
               </select>
-              <select className="box" id="birth-month">
+              <select
+                className="box"
+                name="month"
+                onChange={handleStudentBirthdayChange}
+              >
                 <option disabled selected>
                   월
                 </option>
@@ -83,7 +181,11 @@ function Login() {
                   </option>
                 ))}
               </select>
-              <select className="box" id="birth-day">
+              <select
+                className="box"
+                name="day"
+                onChange={handleStudentBirthdayChange}
+              >
                 <option disabled selected>
                   일
                 </option>
@@ -105,9 +207,24 @@ function Login() {
       ) : (
         // 선생님 화면: 아이디와 비밀번호 입력
         <>
-          <form className="login-form">
-            <input type="text" name="id" placeholder="아이디" />
-            <input type="password" name="pwd" placeholder="비밀번호" />
+          <form
+            className="login-form"
+            action="/teacher_login"
+            method="post"
+            onSubmit={handleTeacherLogin}
+          >
+            <input
+              type="text"
+              name="id"
+              placeholder="아이디"
+              onChange={(e) => setTeacherId(e.target.value)}
+            />
+            <input
+              type="password"
+              name="teacherPassword"
+              placeholder="비밀번호"
+              onChange={(e) => setTeacherPassword(e.target.value)}
+            />
             <div className="btn">
               <button type="button" onClick={RegisterBtn}>
                 회원가입
