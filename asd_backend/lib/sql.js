@@ -9,4 +9,8 @@ module.exports = {
     "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
   loginTeacher:
     "SELECT * FROM teacher_table WHERE teacher_id = ? AND teacher_password = ?",
+  getNoAccessedStudent: "SELECT * FROM student_table WHERE teacher_id IS NULL",
+  connectToNoAccessedStudnet:
+    "UPDATE student_table SET teacher_id = ? WHERE id = ?",
+  getTeacherIdQuery: "SELECT id FROM teacher_table WHERE teacher_id = ?",
 };

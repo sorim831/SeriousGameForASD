@@ -78,7 +78,7 @@ function Login() {
       });
 
       const result = await response.json();
-      alert(result.message);
+      // alert(result.message);
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/home";
@@ -106,7 +106,7 @@ function Login() {
       });
 
       const result = await response.json();
-      alert(result.message);
+      // alert(result.message);
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/home";
