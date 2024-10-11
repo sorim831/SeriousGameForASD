@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
           },
           process.env.JWT_SECRET,
           {
-            expiresIn: "1m",
+            expiresIn: "100m",
             issuer: "tada",
           }
         );
