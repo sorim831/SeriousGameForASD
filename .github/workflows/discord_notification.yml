@@ -1,0 +1,22 @@
+name: discord notification
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: discord notification
+        uses: actions/http-client@v1
+        with:
+          url: "https://discord.com/api/webhooks/1294242935646322720/LTIIKKy0IxkiWEgrZIf2D0fFVgo-QZR7D44wYK9J-tazapb5cIACyChrAOIKjylIjA_j"
+          method: "POST"
+          headers: '{ "Content-Type": "application/json" }'
+          data: |
+            {
+              "content": "${{ github.repository }} \n${{ github.actor }} \n${{ github.event.head_commit.message }}"
+            }
