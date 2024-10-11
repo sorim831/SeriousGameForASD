@@ -1,0 +1,53 @@
+/* 공통 */
+
+body {
+  /*나무 사진 미정이라 임시로*/
+  background-color: rgb(138, 194, 148);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+form.login-form button:hover {
+  background-color: green;
+}
+
+form.login-form input {
+  width: 300px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+form.login-form button {
+  width: 100px;
+  padding: 12px;
+  margin: 30px;
+  background-color: green;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+#info__birth {
+  width: 300px;
+  display: flex;
+  justify-content: space-between;
+  padding: 10px;
+  border-radius: 5px;
+}
+.info select {
+  width: 100px;
+  height: 40px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: white;
+  cursor: pointer;
+}

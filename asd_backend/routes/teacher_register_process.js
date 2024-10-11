@@ -5,7 +5,7 @@ const db = require("../lib/db");
 router.post("/", (req, res) => {
   const { teacher_id, teacher_password, teacher_name } = req.body;
 
-  const query = "insertTeacher";
+  const query = "insertTeacher"; // "INSERT INTO teacher_table (teacher_id, teacher_password, teacher_name) VALUES (?, ?, ?)",
 
   db.query(query, [teacher_id, teacher_password, teacher_name])
     .then((result) => {
@@ -21,7 +21,7 @@ router.post("/", (req, res) => {
 router.post("/checkid", (req, res) => {
   const { teacher_id } = req.body;
 
-  const queryCheckId = "checkTeacherId";
+  const queryCheckId = "checkTeacherId"; // "SELECT * FROM teacher_table WHERE teacher_id = ?",
 
   db.query(queryCheckId, [teacher_id])
     .then((result) => {

@@ -32,11 +32,11 @@ function Home() {
         } else {
           // 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
           alert("로그인 화면으로 넘어갑니다.");
-          window.location.href = "/login";
+          window.location.href = "/main";
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
-        window.location.href = "/login";
+        window.location.href = "/main";
       }
     }
   };

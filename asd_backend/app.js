@@ -4,10 +4,11 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 //const bodyParser = require("body-parser");
 
-const studentregisterRouter = require("./routes/student_register");
-const teacherregisterRouter = require("./routes/teacher_register");
-const studentloginRouter = require("./routes/student_login");
-const teacherloginRouter = require("./routes/teacher_login");
+const studentregisterRouter = require("./routes/student_register_process");
+const teacherregisterRouter = require("./routes/teacher_register_process");
+const studentloginRouter = require("./routes/student_login_process");
+const teacherloginRouter = require("./routes/teacher_login_process");
+
 const studentAccessRouter = require("./routes/access");
 const getStudnetsListRouter = require("./routes/get_students");
 
@@ -42,10 +43,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/student_register", studentregisterRouter);
-app.use("/teacher_register", teacherregisterRouter);
-app.use("/student_login", studentloginRouter);
-app.use("/teacher_login", teacherloginRouter);
+app.use("/student_register_process", studentregisterRouter);
+app.use("/teacher_register_process", teacherregisterRouter);
+app.use("/student_login_process", studentloginRouter);
+app.use("/teacher_login_process", teacherloginRouter);
 app.use("/home", homeRouter);
 app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
