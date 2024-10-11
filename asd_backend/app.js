@@ -9,6 +9,7 @@ const teacherregisterRouter = require("./routes/teacher_register");
 const studentloginRouter = require("./routes/student_login");
 const teacherloginRouter = require("./routes/teacher_login");
 const studentAccessRouter = require("./routes/access");
+const getStudnetsListRouter = require("./routes/get_students");
 
 const homeRouter = require("./routes/home");
 
@@ -47,6 +48,7 @@ app.use("/student_login", studentloginRouter);
 app.use("/teacher_login", teacherloginRouter);
 app.use("/home", homeRouter);
 app.use("/access", studentAccessRouter);
+app.use("/get_students", getStudnetsListRouter);
 
 //app.use("/token", tokenRouter);
 
