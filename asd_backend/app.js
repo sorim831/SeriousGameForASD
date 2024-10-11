@@ -9,14 +9,25 @@ const teacherregisterRouter = require("./routes/teacher_register");
 const studentloginRouter = require("./routes/student_login");
 const teacherloginRouter = require("./routes/teacher_login");
 
+const homeRouter = require("./routes/home");
+
+//const tokenRouter = require("./routes/token");
+
 const cors = require("cors");
 
 const app = express();
 app.use(cors());
 app.set("port", process.env.PORT || 8000);
 
+/*
 app.get("/", (req, res) => {
   res.send("Hello Express");
+});
+*/
+
+// 루트 경로에서 /login으로 리다이렉트
+app.get("/", function (req, res) {
+  res.redirect("/home");
 });
 
 app.listen(app.get("port"), () => {
@@ -33,5 +44,8 @@ app.use("/student_register", studentregisterRouter);
 app.use("/teacher_register", teacherregisterRouter);
 app.use("/student_login", studentloginRouter);
 app.use("/teacher_login", teacherloginRouter);
+app.use("/home", homeRouter);
+
+//app.use("/token", tokenRouter);
 
 module.exports = app;

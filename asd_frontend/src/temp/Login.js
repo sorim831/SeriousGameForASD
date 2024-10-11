@@ -17,7 +17,7 @@ function Login() {
 
   const [teacherId, setTeacherId] = useState("");
   const [teacherPassword, setTeacherPassword] = useState("");
-  //const [teacherName, setTeacherName] = useState("");
+  const [teacherName, setTeacherName] = useState("");
 
   // 반응형 웹 생성
   useEffect(() => {
@@ -60,7 +60,6 @@ function Login() {
   // 학생 : 로그인 처리 함수
   const handleStudentLogin = async (e) => {
     e.preventDefault();
-    console.log("Login function called"); // 함수 호출 로그 추가
 
     const fullBirthday = `${studentBirthday.year}-${String(
       studentBirthday.month
@@ -77,16 +76,11 @@ function Login() {
           student_birthday: fullBirthday,
         }),
       });
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `HTTP error! status: ${response.status}, message: ${errorText}`
-        );
-      }
 
       const result = await response.json();
       alert(result.message);
       if (result.success) {
+        localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/home";
       }
     } catch (error) {
@@ -107,12 +101,14 @@ function Login() {
         body: JSON.stringify({
           teacher_id: teacherId,
           teacher_password: teacherPassword,
+          //teacher_name: teacherName,
         }),
       });
 
       const result = await response.json();
       alert(result.message);
       if (result.success) {
+        localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/home";
       }
     } catch (error) {

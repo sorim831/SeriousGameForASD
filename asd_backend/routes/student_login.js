@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const db = require("../lib/db");
 
+const jwt = require("jsonwebtoken");
+
 router.post("/", async (req, res) => {
   const { student_name, student_birthday } = req.body;
 
@@ -19,10 +21,41 @@ router.post("/", async (req, res) => {
       });
     }
     if (result.length > 0) {
+      // 토큰 부여
+      try {
+        const id = result[0].student_name;
+        //const nick = result[0].teacher_name;
+        const token = jwt.sign(
+          {
+            id,
+            //nick,
+          },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: "1m",
+            issuer: "tada",
+          }
+        );
+        return res.json({
+          code: 200,
+          success: true,
+          message: `${student_name}님, 환영합니다!`,
+          token,
+        });
+      } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+          code: 500,
+          success: false,
+          message: "서버 에러",
+        });
+      }
+      /*
       return res.send({
         success: true,
         message: `${student_name}님, 환영합니다!`,
-      });
+        
+      });*/
     } else {
       res.send({
         success: false,
