@@ -29,9 +29,11 @@ app.get("/", (req, res) => {
 */
 
 // 루트 경로에서 /login으로 리다이렉트
+/*
 app.get("/", function (req, res) {
   res.redirect("/home");
 });
+*/
 
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기 중");
