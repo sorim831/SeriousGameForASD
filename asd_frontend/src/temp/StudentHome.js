@@ -18,7 +18,7 @@ function Home() {
         */
 
       try {
-        const response = await fetch(`${address}/student_home`, {
+        const response = await fetch(`${address}/home`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`, // Bearer 형식으로 토큰 전송
