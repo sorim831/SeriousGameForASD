@@ -18,6 +18,7 @@ import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import TeacherHome from "./temp/TeacherHome";
+import FeedbackList from "./temp/feedbackList";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ function App() {
         <Route path="/student_login" element={<StudentLogin />} />
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
+        <Route path="/teacher_start" element={<FeedbackList />} />
       </Routes>
     </Router>
   );
