@@ -2,6 +2,7 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+require("dotenv").config();
 //const bodyParser = require("body-parser");
 
 const studentregisterRouter = require("./routes/student_register_process");
@@ -13,6 +14,9 @@ const studentAccessRouter = require("./routes/access");
 const getStudnetsListRouter = require("./routes/get_students");
 
 const homeRouter = require("./routes/home");
+
+const feedbackRouter = require("./routes/feedback_list");
+const getTotalFeedbackRouter = require("./routes/get_total_feedback");
 
 //const tokenRouter = require("./routes/token");
 
@@ -29,9 +33,11 @@ app.get("/", (req, res) => {
 */
 
 // 루트 경로에서 /login으로 리다이렉트
+/*
 app.get("/", function (req, res) {
   res.redirect("/home");
 });
+*/
 
 app.listen(app.get("port"), () => {
   console.log(app.get("port"), "번 포트에서 대기 중");
@@ -50,6 +56,8 @@ app.use("/teacher_login_process", teacherloginRouter);
 app.use("/home", homeRouter);
 app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
+app.use("/total-feedback", feedbackRouter);
+app.use("/get-feedback", getTotalFeedbackRouter);
 
 //app.use("/token", tokenRouter);
 

@@ -1,0 +1,11 @@
+.App {
+  border: 1px solid black;
+  border-radius: 25px;
+  background-color: #fdfdfd;
+  width: 400px; /*todo: 화상화면과 합쳤을때, 조절 필요할 것 같음.*/
+  margin: 20px;
+}
+
+.state-message {
+  margin-left: 20px;
+}

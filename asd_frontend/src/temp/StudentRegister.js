@@ -25,7 +25,7 @@ function Register() {
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "/home";
+          window.location.href = "/stduent_home";
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);

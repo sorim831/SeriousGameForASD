@@ -30,7 +30,7 @@ function Login() {
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "/home";
+          window.location.href = "/student_home";
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
@@ -91,7 +91,7 @@ function Login() {
       //alert(result.message);
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
-        window.location.href = "/home";
+        window.location.href = "/student_home";
       }
     } catch (error) {
       console.error("Error:", error);
