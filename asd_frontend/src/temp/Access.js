@@ -13,7 +13,7 @@ const Access = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      window.location.href = "/login";
+      window.location.href = "/main";
       return;
     } else {
       try {
@@ -29,11 +29,11 @@ const Access = () => {
         if (result.success) {
           setTeacher(result.user.id);
         } else {
-          window.location.href = "/login";
+          window.location.href = "/main";
         }
       } catch (error) {
         console.error(error);
-        window.location.href = "/login";
+        window.location.href = "/main";
       }
     }
     try {
@@ -54,7 +54,7 @@ const Access = () => {
   const handleConnectStudent = async (studentId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/login";
+      window.location.href = "/main";
       return;
     }
 
