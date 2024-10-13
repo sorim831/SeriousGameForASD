@@ -9,12 +9,12 @@ router.post("/", (req, res) => {
 
   db.query(query, [teacher_id, teacher_password, teacher_name])
     .then((result) => {
-      res.send("선생이 성공적으로 등록되었습니다");
+      res.json({ message: "선생님이 성공적으로 등록되었습니다" });
       //window.location.href = "/";
     })
     .catch((err) => {
       console.error("Database error:", err);
-      res.status(500).send("선생 등록 중 오류 발생");
+      res.status(500).json({ error: "선생님 등록 중 오류 발생" });
     });
 });
 
@@ -33,7 +33,7 @@ router.post("/checkid", (req, res) => {
     })
     .catch((err) => {
       console.error("Database error:", err);
-      res.status(500).send("중복 체크 중 오류 발생");
+      res.status(500).json({ error: "중복 체크 중 오류 발생" });
     });
 });
 
