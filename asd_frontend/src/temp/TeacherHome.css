@@ -1,0 +1,66 @@
+/* 선생님 이름 가운데 정렬 */
+#teacher-name {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 100px;
+}
+
+/* 학생 리스트 아이템 */
+.student-select {
+    border: 1px solid #777777;
+    border-radius: 100px;
+    background-color: #fafafa;
+    display: flex;
+    padding: 6px;
+    margin: 10px 0;
+    margin-right: 30px;
+}
+
+/* 학생 이름 스타일 */
+.student-name {
+    font-weight: 400;
+    font-size: 28px;
+    padding-top: 17px;
+    padding-left: 30px;
+    margin-right: 20px;
+}
+
+/* 성별과 생일 정보 */
+.student-sex,
+.student-birthday {
+    font-size: 22px;
+    color: #777777;
+    margin-right: 10px;
+}
+
+/* '자세히 보기' 버튼 스타일 */
+.student-info-button {
+    border-radius: 100px;
+    background-color: #eaeaea;
+    padding: 5px 10px;
+    border: none; 
+    cursor: pointer;
+    font-size: 18px;
+    margin-left: auto;
+}
+
+.student-info-button:hover {
+    background-color: #cccccc;
+}
+
+#student-add {
+    border-radius: 100px;
+    background-color: #eaeaea;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer; 
+    font-size: 18px;
+    float: right;
+    margin-right: 30px;
+}
+
+
+#student-add:hover {
+    background-color: #cccccc;
+}
