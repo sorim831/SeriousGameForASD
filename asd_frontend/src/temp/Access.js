@@ -54,7 +54,7 @@ const Access = () => {
   const handleConnectStudent = async (studentId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/login";
+      window.location.href = "/main";
       return;
     }
 
