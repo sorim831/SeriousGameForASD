@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Feedback-list.css";
 
-const FeedbackList = () => {
+const FeedbackList = ({ onClose }) => {
   const [feedback, setFeedback] = useState(""); // 종합 의견 상태
   const [isEditing, setIsEditing] = useState(false); // 수정 모드 여부
   const [errorMessage, setErrorMessage] = useState(""); // 오류 메시지
@@ -83,7 +83,10 @@ const FeedbackList = () => {
   };
 
   return (
-    <div>
+    <div className="feedback-list">
+      <button className="close-feedback-list" onClick={onClose}>
+        X 닫기
+      </button>
       <div id="student-default-info">
         <div className="name-sex-birth">
           <h3 id="student-name">홍길동</h3>

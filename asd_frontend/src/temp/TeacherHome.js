@@ -3,7 +3,6 @@ import FeedbackList from "./FeedbackList";
 import "./TeacherHome.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-
 function TeacherHome() {
   const [showFeedbackList, setShowFeedbackList] = useState(false); // 상태 관리
 
@@ -14,15 +13,6 @@ function TeacherHome() {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
       // window.location.href = "/teacher_login";
     } else {
-      /*
-      const parts = token.split(".");
-      if (parts.length !== 3) {
-        console.error("토큰 형식이 올바르지 않습니다:", token);
-        window.location.href = "/login";
-        return;
-      }
-      */
-
       try {
         const response = await fetch(`${address}/home`, {
           method: "GET",
@@ -36,7 +26,6 @@ function TeacherHome() {
         if (result.success) {
           console.log("홈페이지에 정상적으로 접근했습니다.");
         } else {
-          // 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
           // alert("로그인 화면으로 넘어갑니다.");
           // window.location.href = "/teacher_login";
         }
@@ -50,9 +39,14 @@ function TeacherHome() {
   // 페이지 로드 시 토큰을 확인
   window.onload = checkAccessToken;
 
-   // "자세히 보기" 버튼 클릭 시 호출되는 함수
-   const handleViewDetails = () => {
-    setShowFeedbackList(true); // 피드백 리스트 표시
+  // "자세히 보기" 버튼 클릭 시 FeedbackList 컴포넌트 띄우기
+  const handleViewDetails = () => {
+    setShowFeedbackList(true); 
+  };
+
+  // FeedbackList 닫기
+  const handleCloseFeedback = () => {
+    setShowFeedbackList(false);
   };
 
   return (
@@ -77,8 +71,8 @@ function TeacherHome() {
         </li>
         {/* 동적으로 리스트 추가됨 */}
       </ul>
-      {/* showFeedbackList가 true일 때 FeedbackList를 렌더링 */}
-      {showFeedbackList && <FeedbackList />}
+      {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽에 표시 */}
+      {showFeedbackList && <FeedbackList onClose={handleCloseFeedback} />}
       <button id="student-add">학생 추가</button>
     </div>
   );
