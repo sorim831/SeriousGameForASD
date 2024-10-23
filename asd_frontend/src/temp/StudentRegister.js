@@ -90,6 +90,7 @@ function Register() {
 
       const result = await response.text();
       alert(result);
+      window.location.href = "/student_login";
     } catch (error) {
       console.error("Error:", error);
       alert("학생 등록 중 오류 발생");

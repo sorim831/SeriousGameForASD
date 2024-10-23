@@ -4,7 +4,7 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function First() {
   const [Student, setStudent] = useState(""); // 기본값: 선생님 선택
-
+  /*
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
     if (!token) return; // 토큰이 없으면 검증하지 않음
@@ -29,9 +29,11 @@ function First() {
     }
   };
 
+
   useEffect(() => {
     checkAccessToken();
   }, []);
+  */
 
   // 로그인 처리
   const handleLogin = (e) => {

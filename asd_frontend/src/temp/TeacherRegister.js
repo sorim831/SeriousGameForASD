@@ -80,6 +80,7 @@ function Register() {
 
       const result = await response.text();
       alert(result);
+      window.location.href = "/teacher_login";
     } catch (error) {
       console.error("Error:", error);
       alert("선생님 등록 중 오류 발생");
