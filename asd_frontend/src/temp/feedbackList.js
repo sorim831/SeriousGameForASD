@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./Feedback-list.css";
+import "./feedback-list.css";
 
 const FeedbackList = ({ onClose }) => {
   const [feedback, setFeedback] = useState(""); // 종합 의견 상태
