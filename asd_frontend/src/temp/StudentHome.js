@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function Home() {
@@ -42,11 +43,25 @@ function Home() {
   };
 
   // 페이지 로드 시 토큰을 확인
-  window.onload = checkAccessToken;
+  useEffect(() => {
+    checkAccessToken();
+  }, []);
+  //window.onload = checkAccessToken;
+
+  // 로그아웃 기능 임시로 만듦
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    alert("로그인 화면으로 넘어갑니다.");
+    window.location.href = "/student_login";
+  };
 
   return (
     <div className="App">
       <h1>hi</h1>
+      {/* 로그아웃 기능 임시로 */}
+      <button id="logout" onClick={handleLogout}>
+        로그아웃
+      </button>
     </div>
   );
 }

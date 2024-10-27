@@ -48,23 +48,10 @@ function First() {
   return (
     <div className="App">
       <form className="login-form" onSubmit={handleLogin}>
-        <label>
-          <input
-            type="checkbox"
-            checked={Student}
-            onChange={() => setStudent(true)}
-          />
-          학생
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={!Student}
-            onChange={() => setStudent(false)}
-          />
-          선생님
-        </label>
-        <button type="submit">확인</button>
+        <div className="btn-usertype">
+          <button onClick={() => setStudent(true)}>학생</button>
+          <button onClick={() => setStudent(false)}>선생님</button>
+        </div>
       </form>
     </div>
   );

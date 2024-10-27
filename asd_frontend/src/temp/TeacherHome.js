@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import FeedbackList from "./FeedbackList";
 import "./TeacherHome.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -11,7 +11,7 @@ function TeacherHome() {
 
     if (!token) {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
-      // window.location.href = "/teacher_login";
+      window.location.href = "/teacher_login";
     } else {
       try {
         const response = await fetch(`${address}/home`, {
@@ -37,16 +37,26 @@ function TeacherHome() {
   };
 
   // 페이지 로드 시 토큰을 확인
-  window.onload = checkAccessToken;
+  useEffect(() => {
+    checkAccessToken();
+  }, []);
+  //window.onload = checkAccessToken;
 
   // "자세히 보기" 버튼 클릭 시 FeedbackList 컴포넌트 띄우기
   const handleViewDetails = () => {
-    setShowFeedbackList(true); 
+    setShowFeedbackList(true);
   };
 
   // FeedbackList 닫기
   const handleCloseFeedback = () => {
     setShowFeedbackList(false);
+  };
+
+  // 로그아웃 기능 임시로 만듦
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    alert("로그인 화면으로 넘어갑니다.");
+    window.location.href = "/teacher_login";
   };
 
   return (
@@ -74,6 +84,11 @@ function TeacherHome() {
       {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽에 표시 */}
       {showFeedbackList && <FeedbackList onClose={handleCloseFeedback} />}
       <button id="student-add">학생 추가</button>
+
+      {/* 로그아웃 기능 임시로 */}
+      <button id="logout" onClick={handleLogout}>
+        로그아웃
+      </button>
     </div>
   );
 }

@@ -3,6 +3,7 @@ const router = express.Router();
 const db = require("../lib/db");
 
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 router.post("/", async (req, res) => {
   const { teacher_id, teacher_password } = req.body;
