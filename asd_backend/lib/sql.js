@@ -5,12 +5,11 @@ module.exports = {
   //checkStudentId:  "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
   insertTeacher:
     "INSERT INTO teacher_table (teacher_id, teacher_password, teacher_name) VALUES (?, ?, ?)",
-  checkTeacherId: "SELECT * FROM teacher_table WHERE teacher_id = ?",
   loginStudent:
     "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
   loginTeacher:
     "SELECT * FROM teacher_table WHERE teacher_id = ? AND teacher_password = ?",
-  //loginTeacher: "SELECT * FROM teacher_table WHERE teacher_id = ? ",
+  findTeacherId: "SELECT * FROM teacher_table WHERE teacher_id = ? ",
   getNoAccessedStudent: "SELECT * FROM student_table WHERE teacher_id IS NULL",
   getConnectedStudent: "SELECT * FROM student_table WHERE teacher_id = ?",
   connectToNoAccessedStudent:

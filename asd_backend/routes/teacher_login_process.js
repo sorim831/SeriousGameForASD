@@ -5,24 +5,40 @@ const db = require("../lib/db");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
+function hashingPassword(password, salt) {
+  return new Promise((resolve, rejject) => {
+    crypto.pbkdf2(password, salt, 100000, 64, "sha512", (err, key) => {
+      resolve(key.toString("base64"));
+    });
+  });
+}
+
 router.post("/", async (req, res) => {
   const { teacher_id, teacher_password } = req.body;
 
   const query = "loginTeacher"; // "SELECT * FROM teacher_table WHERE teacher_id = ? AND teacher_password = ?",
 
   try {
-    const result = await db.query(query, [
-      teacher_id,
-      teacher_password,
-      //teacher_name,
-    ]);
-
     if (!teacher_id || !teacher_password) {
       return res.send({
-        sucess: true,
+        sucess: false,
         message: "아이디와 비밀번호를 모두 입력해주세요.",
       });
     }
+
+    const teacher_hashed_password = await hashingPassword(
+      teacher_password,
+      teacher_id
+    );
+
+    const result = await db.query(query, [
+      teacher_id,
+      teacher_hashed_password,
+      //teacher_name,
+    ]);
+
+    console.log(result);
+
     if (result.length > 0) {
       // 토큰 부여
       try {
