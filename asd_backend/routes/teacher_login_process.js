@@ -18,14 +18,14 @@ router.post("/", async (req, res) => {
 
   const query = "loginTeacher"; // "SELECT * FROM teacher_table WHERE teacher_id = ? AND teacher_password = ?",
 
-  try {
-    if (!teacher_id || !teacher_password) {
-      return res.send({
-        sucess: false,
-        message: "아이디와 비밀번호를 모두 입력해주세요.",
-      });
-    }
+  if (!teacher_id || !teacher_password) {
+    return res.send({
+      sucess: false,
+      message: "아이디와 비밀번호를 모두 입력해주세요.",
+    });
+  }
 
+  try {
     const teacher_hashed_password = await hashingPassword(
       teacher_password,
       teacher_id
@@ -36,8 +36,6 @@ router.post("/", async (req, res) => {
       teacher_hashed_password,
       //teacher_name,
     ]);
-
-    console.log(result);
 
     if (result.length > 0) {
       // 토큰 부여

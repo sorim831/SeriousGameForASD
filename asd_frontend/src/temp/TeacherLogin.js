@@ -57,18 +57,12 @@ function Login() {
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/teacher_home";
+      } else {
+        alert(result.message); // 실패 메시지 표시
       }
     } catch (error) {
-      console.error("Error details:", error);
-      if (
-        error.name === "TypeError" &&
-        error.message.includes("Failed to fetch")
-      ) {
-        alert(
-          `네트워크 연결 오류: 서버에 연결할 수 없습니다. 서버가 실행 중인지 확인해주세요.
-          ${error.message}`
-        );
-      }
+      console.error("Error:", error);
+      alert("로그인 중 오류 발생");
     }
   };
 

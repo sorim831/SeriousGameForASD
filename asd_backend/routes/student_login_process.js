@@ -12,14 +12,15 @@ router.post("/", async (req, res) => {
 
   const query = "loginStudent"; // "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
 
+  if (!student_name || !student_birthday) {
+    return res.send({
+      success: false,
+      message: "이름과 생일을 모두 입력해주세요.",
+    });
+  }
   try {
     const result = await db.query(query, [student_name, birthdayFormatted]);
-    if (!student_name || !student_birthday) {
-      return res.send({
-        success: false,
-        message: "이름과 생일을 모두 입력해주세요.",
-      });
-    }
+
     if (result.length > 0) {
       // 토큰 부여
       try {
