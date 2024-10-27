@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ScoreAndFeedBack.css';
-import '../css/score-input.css';
-import '../css/feedback-form.css';
+import './score-input.css';
+import './feedback-form.css';
 
 function ScoreAndFeedBack() {
   /*

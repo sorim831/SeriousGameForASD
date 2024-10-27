@@ -1,0 +1,53 @@
+/* 전체 스타일 */
+div {
+  margin-left: 10px;
+}
+
+/* 점수판 스타일 */
+.score-div {
+  display: flex; /*가로 정렬*/
+  color: #777777;
+  font-size: 18px;
+  height: 30px;
+}
+
+#eyes-score {
+  margin-left: 5px;
+}
+#nose-score {
+  margin-left: 5px;
+}
+#mouth-score {
+  margin-left: 5px;
+}
+
+.ai-score {
+  display: flex; /*가로 정렬*/
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+#ai-score {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-size: 20px;
+  font-weight: 600;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: #777777;
+}
+
+/* 선생님 점수 입력 칸 스타일 */
+.score-input-div {
+  font-size: 40px;
+  font-weight: 500;
+  margin-left: 120px;
+}
+
+.teacher-score {
+  font-weight: 600;
+  font-size: 40px;
+  border: none;
+  width: 50px;
+}
