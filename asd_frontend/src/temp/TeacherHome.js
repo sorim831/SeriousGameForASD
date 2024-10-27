@@ -11,7 +11,7 @@ function TeacherHome() {
 
     if (!token) {
       // 토큰이 없으면 로그인 페이지로 리다이렉트
-      window.location.href = "/teacher_login";
+      // window.location.href = "/teacher_login";
     } else {
       try {
         const response = await fetch(`${address}/home`, {
@@ -40,7 +40,6 @@ function TeacherHome() {
   useEffect(() => {
     checkAccessToken();
   }, []);
-  //window.onload = checkAccessToken;
 
   // "자세히 보기" 버튼 클릭 시 FeedbackList 컴포넌트 띄우기
   const handleViewDetails = () => {
@@ -81,10 +80,9 @@ function TeacherHome() {
         </li>
         {/* 동적으로 리스트 추가됨 */}
       </ul>
-      {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽에 표시 */}
+      {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽 화면에 표시 */}
       {showFeedbackList && <FeedbackList onClose={handleCloseFeedback} />}
       <button id="student-add">학생 추가</button>
-
       {/* 로그아웃 기능 임시로 */}
       <button id="logout" onClick={handleLogout}>
         로그아웃
