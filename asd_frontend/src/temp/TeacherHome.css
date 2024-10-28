@@ -27,7 +27,7 @@
 }
 
 /* 성별과 생일 정보 */
-.student-sex,
+.student-gender,
 .student-birthday {
   font-size: 22px;
   color: #777777;

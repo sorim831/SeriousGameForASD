@@ -1,7 +1,7 @@
 module.exports = {
   insertStudent:
     "INSERT INTO student_table (student_id, student_name, student_birthday) VALUES (?, ?, ?)",
-  checkStudentId: "SELECT * FROM student_table WHERE student_id = ?", // 이 쿼리가 학생 id가 있는지 검사하는 게 맞나?
+  checkStudentId: "SELECT * FROM student_table WHERE student_id = ?",
   //checkStudentId:  "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
   insertTeacher:
     "INSERT INTO teacher_table (teacher_id, teacher_password, teacher_name) VALUES (?, ?, ?)",
@@ -24,4 +24,6 @@ module.exports = {
 
   getStudentOpinion:
     "SELECT student_opinion FROM asd_serious_game.student_table WHERE student_id = ?",
+    
+  getStudentInfo: `SELECT student_name, student_gender, student_birthday, parent_name, parent_contact FROM student_table WHERE student_id = ?`,
 };

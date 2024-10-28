@@ -4,7 +4,9 @@ import "./TeacherHome.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function TeacherHome() {
-  const [showFeedbackList, setShowFeedbackList] = useState(false); // 상태 관리
+  const [showFeedbackList, setShowFeedbackList] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
@@ -36,9 +38,39 @@ function TeacherHome() {
     }
   };
 
-  // 페이지 로드 시 토큰을 확인
+  const [studentData, setStudentData] = useState({
+    student_name: "",
+    student_gender: "",
+    student_birthday: "",
+    student_parent_name: "",
+    student_phone: "",
+  });
+
+  // 페이지 마운트 될 때 일어나는 이벤트 
   useEffect(() => {
-    checkAccessToken();
+    checkAccessToken(); // 페이지 로드 시 토큰을 확인
+    const fetchStudentData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`${address}`);
+        const data = await response.json();
+
+        // 서버에서 학생 정보 가져오기
+        setStudentData({
+          student_name: data.student_name,
+          student_gender: data.student_gender,
+          student_birthday: data.student_birthday,
+          student_parent_name: data.student_parent_name,
+          student_phone: data.student_phone,
+        });
+      } catch (error) {
+        setErrorMessage("학생 정보를 불러오는 중 오류가 발생했습니다.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStudentData(); // 함수 호출
   }, []);
 
   // "자세히 보기" 버튼 클릭 시 FeedbackList 컴포넌트 띄우기
@@ -63,16 +95,16 @@ function TeacherHome() {
       <h2 id="teacher-name">김철수 선생님</h2>
       <ul>
         <li className="student-select">
-          <span className="student-name">홍길동</span>
-          <p className="student-sex">(남)</p>
-          <p className="student-birthday">030929</p>
+          <span className="student-name">{studentData.student_name}</span>
+          <p className="student-gender">({studentData.student_gender})</p>
+          <p className="student-birthday">{studentData.student_birthday}</p>
           <button className="student-info-button" onClick={handleViewDetails}>
             자세히보기
           </button>
         </li>
         <li className="student-select">
           <span className="student-name">홍길동</span>
-          <p className="student-sex">(남)</p>
+          <p className="student-gender">(남)</p>
           <p className="student-birthday">030929</p>
           <button className="student-info-button" onClick={handleViewDetails}>
             자세히보기
@@ -81,7 +113,12 @@ function TeacherHome() {
         {/* 동적으로 리스트 추가됨 */}
       </ul>
       {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽 화면에 표시 */}
-      {showFeedbackList && <FeedbackList onClose={handleCloseFeedback} />}
+      {showFeedbackList && (
+        <FeedbackList
+          onClose={handleCloseFeedback}
+          studentData={studentData} // studentData를 props로 전달
+        />
+      )}
       <button id="student-add">학생 추가</button>
       {/* 로그아웃 기능 임시로 */}
       <button id="logout" onClick={handleLogout}>
