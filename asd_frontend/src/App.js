@@ -18,7 +18,7 @@ import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import TeacherHome from "./temp/TeacherHome";
-import FeedbackList from "./temp/FeedbackList";
+// import FeedbackList from "./temp/FeedbackList"; // 여기서 사용 x?
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
 
 function App() {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import FeedbackList from "./FeedbackList";
+import FeedbackList from "./feedbackList"; // 소문자로 수정
 import "./TeacherHome.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
@@ -27,6 +27,9 @@ function TeacherHome() {
 
         if (result.success) {
           console.log("홈페이지에 정상적으로 접근했습니다.");
+          document.getElementById(
+            "teacher-name"
+          ).textContent = `${result.user.name} 선생님`;
         } else {
           // alert("로그인 화면으로 넘어갑니다.");
           // window.location.href = "/teacher_login";
@@ -92,7 +95,7 @@ function TeacherHome() {
 
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">김철수 선생님</h2>
+      <h2 id="teacher-name"></h2> 
       <ul>
         <li className="student-select">
           <span className="student-name">{studentData.student_name}</span>
