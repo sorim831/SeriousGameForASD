@@ -41,11 +41,12 @@ router.post("/", async (req, res) => {
       // 토큰 부여
       try {
         const id = result[0].teacher_id;
+        const name = result[0].teacher_name;
         //const nick = result[0].teacher_name;
         const token = jwt.sign(
           {
             id,
-            //nick,
+            name,
           },
           process.env.JWT_SECRET,
           {
