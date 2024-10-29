@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: "서버 에러",
+          message: "서버 에러", 
         });
       }
       /*

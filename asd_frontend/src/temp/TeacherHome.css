@@ -35,7 +35,7 @@
 }
 
 /* '자세히 보기' 버튼 스타일 */
-.student-info-button {
+.student-is-online {
   border-radius: 100px;
   background-color: #eaeaea;
   padding: 5px 10px;
@@ -45,7 +45,7 @@
   margin-left: auto;
 }
 
-.student-info-button:hover {
+.student-is-online:hover {
   background-color: #cccccc;
 }
 

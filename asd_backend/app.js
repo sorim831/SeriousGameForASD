@@ -16,7 +16,7 @@ const getStudnetsListRouter = require("./routes/get_students");
 const homeRouter = require("./routes/home");
 
 const feedbackRouter = require("./routes/total_feedback_list");
-const getTotalFeedbackRouter = require("./routes/get_total_feedback");
+const getStudentInfo = require("./routes/get_student_info");
 
 //const tokenRouter = require("./routes/token");
 
@@ -57,7 +57,7 @@ app.use("/home", homeRouter);
 app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
 app.use("/total-feedback", feedbackRouter);
-app.use("/get-feedback", getTotalFeedbackRouter);
+app.use("/get_student_info", getStudentInfo);
 
 //app.use("/token", tokenRouter);
 

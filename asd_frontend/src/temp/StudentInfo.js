@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./feedback-list.css";
-const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-const FeedbackList = ({ onClose, studentData }) => { // studentData를 props로 받음
+const StudentInfo = ({ onClose, studentData }) => { // studentData를 props로 받음
   const [feedback, setFeedback] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -16,8 +15,8 @@ const FeedbackList = ({ onClose, studentData }) => { // studentData를 props로 
   const handleSaveClick = async () => {
     setLoading(true); // 수정 버튼 누르면 [ 수정 버튼 -> 완료 버튼 ] 활성화
     try {
-      // 서버에 수정된 종합 의견을 저장하는 요청 (URL과 실제 요청 형식 필요)
-      //await fetch("/api/save-feedback", {
+      // 서버에 수정된 종합 의견을 저장하는 요청
+      //await fetch("/", {
       //  method: "POST",
       //  headers: { "Content-Type": "application/json" },
       //  body: JSON.stringify({ feedback }),
@@ -136,4 +135,4 @@ const FeedbackList = ({ onClose, studentData }) => { // studentData를 props로 
   );
 };
 
-export default FeedbackList;
+export default StudentInfo;

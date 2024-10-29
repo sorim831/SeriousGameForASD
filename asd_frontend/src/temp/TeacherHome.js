@@ -1,18 +1,46 @@
 import React, { useState, useEffect } from "react";
-import FeedbackList from "./FeedbackList";
+import StudentInfo from "./StudentInfo";
 import "./TeacherHome.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function TeacherHome() {
-  const [showFeedbackList, setShowFeedbackList] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  const [showStudentInfo, setShowStudentInfo] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  //const [studentData, setStudentData] = useState([]);
 
-  const checkAccessToken = async () => {
+  // 더미 데이터
+  const [studentData, setStudentData] = useState([
+    {
+      student_name: "이민지",
+      student_gender: "여",
+      student_birthday: "2010-06-15",
+      student_parent_name: "김가연",
+      student_phone: "010-1234-1234",
+      isOnline: false,
+    },
+    {
+      student_name: "박준영",
+      student_gender: "남",
+      student_birthday: "2011-03-22",
+      student_parent_name: "김가연",
+      student_phone: "010-1234-1234",
+      isOnline: true,
+    },
+    {
+      student_name: "정수빈",
+      student_gender: "여",
+      student_birthday: "2012-09-05",
+      student_parent_name: "김가연",
+      student_phone: "010-1234-1234",
+      isOnline: true,
+    },
+  ]);
+
+  /*const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      // 토큰이 없으면 로그인 페이지로 리다이렉트
+      // 토큰이 없으면 로그인 페이지로 리다이렉트 (추가적으로 구현해야 할 부분 있어서 임시 주석처리 함)
       // window.location.href = "/teacher_login";
     } else {
       try {
@@ -36,51 +64,63 @@ function TeacherHome() {
         // window.location.href = "/teacher_login";
       }
     }
-  };
+  };*/
 
-  const [studentData, setStudentData] = useState({
-    student_name: "",
-    student_gender: "",
-    student_birthday: "",
-    student_parent_name: "",
-    student_phone: "",
-  });
-
-  // 페이지 마운트 될 때 일어나는 이벤트 
+  // 페이지 마운트 될 때 실행되는 이벤트
   useEffect(() => {
-    checkAccessToken(); // 페이지 로드 시 토큰을 확인
-    const fetchStudentData = async () => {
+    //checkAccessToken(); // 페이지 로드 시 토큰을 확인
+    /*const fetchStudentData = async () => {
+      const token = localStorage.getItem("token"); // 토큰 가져오기
+
+      if (!token) {
+        setErrorMessage("인증된 사용자가 아닙니다. 로그인 해주세요.");
+        // window.location.href = "/teacher_login";
+        return;
+      }
+
       try {
         setLoading(true);
-        const response = await fetch(`${address}`);
+        const response = await fetch(`${address}`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`, // Bearer 형식으로 토큰 포함
+          },
+        });
+
         const data = await response.json();
 
-        // 서버에서 학생 정보 가져오기
-        setStudentData({
-          student_name: data.student_name,
-          student_gender: data.student_gender,
-          student_birthday: data.student_birthday,
-          student_parent_name: data.student_parent_name,
-          student_phone: data.student_phone,
-        });
+        if (response.ok) {
+          // 학생 데이터 배열로 설정
+          setStudentData(data.students);
+        } else {
+          setErrorMessage(
+            data.message || "학생 정보를 불러오는 중 오류가 발생했습니다."
+          );
+        }
       } catch (error) {
-        setErrorMessage("학생 정보를 불러오는 중 오류가 발생했습니다.");
+        setErrorMessage("서버와의 통신에 문제가 발생했습니다.");
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchStudentData(); // 함수 호출
+    };*/
+    //fetchStudentData(); // 학생 정보 가져오기 함수 호출
   }, []);
 
-  // "자세히 보기" 버튼 클릭 시 FeedbackList 컴포넌트 띄우기
-  const handleViewDetails = () => {
-    setShowFeedbackList(true);
+  // "자세히 보기" 버튼 클릭 시 StudentInfo 컴포넌트 띄우기
+  const handleViewDetails = (student) => {
+    setSelectedStudent(student);
+    setShowStudentInfo(true);
   };
 
-  // FeedbackList 닫기
+  // StudentInfo 컴포넌트 닫기
   const handleCloseFeedback = () => {
-    setShowFeedbackList(false);
+    setShowStudentInfo(false);
+    setSelectedStudent(null);
+  };
+
+  // 게임 시작
+  const handleGameStart = (student) => {
+    console.log(`${student.student_name}의 게임이 시작되었습니다.`); // TODO: 실제 게임 시작 로직 추가
   };
 
   // 로그아웃 기능 임시로 만듦
@@ -94,33 +134,36 @@ function TeacherHome() {
     <div className="teacher-home">
       <h2 id="teacher-name">김철수 선생님</h2>
       <ul>
-        <li className="student-select">
-          <span className="student-name">{studentData.student_name}</span>
-          <p className="student-gender">({studentData.student_gender})</p>
-          <p className="student-birthday">{studentData.student_birthday}</p>
-          <button className="student-info-button" onClick={handleViewDetails}>
-            자세히보기
-          </button>
-        </li>
-        <li className="student-select">
-          <span className="student-name">홍길동</span>
-          <p className="student-gender">(남)</p>
-          <p className="student-birthday">030929</p>
-          <button className="student-info-button" onClick={handleViewDetails}>
-            자세히보기
-          </button>
-        </li>
-        {/* 동적으로 리스트 추가됨 */}
+        {studentData.map((student, index) => (
+          <li className="student-select" key={index}>
+            <span className="student-name">{student.student_name}</span>
+            <p className="student-gender">({student.student_gender})</p>
+            <p className="student-birthday">{student.student_birthday}</p>
+            {student.isOnline ? (
+              <button
+                className="student-is-online"
+                onClick={() => handleViewDetails(student)}
+              >
+                자세히보기
+              </button>
+            ) : (
+              <button
+                className="student-is-online"
+                onClick={() => handleGameStart(student)}
+              >
+                게임시작
+              </button>
+            )}
+          </li>
+        ))}
       </ul>
-      {/* showFeedbackList가 true일 때 FeedbackList를 오른쪽 화면에 표시 */}
-      {showFeedbackList && (
-        <FeedbackList
+      {showStudentInfo && selectedStudent && (
+        <StudentInfo
           onClose={handleCloseFeedback}
-          studentData={studentData} // studentData를 props로 전달
+          studentData={selectedStudent} // 선택된 학생 데이터만 전달
         />
       )}
       <button id="student-add">학생 추가</button>
-      {/* 로그아웃 기능 임시로 */}
       <button id="logout" onClick={handleLogout}>
         로그아웃
       </button>
