@@ -19,6 +19,7 @@ import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import TeacherHome from "./temp/TeacherHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
+import AddStudent from "./temp/AddStudent";
 
 function App() {
   return (
@@ -34,7 +35,8 @@ function App() {
         <Route path="/student_login" element={<StudentLogin />} />
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
-        <Route path="/score_and_feedback" element={<ScoreAndFeedBack />}/>
+        <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
+        <Route path="/add_student" element={<AddStudent />} />
       </Routes>
     </Router>
   );

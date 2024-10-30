@@ -24,6 +24,7 @@ module.exports = {
 
   getStudentOpinion:
     "SELECT student_opinion FROM asd_serious_game.student_table WHERE student_id = ?",
-    
+
   getStudentInfo: `SELECT student_name, student_gender, student_birthday, parent_name, parent_contact FROM student_table WHERE student_id = ?`,
+  noStudentData: `SELECT student_id, student_name, student_birthday, student_gender, student_score, student_score_date, student_opinion, student_parent_name, student_phone FROM asd_serious_game.student_table WHERE teacher_id IS NULL`, //아직 선생님과 매칭되지 않은 학생 목록
 };
