@@ -2,34 +2,27 @@ import React, { useState, useEffect } from "react";
 import "./StudentRegister.css";
 
 function Register() {
-  /*
-  require("dotenv").config({
-    path: ".env",
-  });
-  */
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
-  //console.log(address);
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return; // 토큰이 없으면 검증하지 않음
+    if (!token) return;
     else {
       try {
         const response = await fetch(`${address}/home`, {
           method: "GET",
           headers: {
-            Authorization: `Bearer ${token}`, // Bearer 형식으로 토큰 전송
+            Authorization: `Bearer ${token}`,
           },
         });
 
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "/stduent_home";
+          window.location.href = "/student_home";
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
-        //window.location.href = "/main";
       }
     }
   };
@@ -38,19 +31,18 @@ function Register() {
     checkAccessToken();
   }, []);
 
-  //const [Student, setStudent] = useState(false);
-
   const [studentYear, setStudentYear] = useState([]);
   const [studentMonth, setStudentMonth] = useState([]);
   const [studentDay, setStudentDay] = useState([]);
   const [studentName, setStudentName] = useState("");
+  const [studentGender, setStudentGender] = useState("");
+  const [studentPhone, setStudentPhone] = useState("");
   const [studentBirthday, setStudentBirthday] = useState({
     year: "",
     month: "",
     day: "",
   });
 
-  // 학생 : 생년월일 옵션 동적 생성
   useEffect(() => {
     const years = [];
     const months = [];
@@ -69,7 +61,6 @@ function Register() {
     setStudentDay(days);
   }, []);
 
-  // 학생 : 회원가입 처리 함수
   const handleStudentRegister = async (e) => {
     e.preventDefault();
     const fullBirthday = `${studentBirthday.year}-${String(
@@ -85,6 +76,8 @@ function Register() {
         body: JSON.stringify({
           student_name: studentName,
           student_birthday: fullBirthday,
+          student_gender: studentGender,
+          student_phone: studentPhone,
         }),
       });
 
@@ -97,9 +90,12 @@ function Register() {
     }
   };
 
-  // 학생 : 생년월일 선택 핸들러
   const handleStudentBirthdayChange = (e) => {
     setStudentBirthday({ ...studentBirthday, [e.target.name]: e.target.value });
+  };
+
+  const handleGenderChange = (e) => {
+    setStudentGender(e.target.value);
   };
 
   return (
@@ -119,6 +115,32 @@ function Register() {
             onChange={(e) => setStudentName(e.target.value)}
           />
         </p>
+        <input
+          type="number"
+          name="name"
+          placeholder="휴대전화"
+          onChange={(e) => setStudentPhone(e.target.value)}
+        />
+        <div>
+          <label>
+            <input
+              type="radio"
+              value="male"
+              checked={studentGender === "male"}
+              onChange={handleGenderChange}
+            />
+            남성
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="female"
+              checked={studentGender === "female"}
+              onChange={handleGenderChange}
+            />
+            여성
+          </label>
+        </div>
         <div className="info" id="info__birth">
           <select
             className="box"
