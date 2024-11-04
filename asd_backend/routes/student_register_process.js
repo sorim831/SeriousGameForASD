@@ -3,7 +3,8 @@ const router = express.Router();
 const db = require("../lib/db");
 
 router.post("/", (req, res) => {
-  const { student_name, student_birthday } = req.body;
+  const { student_name, student_birthday, student_gender, student_phone } =
+    req.body;
 
   const birthdayFormatted = student_birthday.replace(/-/g, "");
   const student_id = `${student_name}_${birthdayFormatted}`;
@@ -17,7 +18,13 @@ router.post("/", (req, res) => {
       } else {
         const insertQuery = "insertStudent"; // "INSERT INTO student_table (student_id, student_name, student_birthday) VALUES (?, ?, ?)",
 
-        db.query(insertQuery, [student_id, student_name, birthdayFormatted])
+        db.query(insertQuery, [
+          student_id,
+          student_name,
+          birthdayFormatted,
+          student_gender,
+          student_phone,
+        ])
           .then((result) => {
             res.send("학생이 성공적으로 등록되었습니다");
           })
