@@ -1,0 +1,13 @@
+/* 기본 스타일 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 클래스룸 컨테이너 (QuestionSelect와 SelectedQuestion을 나란히 배치) */
+.classroom-container {
+  display: flex;
+  justify-content: space-between; /* 두 컴포넌트 간에 공간 배분 */
+  gap: 20px; /* 간격을 설정 */
+}

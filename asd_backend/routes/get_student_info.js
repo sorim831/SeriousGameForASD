@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../lib/db");
-const verifyToken = require("./middlewares").verifyToken; // verifyToken이 함수인지 확인
+const { verifyToken } = require("./middlewares");
 
 // 학생 정보 조회 라우터
 router.get("/", verifyToken, (req, res) => {
