@@ -1,0 +1,15 @@
+.header {
+  color: #797979;
+}
+
+.graph {
+  width: 600px;
+  height: 280px;
+}
+
+.classdata-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 600px;
+  height: 330px;
+}

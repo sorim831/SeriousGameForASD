@@ -1,15 +1,30 @@
 import "./classroom.css";
 import QuestionSelect from "./QuestionSelect";
 import SelectedQuestion from "./SelectedQuestion";
+import ClassData from "./ClassData";
+import ScoreAndFeedBack from "./ScoreAndFeedBack";
 
 function Classroom() {
   return (
     <div className="classroom-container">
-      <div className="component-container">
-        <QuestionSelect />
+      {/*상단 화면*/}
+      <div className="top">
+        <div className="QuestionSelect">
+          <QuestionSelect />
+        </div>
       </div>
-      <div className="component-container">
-        <SelectedQuestion />
+
+      {/*하단 화면*/}
+      <div className="bottom">
+        <div className="SelectedQuestion">
+          <SelectedQuestion />
+        </div>
+        <div>
+          <ScoreAndFeedBack />
+        </div>
+        <div className="ClassData">
+          <ClassData />
+        </div>
       </div>
     </div>
   );

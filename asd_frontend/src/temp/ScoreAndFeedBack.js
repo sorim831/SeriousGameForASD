@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import './ScoreAndFeedBack.css';
-import './score-input.css';
-import './feedback-form.css';
+import React, { useState } from "react";
+import "./ScoreAndFeedBack.css";
+import "./score-input.css";
+import "./feedback-form.css";
 
 function ScoreAndFeedBack() {
   /*
@@ -66,15 +66,15 @@ function ScoreAndFeedBack() {
   }; */
 
   return (
-    <div className="App">
+    <div className="score-and-feedback-container">
       <form>
         <div className="score-input-div">
           <input
             type="number"
             className="teacher-score"
             required // 점수 입력은 필수
-          />
-          {" "}점
+          />{" "}
+          점
         </div>
         <p className="feedback-p">의견</p>
         <div className="feedback-textarea-div">
@@ -83,7 +83,9 @@ function ScoreAndFeedBack() {
             className="feedback-textarea"
           />
         </div>
-        <button type="submit" className="feedback-button">저장 및 다음 상황</button>
+        <button type="submit" className="feedback-button">
+          저장 및 다음 상황
+        </button>
       </form>
     </div>
   );

@@ -36,7 +36,6 @@ function App() {
         <Route path="/student_login" element={<StudentLogin />} />
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
-        <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/add_student" element={<AddStudent />} />
         <Route path="/classroom" element={<Classroom />} />
       </Routes>

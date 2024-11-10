@@ -7,127 +7,127 @@ const QuestionSelect = () => {
       <ul>
         <li>😄기쁨😄</li>
         <li>
-          <button className="#1"></button>
+          <button id="#1-1">1-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#1-2">1-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#1-3">1-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#1-4">1-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#1-5">1-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#1-6">1-6</button>
         </li>
       </ul>
       <ul>
         <li>😭슬픔😭</li>
         <li>
-          <button className="#1"></button>
+          <button id="#2-1">2-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#2-2">2-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#2-3">2-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#2-4">2-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#2-5">2-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#2-6">2-6</button>
         </li>
       </ul>
       <ul>
         <li>😬공포😬</li>
         <li>
-          <button className="#1"></button>
+          <button id="#3-1">3-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#3-2">3-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#3-3">3-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#3-4">3-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#3-5">3-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#3-6">3-6</button>
         </li>
       </ul>
       <ul>
         <li>😨혐오😨</li>
         <li>
-          <button className="#1"></button>
+          <button id="#4-1">4-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#4-2">4-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#4-3">4-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#4-4">4-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#4-5">4-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#4-6">4-6</button>
         </li>
       </ul>
       <ul>
         <li>😡분노😡</li>
         <li>
-          <button className="#1"></button>
+          <button id="#5-1">5-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#5-2">5-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#5-3">5-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#5-4">5-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#5-5">5-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#5-6">5-6</button>
         </li>
       </ul>
       <ul>
         <li>😲놀람😲</li>
         <li>
-          <button className="#1"></button>
+          <button id="#6-1">6-1</button>
         </li>
         <li>
-          <button className="#2"></button>
+          <button id="#6-2">6-2</button>
         </li>
         <li>
-          <button className="#3"></button>
+          <button id="#6-3">6-3</button>
         </li>
         <li>
-          <button className="#4"></button>
+          <button id="#6-4">6-4</button>
         </li>
         <li>
-          <button className="#5"></button>
+          <button id="#6-5">6-5</button>
         </li>
         <li>
-          <button className="#6"></button>
+          <button id="#6-6">6-6</button>
         </li>
       </ul>
     </div>

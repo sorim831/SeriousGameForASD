@@ -1,45 +1,29 @@
-/* 기본 스타일 */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-/* 페이지 전체 높이 설정 */
-body {
-  overflow-y: auto; /* 세로 스크롤 가능 */
-  overflow-x: hidden; /* 가로 스크롤 방지 */
-  padding: 20px;
-}
-
-/* .question-container 크기 및 세로 스크롤 */
 .question-container {
   display: flex;
-  flex-direction: column; /* 세로로 정렬 */
-  width: 700px; /* 고정 너비 */
-  height: 300px; /* 고정 높이 */
-  overflow-y: auto; /* 세로 스크롤 가능 */
-  overflow-x: hidden; /* 가로 스크롤 방지 */
-  max-width: 100%; /* 화면 너비에 맞추기 */
-  border: 1px solid #ccc; /* 외곽선 (선택 사항) */
+  flex-direction: column;
+  width: 760px;
+  height: 300px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-width: 100%;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
 }
 
-/* ul 내 요소들 가로로 정렬 및 리스트 스타일 숨김 */
 .question-container ul {
-  display: inline-flex; /* 가로 정렬 */
-  align-items: center; /* 세로 중앙 정렬 */
-  gap: 10px; /* 요소 간 간격 조정 */
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 0;
-  list-style-type: none; /* 리스트 스타일 숨기기 */
-  white-space: nowrap; /* 줄바꿈 방지 */
+  list-style-type: none;
+  white-space: nowrap;
 }
 
-/* 각 버튼의 스타일 (사각형) */
 .question-container button {
-  width: 89px; /* 버튼 너비 */
-  height: 50px; /* 버튼 높이 */
+  width: 100px;
+  height: 80px;
   border-radius: 10px;
-  background-color: #ddd; /* 임시 배경색 */
+  background-color: #ddd;
   border: none;
   cursor: pointer;
   background-size: cover;
