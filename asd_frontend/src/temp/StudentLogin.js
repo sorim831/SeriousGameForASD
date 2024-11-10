@@ -166,9 +166,6 @@ function Login() {
           </select>
         </div>
         <div className="btn">
-          <button type="button" onClick={RegisterBtn}>
-            회원가입
-          </button>
           <button type="submit">로그인</button>
         </div>
       </form>

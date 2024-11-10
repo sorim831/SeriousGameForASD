@@ -17,7 +17,7 @@ form.login-form input {
   width: 300px;
   padding: 12px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  outline: 1px solid #ccc;
   border-radius: 5px;
   font-size: 15px;
 }
@@ -28,7 +28,7 @@ form.login-form button {
   margin: 30px;
   background-color: green;
   color: white;
-  border: none;
+  outline: none;
   border-radius: 5px;
   font-size: 15px;
   cursor: pointer;
@@ -45,7 +45,7 @@ form.login-form button {
   width: 100px;
   height: 40px;
   padding: 10px;
-  border: 1px solid #ccc;
+  outline: 1px solid #ccc;
   border-radius: 5px;
   font-size: 16px;
   background-color: white;

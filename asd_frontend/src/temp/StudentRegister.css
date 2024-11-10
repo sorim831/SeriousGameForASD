@@ -8,7 +8,7 @@
   width: 300px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  outline: 1px solid #ccc;
   border-radius: 5px;
   font-size: 15px;
 }
@@ -16,7 +16,7 @@
   width: 200px;
   padding: 10px;
   margin-bottom: 10px;
-  border: 1px solid #ccc;
+  outline: 1px solid #ccc;
   border-radius: 5px;
   font-size: 15px;
 }
@@ -27,7 +27,7 @@
   width: 320px;
   background-color: green;
   color: white;
-  border: none;
+  outline: none;
   padding: 10px;
   border-radius: 5px;
   font-size: 18px;
@@ -52,7 +52,7 @@
   width: 100px;
   height: 40px;
   padding: 10px;
-  border: 1px solid #ccc;
+  outline: 1px solid #ccc;
   border-radius: 5px;
   font-size: 15px;
   background-color: white;
