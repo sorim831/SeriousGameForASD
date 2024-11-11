@@ -14,7 +14,7 @@ function Classroom() {
   };
 
   // 확인 버튼 누르면 selectedId 값 ScoreAndFeedback 컴포넌트에 전송
-  const handleConfirmClick = () => {
+  const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
   };
 
@@ -32,7 +32,7 @@ function Classroom() {
         <div className="SelectedQuestion">
           <SelectedQuestion
             selectedId={selectedButtonId}
-            onConfirmClick={handleConfirmClick}
+            sendButtonClick={sendButtonClick}
           />
         </div>
         <div>

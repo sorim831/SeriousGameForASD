@@ -35,7 +35,7 @@ const ClassData = () => {
     datasets: [
       {
         label: "각 감정에 대한 평균 점수",
-        data: [12, 19, 3, 5, 2, 3],
+        data: [10, 9, 3, 5, 2, 3],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
