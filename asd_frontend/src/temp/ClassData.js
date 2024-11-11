@@ -1,7 +1,26 @@
 import React, { useState } from "react";
 import { Bar } from "react-chartjs-2";
-import { Chart as ChartJS } from "chart.js/auto"; // chart.js 설정 자동 로드
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 import "./class-data.css";
+import ScoreAndFeedBack from "./ScoreAndFeedBack"; // 이 컴포넌트에서 받아오는 점수 바탕으로 각 감정별로 평균을 계산. 그 데이터를 그래프에 표시
+
+// Chart.js 모듈 등록
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 const ClassData = () => {
   const [chartData, setChartData] = useState({
@@ -15,7 +34,7 @@ const ClassData = () => {
     ],
     datasets: [
       {
-        label: "감정 데이터",
+        label: "각 감정에 대한 평균 점수",
         data: [12, 19, 3, 5, 2, 3],
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
@@ -54,7 +73,17 @@ const ClassData = () => {
 
   return (
     <div className="classdata-container">
-      <p className="header">오늘의 수업 데이터</p>
+      <div className="header">
+        <p className="graph-name">오늘의 수업 데이터</p>
+        {/* 학생 과거 데이터 불러오기 메뉴 */}
+        <li className="ham-btn">
+          <button className="hamburger-button" href="#">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </li>
+      </div>
       <div className="graph">
         {/* 그래프 컴포넌트 */}
         <Bar data={chartData} />

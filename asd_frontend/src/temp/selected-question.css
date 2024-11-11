@@ -41,3 +41,12 @@
 #send-question:hover {
   background-color: #3d3d3d;
 }
+
+/*선택된 버튼에 그림자 효과*/
+.question.selected {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+  display: flex;
+}

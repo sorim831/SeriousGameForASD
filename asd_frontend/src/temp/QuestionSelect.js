@@ -1,134 +1,112 @@
-import React from "react";
+import React, { useState } from "react";
 import "./questionSelect.css";
 
-const QuestionSelect = () => {
+const QuestionSelect = ({ onButtonClick }) => {
+  const [selectedButtonId, setSelectedButtonId] = useState(null);
+
+  // 버튼 클릭 시 실행되는 함수
+  const handleButtonClick = (id) => {
+    setSelectedButtonId(id);
+    onButtonClick(id);
+  };
+
   return (
     <div className="question-container">
       <ul>
         <li>😄기쁨😄</li>
-        <li>
-          <button id="#1-1">1-1</button>
-        </li>
-        <li>
-          <button id="#1-2">1-2</button>
-        </li>
-        <li>
-          <button id="#1-3">1-3</button>
-        </li>
-        <li>
-          <button id="#1-4">1-4</button>
-        </li>
-        <li>
-          <button id="#1-5">1-5</button>
-        </li>
-        <li>
-          <button id="#1-6">1-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`1-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `1-${index + 1}` ? "selected" : ""
+              }`}
+              id={`1-${index + 1}`}
+              onClick={() => handleButtonClick(`1-${index + 1}`)}
+            >
+              1-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
       <ul>
         <li>😭슬픔😭</li>
-        <li>
-          <button id="#2-1">2-1</button>
-        </li>
-        <li>
-          <button id="#2-2">2-2</button>
-        </li>
-        <li>
-          <button id="#2-3">2-3</button>
-        </li>
-        <li>
-          <button id="#2-4">2-4</button>
-        </li>
-        <li>
-          <button id="#2-5">2-5</button>
-        </li>
-        <li>
-          <button id="#2-6">2-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`2-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `2-${index + 1}` ? "selected" : ""
+              }`}
+              id={`2-${index + 1}`}
+              onClick={() => handleButtonClick(`2-${index + 1}`)}
+            >
+              2-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
       <ul>
         <li>😬공포😬</li>
-        <li>
-          <button id="#3-1">3-1</button>
-        </li>
-        <li>
-          <button id="#3-2">3-2</button>
-        </li>
-        <li>
-          <button id="#3-3">3-3</button>
-        </li>
-        <li>
-          <button id="#3-4">3-4</button>
-        </li>
-        <li>
-          <button id="#3-5">3-5</button>
-        </li>
-        <li>
-          <button id="#3-6">3-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`3-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `3-${index + 1}` ? "selected" : ""
+              }`}
+              id={`3-${index + 1}`}
+              onClick={() => handleButtonClick(`3-${index + 1}`)}
+            >
+              3-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
       <ul>
         <li>😨혐오😨</li>
-        <li>
-          <button id="#4-1">4-1</button>
-        </li>
-        <li>
-          <button id="#4-2">4-2</button>
-        </li>
-        <li>
-          <button id="#4-3">4-3</button>
-        </li>
-        <li>
-          <button id="#4-4">4-4</button>
-        </li>
-        <li>
-          <button id="#4-5">4-5</button>
-        </li>
-        <li>
-          <button id="#4-6">4-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`4-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `4-${index + 1}` ? "selected" : ""
+              }`}
+              id={`4-${index + 1}`}
+              onClick={() => handleButtonClick(`4-${index + 1}`)}
+            >
+              4-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
       <ul>
         <li>😡분노😡</li>
-        <li>
-          <button id="#5-1">5-1</button>
-        </li>
-        <li>
-          <button id="#5-2">5-2</button>
-        </li>
-        <li>
-          <button id="#5-3">5-3</button>
-        </li>
-        <li>
-          <button id="#5-4">5-4</button>
-        </li>
-        <li>
-          <button id="#5-5">5-5</button>
-        </li>
-        <li>
-          <button id="#5-6">5-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`5-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `5-${index + 1}` ? "selected" : ""
+              }`}
+              id={`5-${index + 1}`}
+              onClick={() => handleButtonClick(`5-${index + 1}`)}
+            >
+              5-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
       <ul>
         <li>😲놀람😲</li>
-        <li>
-          <button id="#6-1">6-1</button>
-        </li>
-        <li>
-          <button id="#6-2">6-2</button>
-        </li>
-        <li>
-          <button id="#6-3">6-3</button>
-        </li>
-        <li>
-          <button id="#6-4">6-4</button>
-        </li>
-        <li>
-          <button id="#6-5">6-5</button>
-        </li>
-        <li>
-          <button id="#6-6">6-6</button>
-        </li>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <li key={`6-${index + 1}`}>
+            <button
+              className={`question ${
+                selectedButtonId === `6-${index + 1}` ? "selected" : ""
+              }`}
+              id={`6-${index + 1}`}
+              onClick={() => handleButtonClick(`6-${index + 1}`)}
+            >
+              6-{index + 1}
+            </button>
+          </li>
+        ))}
       </ul>
     </div>
   );
