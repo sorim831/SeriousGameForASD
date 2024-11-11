@@ -9,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import StudentInfo from "./StudentInfo";
 import "./class-data.css";
 
 // Chart.js 모듈 등록
@@ -31,6 +32,10 @@ const ClassData = ({ scoreAndFeedBackData }) => {
     anger: [],
     surprise: [],
   });
+
+  // StudentInfo 상태 및 데이터 설정
+  const [showStudentInfo, setShowStudentInfo] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
   // 감정별 평균 점수를 계산하여 차트 데이터에 반영
   const [chartData, setChartData] = useState({
@@ -131,13 +136,30 @@ const ClassData = ({ scoreAndFeedBackData }) => {
     }));
   }, [emotionScores]);
 
+  // StudentInfo 열기
+  const handleOpenStudentInfo = () => {
+    setSelectedStudent({
+      student_name: "이민지", // 예시 학생 데이터
+      student_gender: "여",
+      student_birthday: "2010-06-15",
+      student_parent_name: "김가연",
+      student_phone: "010-1234-1234",
+    });
+    setShowStudentInfo(true);
+  };
+
+  const handleCloseStudentInfo = () => {
+    setShowStudentInfo(false);
+    setSelectedStudent(null);
+  };
+
   return (
     <div className="classdata-container">
       <div className="header">
         <p className="graph-name">오늘의 수업 데이터</p>
         {/* 학생 과거 데이터 불러오기 메뉴 */}
         <li className="ham-btn">
-          <button className="hamburger-button" href="#">
+          <button className="hamburger-button" onClick={handleOpenStudentInfo}>
             <span></span>
             <span></span>
             <span></span>
@@ -148,6 +170,13 @@ const ClassData = ({ scoreAndFeedBackData }) => {
         {/* 그래프 컴포넌트 */}
         <Bar data={chartData} />
       </div>
+      {/* StudentInfo 컴포넌트 */}
+      {showStudentInfo && selectedStudent && (
+        <StudentInfo
+          studentData={selectedStudent}
+          onClose={handleCloseStudentInfo}
+        />
+      )}
     </div>
   );
 };
