@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,7 +10,6 @@ import {
   Legend,
 } from "chart.js";
 import "./class-data.css";
-import ScoreAndFeedBack from "./ScoreAndFeedBack"; // 이 컴포넌트에서 받아오는 점수 바탕으로 각 감정별로 평균을 계산. 그 데이터를 그래프에 표시
 
 // Chart.js 모듈 등록
 ChartJS.register(
@@ -22,7 +21,18 @@ ChartJS.register(
   Legend
 );
 
-const ClassData = () => {
+const ClassData = ({ scoreAndFeedBackData }) => {
+  // 각 감정별 점수를 저장하는 객체
+  const [emotionScores, setEmotionScores] = useState({
+    joy: [],
+    sadness: [],
+    fear: [],
+    disgust: [],
+    anger: [],
+    surprise: [],
+  });
+
+  // 감정별 평균 점수를 계산하여 차트 데이터에 반영
   const [chartData, setChartData] = useState({
     labels: [
       "😄기쁨😄",
@@ -35,7 +45,7 @@ const ClassData = () => {
     datasets: [
       {
         label: "각 감정에 대한 평균 점수",
-        data: [10, 9, 3, 5, 2, 3],
+        data: [0, 0, 0, 0, 0, 0], // 초기 평균 점수 값
         backgroundColor: [
           "rgba(255, 99, 132, 0.2)",
           "rgba(54, 162, 235, 0.2)",
@@ -57,19 +67,69 @@ const ClassData = () => {
     ],
   });
 
-  const updateData = () => {
-    setChartData({
-      ...chartData,
+  // selectedId 값의 첫 자리 숫자로 감정 분류
+  const getEmotionCategory = (selectedId) => {
+    const category = selectedId ? selectedId.split("-")[0] : "";
+    switch (category) {
+      case "1":
+        return "joy";
+      case "2":
+        return "sadness";
+      case "3":
+        return "fear";
+      case "4":
+        return "disgust";
+      case "5":
+        return "anger";
+      case "6":
+        return "surprise";
+      default:
+        return null;
+    }
+  };
+
+  // 새로운 피드백 데이터가 들어올 때 감정별로 점수 업데이트
+  useEffect(() => {
+    if (
+      scoreAndFeedBackData &&
+      scoreAndFeedBackData.score != null &&
+      scoreAndFeedBackData.selectedId
+    ) {
+      const emotion = getEmotionCategory(scoreAndFeedBackData.selectedId);
+      if (emotion) {
+        setEmotionScores((prevScores) => {
+          const updatedScores = { ...prevScores };
+          updatedScores[emotion].push(scoreAndFeedBackData.score);
+          return updatedScores;
+        });
+      }
+    }
+  }, [scoreAndFeedBackData]);
+
+  // 감정별 평균 점수를 계산하고 차트 데이터를 업데이트
+  useEffect(() => {
+    const calculateAverage = (scores) => {
+      const sum = scores.reduce((a, b) => a + b, 0);
+      return scores.length ? sum / scores.length : 0;
+    };
+
+    setChartData((prevChartData) => ({
+      ...prevChartData,
       datasets: [
         {
-          ...chartData.datasets[0],
-          data: chartData.datasets[0].data.map(() =>
-            Math.floor(Math.random() * 20)
-          ),
+          ...prevChartData.datasets[0],
+          data: [
+            calculateAverage(emotionScores.joy),
+            calculateAverage(emotionScores.sadness),
+            calculateAverage(emotionScores.fear),
+            calculateAverage(emotionScores.disgust),
+            calculateAverage(emotionScores.anger),
+            calculateAverage(emotionScores.surprise),
+          ],
         },
       ],
-    });
-  };
+    }));
+  }, [emotionScores]);
 
   return (
     <div className="classdata-container">
