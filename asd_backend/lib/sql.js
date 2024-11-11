@@ -1,6 +1,6 @@
 module.exports = {
   insertStudent:
-    "INSERT INTO student_table (student_id, student_name, student_birthday, student_gender, student_phone) VALUES (?, ?, ?, ?, ?)",
+    "INSERT INTO student_table (student_id, student_name, student_birthday, student_gender, student_phone, student_parent_name) VALUES (?, ?, ?, ?, ?, ?)",
   checkStudentId: "SELECT * FROM student_table WHERE student_id = ?",
   //checkStudentId:  "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
   insertTeacher:
