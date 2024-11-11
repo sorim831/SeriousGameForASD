@@ -157,7 +157,7 @@ const ClassData = ({ scoreAndFeedBackData }) => {
     <div className="classdata-container">
       <div className="header">
         <p className="graph-name">오늘의 수업 데이터</p>
-        {/* 학생 과거 데이터 불러오기 메뉴 */}
+        {/* 학생 과거 데이터 불러오기 */}
         <li className="ham-btn">
           <button className="hamburger-button" onClick={handleOpenStudentInfo}>
             <span></span>
