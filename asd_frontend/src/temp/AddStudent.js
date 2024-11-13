@@ -16,38 +16,13 @@ function AddStudent() {
   const navigate = useNavigate();
 
   // 선생님 매칭이 되지 않은 학생들 더미 데이터
-  const [noTeacherStudentData, setNoTeacherStudentData] = useState([
-    {
-      student_name: "xxx",
-      student_gender: "여",
-      student_birthday: "2010-06-15",
-      student_parent_name: "qqq",
-      student_phone: "010-1234-1234",
-      isOnline: false,
-    },
-    {
-      student_name: "ooo",
-      student_gender: "남",
-      student_birthday: "2011-03-22",
-      student_parent_name: "eee",
-      student_phone: "010-1234-1234",
-      isOnline: true,
-    },
-    {
-      student_name: "aaa",
-      student_gender: "여",
-      student_birthday: "2012-09-05",
-      student_parent_name: "ddd",
-      student_phone: "010-1234-1234",
-      isOnline: true,
-    },
-  ]);
+  const [noTeacherStudentData, setNoTeacherStudentData] = useState([]);
 
   // 페이지가 처음 렌더링될 때 선생님 매칭되지 않은 학생들의 데이터 요청
   useEffect(() => {
     const fetchNoTeacherStudents = async () => {
       try {
-        const response = await fetch(`${address}/no-teacher-students`, {
+        const response = await fetch(`${address}/get_no_teacher_student`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

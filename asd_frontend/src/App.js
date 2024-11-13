@@ -18,7 +18,6 @@ import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import TeacherHome from "./temp/TeacherHome";
-import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
 import AddStudent from "./temp/AddStudent";
 import Classroom from "./temp/Classroom";
 

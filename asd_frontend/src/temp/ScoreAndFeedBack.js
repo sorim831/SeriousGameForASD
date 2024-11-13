@@ -20,7 +20,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
       5: "분노",
       6: "놀람",
     };
-    return emotionMap[category] || "감정 없음";
+    return emotionMap[category] || "";
   };
 
   // 감정 카테고리와 문제 ID로 문제 텍스트 생성

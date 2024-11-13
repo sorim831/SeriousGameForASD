@@ -4,7 +4,7 @@ const db = require("../lib/db");
 const { verifyToken } = require("./middlewares");
 
 // 선생님과 매칭되지 않은 학생 목록 가져오기
-router.get("/noStudentData", verifyToken, async (req, res) => {
+router.get("/", verifyToken, async (req, res) => {
   try {
     // 매칭되지 않은 학생 데이터 가져오는 쿼리
     const [noStudentData] = await db.query(`
