@@ -7,16 +7,12 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 function AddStudent() {
   const [showStudentInfo, setShowStudentInfo] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
-  //const [studentData, setStudentData] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
-  //const [noTeacherStudentData, setNoTeacherStudentData] = useState([]);
+  const [noTeacherStudentData, setNoTeacherStudentData] = useState([]);
 
   // navigate 훅 초기화
   const navigate = useNavigate();
-
-  // 선생님 매칭이 되지 않은 학생들 더미 데이터
-  const [noTeacherStudentData, setNoTeacherStudentData] = useState([]);
 
   // 페이지가 처음 렌더링될 때 선생님 매칭되지 않은 학생들의 데이터 요청
   useEffect(() => {
@@ -44,7 +40,7 @@ function AddStudent() {
     fetchNoTeacherStudents();
   }, []);
 
-  // "자세히 보기" 버튼 클릭 시 StudentInfo 컴포넌트 띄우기 (선생님 매칭되지 않은 학생들의 정보)
+  // "자세히 보기" 버튼 클릭 이벤트: StudentInfo 컴포넌트 띄우기 (선생님 매칭되지 않은 학생들의 정보)
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
     setShowStudentInfo(true);
