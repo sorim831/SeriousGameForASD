@@ -27,4 +27,8 @@ module.exports = {
 
   getStudentInfo: `SELECT student_id, student_name, student_gender, student_birthday, parent_name, parent_contact FROM student_table WHERE student_id = ? AND student_name = ?`,
   checkTeacherId: `SELECT * FROM teacher_table WHERE teacher_id = ?`,
+
+  getStudentScore : `SELECT student_score FROM student_table WHERE student_id = ?`,
+
+  updateStuentInfo : `UPDATE student_table SET student_score = ?, student_score_date = ?, student_opinion = ? WHERE student_id = ?`  // 이렇게 저장되는게 맞나여?
 };
