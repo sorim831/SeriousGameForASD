@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require("../lib/db");
 
 // 특정 학생 정보 조회
-router.get("/student/info", async (req, res) => {
+router.get("/", async (req, res) => {
   const { studentId, studentName } = req.query;
 
   const query = "getStudentInfo";

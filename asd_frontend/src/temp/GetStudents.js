@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import StudentInfo from "./StudentInfo";
+import "./TeacherHome.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Access = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [teacher, setTeacher] = useState("");
+  const [showStudentInfo, setShowStudentInfo] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
+  // 토큰 검증
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -27,7 +34,7 @@ const Access = () => {
         const result = await response.json();
 
         if (result.success) {
-          setTeacher(result.user.id);
+          setTeacher(result.user.name);
         } else {
           window.location.href = "/main";
         }
@@ -57,11 +64,41 @@ const Access = () => {
 
   if (loading) return <p>loading....</p>;
 
+  // 학생 추가 버튼 클릭 시 /add_student 페이지로 이동
+  const handleAddStudent = () => {
+    navigate("/access");
+  };
+
+  // 학생 정보 자세히보기 버튼 이벤트
+  const handleViewDetails = (student) => {
+    setSelectedStudent(student);
+    setShowStudentInfo(true);
+  };
+
+  // 자세히 보기 창 닫기
+  const handleCloseFeedback = () => {
+    setShowStudentInfo(false);
+    setSelectedStudent(null);
+  };
+
+  // 게임시작 이벤트 (TODO: 실제 게임 시작 로직 추가)
+  const handleGameStart = (student) => {
+    console.log(`${student.student_name}의 게임이 시작되었습니다.`);
+    navigate("/classroom");
+  };
+
+  // 로그아웃
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    alert("로그인 화면으로 넘어갑니다.");
+    window.location.href = "/teacher_login";
+  };
+
   return (
-    <div>
-      <p>선생님과 연결된 학생 목록</p>
-      <p>{teacher}</p>
+    <div className="teacher-home">
+      <h2 id="teacher-name">{teacher} 선생님</h2>
       {error}
+      {/*
       <div>
         {students.map((student) => (
           <div key={student.id}>
@@ -69,6 +106,44 @@ const Access = () => {
           </div>
         ))}
       </div>
+      */}
+      <ul>
+        {students.map((student, index) => (
+          <li className="student-select" key={index}>
+            <span className="student-name">{student.student_name}</span>
+            <p className="student-gender">({student.student_gender})</p>
+            <p className="student-birthday">{student.student_birthday}</p>
+            {student.isOnline ? (
+              <button
+                className="student-is-online"
+                onClick={() => handleViewDetails(student.id)}
+              >
+                자세히보기
+              </button>
+            ) : (
+              <button
+                className="student-is-online"
+                onClick={() => handleGameStart(student.id)}
+              >
+                게임시작
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+
+      {showStudentInfo && selectedStudent && (
+        <StudentInfo
+          onClose={handleCloseFeedback}
+          studentData={selectedStudent}
+        />
+      )}
+      <button id="student-add" onClick={handleAddStudent}>
+        내 학생 추가
+      </button>
+      <button id="logout" onClick={handleLogout}>
+        로그아웃
+      </button>
     </div>
   );
 };

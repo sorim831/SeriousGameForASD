@@ -1,14 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import StudentInfo from "./StudentInfo";
+import "./TeacherHome.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Access = () => {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [teacher, setTeacher] = useState("");
+  const [showStudentInfo, setShowStudentInfo] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
 
+  // 토큰 검증
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -72,12 +79,17 @@ const Access = () => {
       );
 
       if (response.data.success) {
+        // 학생 연결 성공 시 학생 이름을 포함한 알림 표시
+        alert(
+          `${selectedStudent.student_name} 을(를) 내 학생으로 추가했습니다.`
+        );
         checkAccessToken();
       } else {
-        alert("!response.data.success");
+        alert("연결에 실패했습니다.");
       }
     } catch (error) {
       setError(error);
+      alert("서버 오류로 연결을 실패했습니다.");
     }
   };
 
@@ -87,12 +99,28 @@ const Access = () => {
 
   if (loading) return <p>loading....</p>;
 
+  // "자세히 보기" 버튼 클릭 이벤트
+  const handleViewDetails = (student) => {
+    setSelectedStudent(student);
+    setShowStudentInfo(true);
+  };
+
+  // StudentInfo 컴포넌트 닫기
+  const handleCloseFeedback = () => {
+    setShowStudentInfo(false);
+    setSelectedStudent(null);
+  };
+
+  // 뒤로 가기 버튼 클릭 이벤트
+  const handleBack = () => {
+    navigate("/list");
+  };
+
   return (
-    <div>
-      <p>선생님과 연결? 되지 않은 학생 목록</p>
-      <p>{teacher}</p>
-      {error}
-      <div>
+    <div className="teacher-home">
+      <h2 id="teacher-name">매칭 가능한 학생 리스트</h2>
+      {error && <p>{error.message}</p>}
+      {/* <div>
         {students.map((student) => (
           <div key={student.id}>
             <p>{student.student_id}</p>
@@ -101,7 +129,40 @@ const Access = () => {
             </button>
           </div>
         ))}
-      </div>
+      </div> */}
+
+      <ul>
+        {students.map((student, index) => (
+          <li className="student-select" key={index}>
+            <span className="student-name">{student.student_name}</span>
+            <p className="student-gender">({student.student_gender})</p>
+            <p className="student-birthday">{student.student_birthday}</p>
+            <button
+              className="student-is-online"
+              onClick={() => handleViewDetails(student)}
+            >
+              자세히보기
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      {showStudentInfo && selectedStudent && (
+        <StudentInfo
+          onClose={handleCloseFeedback}
+          studentData={selectedStudent} // 선택된 학생 데이터만 전달
+        />
+      )}
+      <button id="student-add" onClick={handleBack}>
+        뒤로 가기
+      </button>
+      <button
+        id="logout"
+        disabled={!selectedStudent}
+        onClick={() => handleConnectStudent(selectedStudent.id)}
+      >
+        내 학생으로 등록
+      </button>
     </div>
   );
 };
