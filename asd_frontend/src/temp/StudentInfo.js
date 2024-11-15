@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./feedback-list.css";
 
-const StudentInfo = ({ onClose, studentData }) => { // studentData를 props로 받음
+const StudentInfo = ({ onClose, studentData }) => {
+  // studentData를 props로 받음
   const [feedback, setFeedback] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -99,7 +100,8 @@ const StudentInfo = ({ onClose, studentData }) => { // studentData를 props로 �
               />
             ) : (
               <p className="total-feedback-input">
-                {feedback || "종합 의견 기록이 존재하지 않습니다. 추가해주세요!"}
+                {feedback ||
+                  "종합 의견 기록이 존재하지 않습니다. 추가해주세요!"}
               </p>
             )}
           </div>

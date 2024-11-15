@@ -18,8 +18,8 @@ import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import TeacherHome from "./temp/TeacherHome";
-import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
 import AddStudent from "./temp/AddStudent";
+import Classroom from "./temp/Classroom";
 
 import Room from "./temp/Room";
 
@@ -37,9 +37,9 @@ function App() {
         <Route path="/student_login" element={<StudentLogin />} />
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
-        <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/add_student" element={<AddStudent />} />
         <Route path="/room/:roomId" element={<Room />} />
+        <Route path="/classroom" element={<Classroom />} />
       </Routes>
     </Router>
   );
