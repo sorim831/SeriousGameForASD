@@ -7,19 +7,24 @@
 var app = require("../app");
 var debug = require("debug")("asd-backend:server");
 var http = require("http");
-
+const { socketHandler, rooms } = require("../modules/socket_handler");
+const room = require("../routes/room");
 /**
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "3000");
+var port = normalizePort(process.env.PORT || "9123");
 app.set("port", port);
+console.log(port);
 
 /**
  * Create HTTP server.
  */
 
 var server = http.createServer(app);
+socketHandler(server);
+
+app.use("/c", room);
 
 /**
  * Listen on provided port, on all network interfaces.
