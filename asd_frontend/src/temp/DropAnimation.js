@@ -13,7 +13,7 @@ const DropAnimation = ({ left, bottom, delay, duration, emoji }) => (
   >
     <div 
       className="emoji" 
-      style={{
+      style={{ 
         animationDelay: `${delay}s`, 
         animationDuration: `${duration}s`
       }}

@@ -17,7 +17,6 @@ const homeRouter = require("./routes/home");
 
 const feedbackRouter = require("./routes/total_feedback_list");
 const getStudentInfo = require("./routes/get_student_info");
-const getNoTeacherStudent = require("./routes/get_no_teacher_student");
 
 //const tokenRouter = require("./routes/token");
 
@@ -40,9 +39,9 @@ app.get("/", function (req, res) {
 });
 */
 
-app.listen(app.get("port"), () => {
-  console.log(app.get("port"), "번 포트에서 대기 중");
-});
+// app.listen(app.get("port"), () => {
+//   console.log(app.get("port"), "번 포트에서 대기 중");
+// });
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -59,7 +58,6 @@ app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
 app.use("/total-feedback", feedbackRouter);
 app.use("/get_student_info", getStudentInfo);
-app.use("/get_no_teacher_student", getNoTeacherStudent);
 
 //app.use("/token", tokenRouter);
 

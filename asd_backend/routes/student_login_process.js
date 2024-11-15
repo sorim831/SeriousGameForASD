@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
         return res.json({
           code: 200,
           success: true,
-          //message: `${student_name}님, 환영합니다!`,
+          message: `${student_name}님, 환영합니다!`,
           token,
         });
       } catch (error) {
@@ -48,7 +48,7 @@ router.post("/", async (req, res) => {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: "서버 에러",
+          message: "서버 에러", 
         });
       }
       /*

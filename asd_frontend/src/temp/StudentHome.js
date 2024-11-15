@@ -27,7 +27,6 @@ function Home() {
         });
 
         const result = await response.json();
-        //console.log(result);
 
         if (result.success) {
           console.log("홈페이지에 정상적으로 접근했습니다.");
@@ -56,23 +55,13 @@ function Home() {
     window.location.href = "/student_login";
   };
 
-  // 게임 시작 <--- 이부분 수정 필요
-  const GameStart = async () => {
-    //window.location.href = `/classroom?id=${studentId}`;
-    window.location.href = `/classroom`;
-  };
-
   return (
     <div className="App">
+      <h1>hi</h1>
       {/* 로그아웃 기능 임시로 */}
       <button id="logout" onClick={handleLogout}>
         로그아웃
       </button>
-      <p>
-        <button id="gamestart" onClick={GameStart}>
-          게임 시작
-        </button>
-      </p>
     </div>
   );
 }
