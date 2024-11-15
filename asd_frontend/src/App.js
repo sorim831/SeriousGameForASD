@@ -21,6 +21,8 @@ import TeacherHome from "./temp/TeacherHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
 import AddStudent from "./temp/AddStudent";
 
+import Room from "./temp/Room";
+
 function App() {
   return (
     <Router>
@@ -37,6 +39,7 @@ function App() {
         <Route path="/list" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/add_student" element={<AddStudent />} />
+        <Route path="/room/:roomId" element={<Room />} />
       </Routes>
     </Router>
   );
