@@ -21,6 +21,8 @@ import TeacherHome from "./temp/TeacherHome";
 import AddStudent from "./temp/AddStudent";
 import Classroom from "./temp/Classroom";
 
+import Room from "./temp/Room";
+
 function App() {
   return (
     <Router>
@@ -36,6 +38,7 @@ function App() {
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
         <Route path="/add_student" element={<AddStudent />} />
+        <Route path="/room/:roomId" element={<Room />} />
         <Route path="/classroom" element={<Classroom />} />
       </Routes>
     </Router>
