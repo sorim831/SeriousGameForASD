@@ -42,7 +42,6 @@ function Register() {
     month: "",
     day: "",
   });
-  const [parentName, setParentName] = useState("");
 
   useEffect(() => {
     const years = [];
@@ -79,7 +78,6 @@ function Register() {
           student_birthday: fullBirthday,
           student_gender: studentGender,
           student_phone: studentPhone,
-          student_parent_name: parentName,
         }),
       });
 
@@ -186,16 +184,6 @@ function Register() {
               </option>
             ))}
           </select>
-        </div>
-        <div id="parent">
-          <p>
-            <input
-              type="text"
-              name="name"
-              placeholder="학부모 이름"
-              onChange={(e) => setParentName(e.target.value)}
-            />
-          </p>
         </div>
         <p>
           <button type="submit" value="가입">

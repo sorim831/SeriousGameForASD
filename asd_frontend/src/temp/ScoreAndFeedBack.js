@@ -1,75 +1,89 @@
-import React, { useState } from "react";
-import "./ScoreAndFeedBack.css";
-import "./score-input.css";
-import "./feedback-form.css";
-import SelectedQuestion from "./SelectedQuestion";
+import React, { useState } from 'react';
+import './ScoreAndFeedBack.css';
+import './score-input.css';
+import './feedback-form.css';
 
-function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
-  const [inputScore, setInputScore] = useState("");
-  const [feedback, setFeedback] = useState("");
-  const ADDRESS = process.env.REACT_APP_BACKEND_ADDRESS;
+function ScoreAndFeedBack() {
+  /*
+  let [scores] = useState({
+    eyes: 5,
+    nose: 6,
+    mouth: 7,
+    aiScore: 6,
+  });
 
-  // 감정 카테고리 반환 함수
-  const getEmotionCategory = (id) => {
-    const category = id.split("-")[0];
-    const emotionMap = {
-      1: "기쁨",
-      2: "슬픔",
-      3: "공포",
-      4: "혐오",
-      5: "분노",
-      6: "놀람",
-    };
-    return emotionMap[category] || "";
+  const [inputScore, setInputScore] = useState(scores.aiScore);
+  const [feedback, setFeedback] = useState('');
+  const PORT = process.env.REACT_APP_BACKEND_ADDRESS;
+
+  const handleChange = (e) => {
+    setInputScore(e.target.value);
   };
 
-  // 감정 카테고리와 문제 ID로 문제 텍스트 생성
-  const generateQuestionText = (selectedId) => {
-    if (!selectedId) return "문제";
-    const [category, number] = selectedId.split("-");
-    return `${getEmotionCategory(category)}문제`;
+  const handleAiScoreClick = () => {
+    setInputScore(scores.aiScore);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // 입력된 점수가 숫자이고 0~10 사이의 범위에 있는지 확인
     const score = Number(inputScore);
-    if (isNaN(score) || score < 0 || score > 10) {
-      alert("점수는 0에서 10 사이의 숫자로 입력해주세요.");
+    const feedbackText = feedback; // 피드백 입력 값
+
+    // 점수가 유효한지 확인
+    if (isNaN(score) || score < 0 || score > 100) {
+      alert("점수는 0에서 100 사이의 숫자로 입력해주세요.");
       return;
     }
 
-    // 점수와 점수 아이디 값과 피드백을 `ClassData`로 전달
-    onSubmitFeedback({ score, selectedId, feedback });
-  };
+    try {
+      const response = await fetch(
+        `http://localhost:${PORT}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ score, feedback: feedbackText }),
+        }
+      );
+
+      console.log('Response status:', response.status);
+
+      const contentType = response.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        const data = await response.json();
+        alert(data.message);
+      } else {
+        const text = await response.text();
+        console.error('Unexpected response:', text);
+        throw new Error('서버에서 예상치 못한 응답을 받았습니다.');
+      }
+    } catch (error) {
+      console.error('Error during fetch:', error.message);
+      alert(error.message);
+    }
+  }; */
 
   return (
-    <div className="score-and-feedback-container">
-      <span className="emotion">{generateQuestionText(selectedId)}</span>
-      <form onSubmit={handleSubmit}>
+    <div className="App">
+      <form>
         <div className="score-input-div">
           <input
             type="number"
             className="teacher-score"
-            value={inputScore}
-            onChange={(e) => setInputScore(e.target.value)}
-            placeholder="0 ~ 10"
+            required // 점수 입력은 필수
           />
-          <span>점</span>
+          {" "}점
         </div>
         <p className="feedback-p">의견</p>
         <div className="feedback-textarea-div">
           <textarea
             placeholder="피드백을 입력하세요"
             className="feedback-textarea"
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
           />
         </div>
-        <button type="submit" className="feedback-button">
-          저장 및 다음 상황
-        </button>
+        <button type="submit" className="feedback-button">저장 및 다음 상황</button>
       </form>
     </div>
   );

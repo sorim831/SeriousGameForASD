@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
         return res.json({
           code: 200,
           success: true,
-          //message: "로그인에 성공하였습니다.",
+          message: "로그인에 성공하였습니다.",
           token,
         });
       } catch (error) {

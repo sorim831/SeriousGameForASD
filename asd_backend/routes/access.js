@@ -4,7 +4,7 @@ const db = require("../lib/db");
 const router = express.Router();
 
 router.get("/", verifyToken, (req, res) => {
-  const teacher_id = req.decoded.id; // 토큰에서 교사 ID 추출
+  const teacher_id = req.decoded.id;
 
   const query = "getNoAccessedStudent";
   db.query(query)
@@ -21,8 +21,8 @@ router.get("/", verifyToken, (req, res) => {
 });
 
 router.post("/connect", verifyToken, (req, res) => {
-  const teacher_id = req.decoded.id; // 토큰에서 교사 ID 추출
-  const { student_id } = req.body; // 학생 ID 추출
+  const teacher_id = req.decoded.id;
+  const { student_id } = req.body;
 
   if (!student_id) {
     return res.status(400).json({ success: false, message: "!student_id" });
@@ -36,10 +36,9 @@ router.post("/connect", verifyToken, (req, res) => {
           .json({ success: false, message: "teacher no exist " });
       }
 
-      const actualTeacherId = results[0].id; // 실제 교사의 ID
+      const actualTeacherId = results[0].id;
 
-      // 학생을 교사와 연결
-      return db.query("connectToNoAccessedStudent", [
+      return db.query("connectToNoAccessedStudnet", [
         actualTeacherId,
         student_id,
       ]);
@@ -48,8 +47,8 @@ router.post("/connect", verifyToken, (req, res) => {
       res.json({ success: true });
     })
     .catch((err) => {
-      console.error("err connectToNoAccessedStudent", err);
-      res.status(500).send("err connectToNoAccessedStudent");
+      console.error("err connectToNoAccessedStudnet", err);
+      res.status(500).send("err connectToNoAccessedStudnet");
     });
 });
 
