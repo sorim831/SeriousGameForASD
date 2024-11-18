@@ -10,6 +10,38 @@ function TeacherHome() {
   const [showStudentInfo, setShowStudentInfo] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      const token = localStorage.getItem("token");
+      console.log(token);
+      if (!token) {
+        console.log("!token");
+        window.location.href = "/main";
+      } else {
+        try {
+          const response = await fetch(`${address}/home`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+
+          const result = await response.json();
+          console.log(result);
+
+          if (!result.success) {
+            window.location.href = "/main";
+          }
+        } catch (error) {
+          console.error("checkAccessToken", error);
+          window.location.href = "/main";
+        }
+      }
+    };
+
+    checkAccessToken();
+  }, []);
+
   const [studentData, setStudentData] = useState([
     {
       student_name: "이민지",

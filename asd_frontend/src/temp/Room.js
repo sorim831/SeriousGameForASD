@@ -16,6 +16,41 @@ const Room = () => {
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
 
   useEffect(() => {
+    const checkAccessToken = async () => {
+      const token = localStorage.getItem("token");
+      console.log(token);
+      if (!token) {
+        console.log("!token");
+        window.location.href = "/main";
+      } else {
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const result = await response.json();
+          console.log(result);
+
+          if (!result.success) {
+            window.location.href = "/main";
+          }
+        } catch (error) {
+          console.error("checkAccessToken", error);
+          window.location.href = "/main";
+        }
+      }
+    };
+
+    checkAccessToken();
+  }, []);
+
+  useEffect(() => {
     const fetchUserId = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
