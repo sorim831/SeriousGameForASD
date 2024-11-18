@@ -26,7 +26,6 @@ const socketHandler = (server) => {
     const socket_id = socket.id;
     const client_ip =
       req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-
     const userId = req._query.userId;
 
     console.log("connection!");
@@ -34,10 +33,11 @@ const socketHandler = (server) => {
     console.log("client IP : ", client_ip);
     console.log("user ID : ", userId);
 
-    user[socket.id] = { userId };
+    const users = {};
+    users[socket_id] = { userId };
 
     socket.on("disconnect", () => {
-      delete user[socket.id];
+      delete users[socket_id];
     });
 
     socket.on("join_room", (roomName) => {
@@ -53,15 +53,9 @@ const socketHandler = (server) => {
       socket.to(roomName).emit("answer", answer);
     });
 
-    socket.emit(
-      "ice",
-      {
-        candidate: ice.candidate,
-        sdpMid: ice.sdpMid,
-        sdpMLineIndex: ice.sdpMLineIndex,
-      },
-      roomName
-    );
+    socket.on("ice", (ice, roomName) => {
+      socket.to(roomName).emit("ice", ice);
+    });
   });
 };
 
