@@ -1,0 +1,20 @@
+/* 전역 스타일 - 모든 뷰포트에서 공통 적용 */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  @media (max-width: 768px) {
+    /* 태블릿 이하 크기 */
+    .login-container {
+      height: 100vh; /* 모바일 화면에서도 100% 높이 */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    /* 모바일 전용 */
+    .login-background {
+      max-width: 320px; /* 모바일에서 최대 너비 설정 */
+    }
+  }
+  
