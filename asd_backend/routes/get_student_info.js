@@ -1,17 +1,15 @@
+// get_student_info
 const express = require("express");
 const router = express.Router();
 const db = require("../lib/db");
-const verifyToken = require("./middlewares").verifyToken; // verifyToken이 함수인지 확인
 
 // 학생 정보 조회 라우터
-router.get("/", verifyToken, (req, res) => {
+router.get("/", (req, res) => {
   const student_id = req.decoded.id;
 
-  // 학생 정보를 조회 SQL 쿼리
-  const querySelectStudent =
-    "SELECT student_name, student_gender, student_birthday, is_online FROM student_table WHERE student_id = ?";
+  const query = "getStudentInfo";
 
-  db.query(querySelectStudent, [student_id])
+  db.query(query, [student_id])
     .then((rows) => {
       if (rows.length > 0) {
         const student = rows[0];
@@ -23,7 +21,6 @@ router.get("/", verifyToken, (req, res) => {
               name: student.student_name,
               gender: student.student_gender,
               birthday: student.student_birthday,
-              isOnline: student.is_online, // 학생의 온,오프라인 상태
             },
           ],
         });
