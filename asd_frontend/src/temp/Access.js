@@ -120,17 +120,6 @@ const Access = () => {
     <div className="teacher-home">
       <h2 id="teacher-name">매칭 가능한 학생 리스트</h2>
       {error && <p>{error.message}</p>}
-      {/* <div>
-        {students.map((student) => (
-          <div key={student.id}>
-            <p>{student.student_id}</p>
-            <button onClick={() => handleConnectStudent(student.id)}>
-              connect
-            </button>
-          </div>
-        ))}
-      </div> */}
-
       <ul>
         {students.map((student, index) => (
           <li className="student-select" key={index}>

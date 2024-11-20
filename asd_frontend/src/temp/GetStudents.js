@@ -81,10 +81,10 @@ const Access = () => {
     setSelectedStudent(null);
   };
 
-  // 게임시작 이벤트 (TODO: 실제 게임 시작 로직 추가)
-  const handleGameStart = (student) => {
-    console.log(`${student.student_name}의 게임이 시작되었습니다.`);
-    navigate("/classroom");
+  // 게임 시작
+  const handleGameStart = (studentId) => {
+    console.log(`${studentId}의 게임이 시작되었습니다.`);
+    navigate(`/room/${studentId}`); // studentId를 URL에 포함
   };
 
   // 로그아웃
@@ -98,36 +98,24 @@ const Access = () => {
     <div className="teacher-home">
       <h2 id="teacher-name">{teacher} 선생님</h2>
       {error}
-      {/*
-      <div>
-        {students.map((student) => (
-          <div key={student.id}>
-            <p>{student.student_id}</p>
-          </div>
-        ))}
-      </div>
-      */}
       <ul>
         {students.map((student, index) => (
           <li className="student-select" key={index}>
             <span className="student-name">{student.student_name}</span>
             <p className="student-gender">({student.student_gender})</p>
             <p className="student-birthday">{student.student_birthday}</p>
-            {student.isOnline ? (
-              <button
-                className="student-is-online"
-                onClick={() => handleViewDetails(student.id)}
-              >
-                자세히보기
-              </button>
-            ) : (
-              <button
-                className="student-is-online"
-                onClick={() => handleGameStart(student.id)}
-              >
-                게임시작
-              </button>
-            )}
+            <button
+              className="student-view-details"
+              onClick={() => handleViewDetails(student.id)}
+            >
+              자세히보기
+            </button>
+            <button
+              className="student-game-start"
+              onClick={() => handleGameStart(student.id)}
+            >
+              게임시작
+            </button>
           </li>
         ))}
       </ul>
