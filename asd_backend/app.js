@@ -17,6 +17,7 @@ const homeRouter = require("./routes/home");
 
 const feedbackRouter = require("./routes/total_feedback_list");
 const getStudentInfo = require("./routes/get_student_info");
+const updateStudentInfo = require("./routes/update_student_info");
 
 //const tokenRouter = require("./routes/token");
 
@@ -58,7 +59,7 @@ app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
 app.use("/total-feedback", feedbackRouter);
 app.use("/get_student_info", getStudentInfo);
-
+app.use("/update_student_info", updateStudentInfo);
 //app.use("/token", tokenRouter);
 
 module.exports = app;
