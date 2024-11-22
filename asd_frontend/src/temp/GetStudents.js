@@ -32,9 +32,14 @@ const Access = () => {
         });
 
         const result = await response.json();
+        console.log(result);
 
         if (result.success) {
-          setTeacher(result.user.name);
+          if (result.user.role !== "teacher") {
+            window.location.href = "/main";
+          } else {
+            setTeacher(result.user.name);
+          }
         } else {
           window.location.href = "/main";
         }

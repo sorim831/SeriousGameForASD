@@ -4,7 +4,6 @@ import "./StudentLogin.css";
 function Login() {
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-  //const [Student, setStudent] = useState(false);
   const [studentYear, setStudentYear] = useState([]);
   const [studentMonth, setStudentMonth] = useState([]);
   const [studentDay, setStudentDay] = useState([]);
@@ -14,11 +13,15 @@ function Login() {
     month: "",
     day: "",
   });
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
-    if (!token) return; // 토큰이 없으면 검증하지 않음
-    else {
+    if (!token) {
+      setLoading(false);
+      return;
+    } else {
       try {
         const response = await fetch(`${address}/home`, {
           method: "GET",
@@ -30,11 +33,12 @@ function Login() {
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "/student_home";
+          setIsLoggedIn(true);
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
-        //window.location.href = "/main";
+      } finally {
+        setLoading(false);
       }
     }
   };
@@ -88,7 +92,6 @@ function Login() {
       });
 
       const result = await response.json();
-      //alert(result.message);
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/student_home";
@@ -106,72 +109,88 @@ function Login() {
     window.location.href = "/student_register";
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setIsLoggedIn(false);
+  };
+
+  if (loading) {
+    return <div>loding...</div>;
+  }
+
   return (
     <div className="App">
-      <form
-        className="login-form"
-        action="/student_login_process"
-        onSubmit={handleStudentLogin}
-      >
-        <p>
-          <input
-            type="text"
-            name="name"
-            placeholder="이름"
-            onChange={(e) => setStudentName(e.target.value)}
-          />
-        </p>
-        <div className="info" id="info__birth">
-          <select
-            className="box"
-            name="year"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              출생 연도
-            </option>
-            {studentYear.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-          <select
-            className="box"
-            name="month"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              월
-            </option>
-            {studentMonth.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-          <select
-            className="box"
-            name="day"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              일
-            </option>
-            {studentDay.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
+      {isLoggedIn ? (
+        <div>
+          <p>로그인 되어 있습니다.</p>
+          <button onClick={handleLogout}>로그아웃</button>
         </div>
-        <div className="btn">
-          <button type="button" onClick={RegisterBtn}>
-            회원가입
-          </button>
-          <button type="submit">로그인</button>
-        </div>
-      </form>
+      ) : (
+        <form
+          className="login-form"
+          action="/student_login_process"
+          onSubmit={handleStudentLogin}
+        >
+          <p>
+            <input
+              type="text"
+              name="name"
+              placeholder="이름"
+              onChange={(e) => setStudentName(e.target.value)}
+            />
+          </p>
+          <div className="info" id="info__birth">
+            <select
+              className="box"
+              name="year"
+              onChange={handleStudentBirthdayChange}
+            >
+              <option disabled selected>
+                출생 연도
+              </option>
+              {studentYear.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <select
+              className="box"
+              name="month"
+              onChange={handleStudentBirthdayChange}
+            >
+              <option disabled selected>
+                월
+              </option>
+              {studentMonth.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <select
+              className="box"
+              name="day"
+              onChange={handleStudentBirthdayChange}
+            >
+              <option disabled selected>
+                일
+              </option>
+              {studentDay.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="btn">
+            <button type="button" onClick={RegisterBtn}>
+              회원가입
+            </button>
+            <button type="submit">로그인</button>
+          </div>
+        </form>
+      )}
     </div>
   );
 }

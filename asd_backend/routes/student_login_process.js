@@ -20,16 +20,15 @@ router.post("/", async (req, res) => {
   }
   try {
     const result = await db.query(query, [student_name, birthdayFormatted]);
-
+    const role = "student";
     if (result.length > 0) {
       // 토큰 부여
       try {
         const id = result[0].student_name;
-        //const nick = result[0].teacher_name;
         const token = jwt.sign(
           {
             id,
-            //nick,
+            role,
           },
           process.env.JWT_SECRET,
           {
@@ -48,7 +47,7 @@ router.post("/", async (req, res) => {
         return res.status(500).json({
           code: 500,
           success: false,
-          message: "서버 에러", 
+          message: "서버 에러",
         });
       }
       /*

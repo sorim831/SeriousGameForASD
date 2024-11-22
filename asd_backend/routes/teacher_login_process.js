@@ -31,22 +31,19 @@ router.post("/", async (req, res) => {
       teacher_id
     );
 
-    const result = await db.query(query, [
-      teacher_id,
-      teacher_hashed_password,
-      //teacher_name,
-    ]);
+    const result = await db.query(query, [teacher_id, teacher_hashed_password]);
 
     if (result.length > 0) {
       // 토큰 부여
       try {
         const id = result[0].teacher_id;
         const name = result[0].teacher_name;
-        //const nick = result[0].teacher_name;
+        const role = "teacher";
         const token = jwt.sign(
           {
             id,
             name,
+            role,
           },
           process.env.JWT_SECRET,
           {
