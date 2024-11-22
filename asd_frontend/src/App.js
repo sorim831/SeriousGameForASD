@@ -9,6 +9,7 @@ import First from "./temp/First";
 //import Login from "./temp/Login";
 //import Home from "./temp/Home";
 //import Register from "./temp/Register";
+
 import Access from "./temp/Access";
 import GetStudents from "./temp/GetStudents";
 
@@ -17,11 +18,14 @@ import StudentRegister from "./temp/StudentRegister";
 import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
-import TeacherHome from "./temp/TeacherHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
-import AddStudent from "./temp/AddStudent";
 
 import Room from "./temp/Room";
+
+// Student
+import StudentLoginPage from "./pages/Student/StudentLoginPage";
+import StudentHomePage from "./pages/Student/StudentHomePage";
+import GamePage from "./pages/Student/GamePage";
 
 function App() {
   return (
@@ -30,7 +34,6 @@ function App() {
         <Route path="/main" element={<First />} />
         <Route path="/" element={<Navigate to="/main" />} />
         <Route path="/student_home" element={<StudentHome />} />
-        <Route path="/teacher_home" element={<TeacherHome />} />
         <Route path="/teacher_register" element={<TeacherRegister />} />
         <Route path="/student_register" element={<StudentRegister />} />
         <Route path="/teacher_login" element={<TeacherLogin />} />
@@ -38,8 +41,12 @@ function App() {
         <Route path="/access" element={<Access />} />
         <Route path="/list" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
-        <Route path="/add_student" element={<AddStudent />} />
         <Route path="/room/:roomId" element={<Room />} />
+
+        {/*Student*/}
+        <Route path="/student_login_page" element={<StudentLoginPage />} />
+        <Route path="/student_home_page" element={<StudentHomePage />} />
+        <Route path="/GamePage/:studentId" element={<GamePage />} />
       </Routes>
     </Router>
   );
