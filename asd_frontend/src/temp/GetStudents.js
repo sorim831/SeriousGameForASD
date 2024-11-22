@@ -32,9 +32,14 @@ const Access = () => {
         });
 
         const result = await response.json();
+        console.log(result);
 
         if (result.success) {
-          setTeacher(result.user.name);
+          if (result.user.role !== "teacher") {
+            window.location.href = "/main";
+          } else {
+            setTeacher(result.user.name);
+          }
         } else {
           window.location.href = "/main";
         }
@@ -70,8 +75,8 @@ const Access = () => {
   };
 
   // 학생 정보 자세히보기 버튼 이벤트
-  const handleViewDetails = (student) => {
-    setSelectedStudent(student);
+  const handleViewDetails = (student_info) => {
+    setSelectedStudent(student_info);
     setShowStudentInfo(true);
   };
 
@@ -106,7 +111,7 @@ const Access = () => {
             <p className="student-birthday">{student.student_birthday}</p>
             <button
               className="student-view-details"
-              onClick={() => handleViewDetails(student.id)}
+              onClick={() => handleViewDetails(student)}
             >
               자세히보기
             </button>

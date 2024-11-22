@@ -42,6 +42,7 @@ function Register() {
     month: "",
     day: "",
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const years = [];
@@ -59,6 +60,7 @@ function Register() {
     setStudentYear(years);
     setStudentMonth(months);
     setStudentDay(days);
+    setLoading(false);
   }, []);
 
   const handleStudentRegister = async (e) => {
@@ -97,6 +99,10 @@ function Register() {
   const handleGenderChange = (e) => {
     setStudentGender(e.target.value);
   };
+
+  if (loading) {
+    return <div>loading...</div>;
+  }
 
   return (
     <div className="App">

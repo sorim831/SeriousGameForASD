@@ -17,9 +17,15 @@ router.get("/", (req, res) => {
           success: true,
           students: [
             {
+              id: student.student_id,
               name: student.student_name,
               gender: student.student_gender,
               birthday: student.student_birthday,
+              score: student.student_score,
+              score_date: student.student_score_date,
+              opinion: student.student_opinion,
+              parent_name: student.student_parent_name,
+              phone: student.student_phone,
             },
           ],
         });

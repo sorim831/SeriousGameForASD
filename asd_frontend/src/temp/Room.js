@@ -12,8 +12,50 @@ const Room = () => {
   const [socket, setSocket] = useState(null);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
+  const [userRole, setUserRole] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
+
+  useEffect(() => {
+    const checkAccessToken = async () => {
+      const token = localStorage.getItem("token");
+      console.log(token);
+      if (!token) {
+        console.log("!token");
+        window.location.href = "/main";
+      } else {
+        try {
+          const response = await fetch(
+            `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
+            {
+              method: "GET",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+
+          const result = await response.json();
+          console.log(result);
+          if (
+            result.user.role !== "teacher" &&
+            result.user.role !== "student"
+          ) {
+            window.location.href = "/main";
+          } else {
+            setUserRole(result.user.role);
+            console.log("good!");
+          }
+        } catch (error) {
+          console.error("checkAccessToken", error);
+          window.location.href = "/main";
+        }
+      }
+    };
+
+    checkAccessToken();
+  }, []);
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -212,23 +254,59 @@ const Room = () => {
   useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
+      setLoading(false);
     }
   }, [socket, roomId]);
 
+  if (loading) {
+    return <p>loading...</p>;
+  }
+
   return (
     <div>
-      <video
-        ref={myFace}
-        style={{ width: "200px" }}
-        autoPlay
-        muted
-        playsInline
-      />
-      <video ref={peerFace} style={{ width: "200px" }} autoPlay playsInline />
-      <button onClick={handleMuteClick}>{muted ? "Unmute" : "Mute"}</button>
-      <button onClick={handleCameraClick}>
-        {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
-      </button>
+      {userRole === "teacher" ? (
+        <div>
+          <h1>선생님</h1>
+          <video
+            ref={myFace}
+            style={{ width: "200px" }}
+            autoPlay
+            muted
+            playsInline
+          />
+          <video
+            ref={peerFace}
+            style={{ width: "200px" }}
+            autoPlay
+            playsInline
+          />
+          <button onClick={handleMuteClick}>{muted ? "Unmute" : "Mute"}</button>
+          <button onClick={handleCameraClick}>
+            {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+          </button>
+        </div>
+      ) : (
+        <div>
+          <h1>학생</h1>
+          <video
+            ref={myFace}
+            style={{ width: "200px" }}
+            autoPlay
+            muted
+            playsInline
+          />
+          <video
+            ref={peerFace}
+            style={{ width: "200px" }}
+            autoPlay
+            playsInline
+          />
+          <button onClick={handleMuteClick}>{muted ? "Unmute" : "Mute"}</button>
+          <button onClick={handleCameraClick}>
+            {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

@@ -3,7 +3,7 @@ import "./feedback-list.css";
 
 const StudentInfo = ({ onClose, studentData }) => {
   // studentData를 props로 받음
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState(studentData.student_opinion || "");
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -15,14 +15,26 @@ const StudentInfo = ({ onClose, studentData }) => {
 
   const handleSaveClick = async () => {
     setLoading(true); // 수정 버튼 누르면 [ 수정 버튼 -> 완료 버튼 ] 활성화
+    console.log(studentData);
     try {
-      // 서버에 수정된 종합 의견을 저장하는 요청
-      //await fetch("/", {
-      //  method: "POST",
-      //  headers: { "Content-Type": "application/json" },
-      //  body: JSON.stringify({ feedback }),
-      //});
-      setIsEditing(false); // 수정 모드 해제
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_ADDRESS}/update_student_info/total_comment`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student_opinion: feedback,
+            student_id: studentData.student_id,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        setIsEditing(false);
+      } else {
+        setErrorMessage("err");
+      }
     } catch (error) {
       setErrorMessage("종합 의견 저장 중 오류가 발생했습니다."); // 오류 메시지 설정
     } finally {
