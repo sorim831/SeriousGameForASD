@@ -56,6 +56,20 @@ const socketHandler = (server) => {
     socket.on("ice", (ice, roomName) => {
       socket.to(roomName).emit("ice", ice);
     });
+
+    // 특정 이미지를 요청하는 이벤트 ( fe에서 에밋 )
+    socket.on("sendImage", (imgName, roomName) => {
+      // imgNAme은 ex) 1-1.jpg
+      // 이미지 경로
+      const imgPath = `/asd_backend/img/${imgName}.jpg`; // 이게 아니라 DB에서 받아오기?
+      // FE로 이미지 경로 전송 ( fe에서 on)
+      socket.to(roomName).emit("sendImagepath", imgPath);
+    });
+
+    socket.on("EffectData", (DropAnimation, roomName) => {
+      // 뭐가 와야되지?
+      io.to(roomName).emit("showDropAnimation", DropAnimation);
+    });
   });
 };
 

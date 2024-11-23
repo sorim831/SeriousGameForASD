@@ -29,4 +29,12 @@ module.exports = {
   noStudentData: `SELECT student_id, student_name, student_birthday, student_gender, student_score, student_score_date, student_opinion, student_parent_name, student_phone FROM asd_serious_game.student_table WHERE teacher_id IS NULL`, //아직 선생님과 매칭되지 않은 학생 목록
   checkTeacherId: `SELECT * FROM teacher_table WHERE teacher_id = ?`,
   updateStudentTotalComment: `UPDATE student_table SET student_opinion = ? WHERE student_id = ?`,
+
+  getStudentScore:
+    "SELECT student_score FROM student_table WHERE student_id = ?",
+  updateStuentInfo:
+    "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
+  updateTotalStuentInfo:
+    "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
+  LoadStudentHistor0y: "SELECT * FROM stduent_scores_table WHERE student_id=?",
 };

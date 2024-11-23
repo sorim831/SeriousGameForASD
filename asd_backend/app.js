@@ -19,6 +19,10 @@ const feedbackRouter = require("./routes/total_feedback_list");
 const getStudentInfo = require("./routes/get_student_info");
 const updateStudentInfo = require("./routes/update_student_info");
 
+const endClass = require("./routes/end_class");
+const loadGameHistory = require("./routes/load_game_history");
+const saveGameTask = require("./routes/save_task");
+
 //const tokenRouter = require("./routes/token");
 
 const cors = require("cors");
@@ -60,6 +64,10 @@ app.use("/get_students", getStudnetsListRouter);
 app.use("/total-feedback", feedbackRouter);
 app.use("/get_student_info", getStudentInfo);
 app.use("/update_student_info", updateStudentInfo);
+
+app.use("/end_class", endClass);
+app.use("/load_game_history", loadGameHistory);
+app.use("/save_task", saveGameTask);
 //app.use("/token", tokenRouter);
 
 module.exports = app;
