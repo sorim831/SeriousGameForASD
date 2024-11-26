@@ -36,5 +36,5 @@ module.exports = {
     "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
   updateTotalStuentInfo:
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
-  LoadStudentHistor0y: "SELECT * FROM stduent_scores_table WHERE student_id=?",
+  LoadStudentHistory: "SELECT * FROM stduent_scores_table WHERE student_id=?",
 };
