@@ -146,15 +146,18 @@ function Login() {
           onSubmit={handleStudentLogin}
         >
           <h1 className={styles.title}>로그인</h1>
-          <input
-            type="text"
-            name="name"
-            placeholder="이름"
-            onChange={(e) => setStudentName(e.target.value)}
-            className={styles.nameInput}
-            autoComplete="on"
-            tabindex="1"
-          />
+          <div className={styles.nameBox}>
+            <label className={styles.nameLabel}>이름:</label>
+            <input
+              type="text"
+              name="name"
+              placeholder="이름"
+              onChange={(e) => setStudentName(e.target.value)}
+              className={styles.nameInput}
+              autoComplete="on"
+              tabindex="1"
+            />
+          </div>
           <div className={styles.birthdayInfo}>
             <label>생일:</label>
             <div className={styles.birthdayBox}>
@@ -213,7 +216,7 @@ function Login() {
               href="/student_register"
               tabindex="6"
             >
-              회원가입
+              신규 등록
             </a>
             <button type="submit" className={styles.loginBtn} tabindex="5">
               로그인

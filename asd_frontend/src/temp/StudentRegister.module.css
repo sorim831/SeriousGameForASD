@@ -1,4 +1,4 @@
-.loginForm {
+.registerForm {
   width: 300px;
   background-color: white;
   border-radius: 10px;
@@ -9,14 +9,24 @@
   align-items: center;
   box-sizing: border-box;
 }
+.errorMessage {
+  color: red;
+  font-size: 14px;
+}
+.title {
+  font-size: 24px;
+  margin: 0 0 20px 0;
+  color: #333;
+}
 .nameBox {
   width: 260px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 .nameInput {
-  width: 220px;
+  width: 190px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -27,11 +37,30 @@
 .nameLabel {
   white-space: nowrap;
 }
+.phoneBox {
+  width: 260px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.phoneInput {
+  width: 190px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+.phoneLabel {
+  white-space: nowrap;
+}
 .birthdayInfo {
   width: 260px;
   display: flex;
   justify-content: space-between;
-  margin: 30px 0;
+  margin: 0 0 20px 0;
   align-items: center;
 }
 .selectBox {
@@ -42,54 +71,31 @@
   border: 1px solid #ccc;
   border-radius: 5px;
 }
+.genderBox {
+  margin-bottom: 20px;
+}
+.genderInput {
+  margin: 0 7px;
+}
 .btnBox {
   width: 260px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-.registerBtn {
-  color: #666;
-}
-.loginBtn {
-  background-color: green;
-  color: white;
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  border: none;
-}
-.errorMessage {
-  color: red;
-  font-size: 14px;
-}
-.title {
-  font-size: 24px;
-  margin: 0 0 20px 0;
-  color: #333;
-}
-.loginMessage {
-  font-size: 16px;
-  margin: 10px 0;
-  color: #333;
-}
 .goBackBtn {
   color: #666;
-  margin: 10px 0;
 }
-.logoutBtn {
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 5px 10px;
-  font-size: 16px;
+.registerBtn {
   background-color: green;
+  color: white;
+  font-size: 16px;
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  margin: 10px 0 0 0;
+  border: none;
   transition: all 0.2s ease-out;
 }
-.logoutBtn:hover {
+.registerBtn:hover {
   transform: scale(1.03);
-  transition: all 0.2s ease-out;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./StudentRegister.css";
+import styles from "./StudentRegister.module.css";
 
 function Register() {
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -43,6 +43,7 @@ function Register() {
     day: "",
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     const years = [];
@@ -65,6 +66,32 @@ function Register() {
 
   const handleStudentRegister = async (e) => {
     e.preventDefault();
+
+    if (!studentName.trim()) {
+      setError("이름을 입력해주세요.");
+      return;
+    }
+    if (!studentPhone.trim()) {
+      setError("전화번호를 입력해주세요.");
+      return;
+    }
+    if (studentPhone.length !== 11) {
+      setError("전화번호는 11자리여야 합니다.");
+      return;
+    }
+    if (
+      !studentBirthday.year ||
+      !studentBirthday.month ||
+      !studentBirthday.day
+    ) {
+      setError("생년월일을 모두 선택해주세요.");
+      return;
+    }
+    if (!studentGender) {
+      setError("성별을 체크해주세요.");
+      return;
+    }
+
     const fullBirthday = `${studentBirthday.year}-${String(
       studentBirthday.month
     ).padStart(2, "0")}-${String(studentBirthday.day).padStart(2, "0")}`;
@@ -84,11 +111,13 @@ function Register() {
       });
 
       const result = await response.text();
-      alert(result);
-      window.location.href = "/student_login";
+      setError(result);
+      if (response.ok) {
+        window.location.href = "/student_login";
+      }
     } catch (error) {
       console.error("Error:", error);
-      alert("학생 등록 중 오류 발생");
+      setError("등록 중 오류가 발생했어요.");
     }
   };
 
@@ -105,30 +134,85 @@ function Register() {
   }
 
   return (
-    <div className="App">
-      <h1>회원가입</h1>
+    <div className={styles.App}>
       <form
-        className="register-form"
+        className={styles.registerForm}
         action="/student_register_process"
         method="post"
         onSubmit={handleStudentRegister}
       >
-        <p>
+        <h1 className={styles.title}>신규 등록</h1>
+        <div className={styles.nameBox}>
+          <label className={styles.nameLabel}>이름:</label>
           <input
+            className={styles.nameInput}
             type="text"
             name="name"
             placeholder="이름"
             onChange={(e) => setStudentName(e.target.value)}
           />
-        </p>
-        <input
-          type="number"
-          name="name"
-          placeholder="휴대전화"
-          onChange={(e) => setStudentPhone(e.target.value)}
-        />
-        <div>
-          <label>
+        </div>
+        <div className={styles.phoneBox}>
+          <label className={styles.phoneLabel}>전화번호:</label>
+          <input
+            className={styles.phoneInput}
+            type="text"
+            name="phone"
+            placeholder="전화번호"
+            onChange={(e) => {
+              const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+              if (onlyNums.length <= 11) {
+                setStudentPhone(onlyNums);
+              }
+            }}
+            value={studentPhone}
+            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
+          />
+        </div>
+        <div className={styles.birthdayInfo}>
+          <label>생일:</label>
+          <select
+            className={styles.selectBox}
+            name="year"
+            onChange={handleStudentBirthdayChange}
+          >
+            <option disabled selected></option>
+            {studentYear.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <label>년</label>
+          <select
+            className={styles.selectBox}
+            name="month"
+            onChange={handleStudentBirthdayChange}
+          >
+            <option disabled selected></option>
+            {studentMonth.map((month) => (
+              <option key={month} value={month}>
+                {month}
+              </option>
+            ))}
+          </select>
+          <label>월</label>
+          <select
+            className={styles.selectBox}
+            name="day"
+            onChange={handleStudentBirthdayChange}
+          >
+            <option disabled selected></option>
+            {studentDay.map((day) => (
+              <option key={day} value={day}>
+                {day}
+              </option>
+            ))}
+          </select>
+          <label>일</label>
+        </div>
+        <div className={styles.genderBox}>
+          <label className={styles.genderInput}>
             <input
               type="radio"
               value="male"
@@ -137,7 +221,7 @@ function Register() {
             />
             남성
           </label>
-          <label>
+          <label className={styles.genderInput}>
             <input
               type="radio"
               value="female"
@@ -147,55 +231,15 @@ function Register() {
             여성
           </label>
         </div>
-        <div className="info" id="info__birth">
-          <select
-            className="box"
-            name="year"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              출생 연도
-            </option>
-            {studentYear.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-          <select
-            className="box"
-            name="month"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              월
-            </option>
-            {studentMonth.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-          <select
-            className="box"
-            name="day"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected>
-              일
-            </option>
-            {studentDay.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
-        </div>
-        <p>
-          <button type="submit" value="가입">
-            가입
+        {error && <p className={styles.errorMessage}>{error}</p>}
+        <div className={styles.btnBox}>
+          <a href="/student_login" className={styles.goBackBtn}>
+            뒤로가기
+          </a>
+          <button type="submit" className={styles.registerBtn}>
+            등록
           </button>
-        </p>
+        </div>
       </form>
     </div>
   );
