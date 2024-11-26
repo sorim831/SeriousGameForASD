@@ -10,7 +10,7 @@ import First from "./temp/First";
 //import Home from "./temp/Home";
 //import Register from "./temp/Register";
 
-import Access from "./temp/Access";
+import TeacherHome from "./temp/TeacherHome";
 import GetStudents from "./temp/GetStudents";
 
 import StudentLogin from "./temp/StudentLogin";
@@ -38,8 +38,8 @@ function App() {
         <Route path="/student_register" element={<StudentRegister />} />
         <Route path="/teacher_login" element={<TeacherLogin />} />
         <Route path="/student_login" element={<StudentLogin />} />
-        <Route path="/access" element={<Access />} />
-        <Route path="/list" element={<GetStudents />} />
+        <Route path="/TeacherHome" element={<TeacherHome />} />
+        <Route path="/get_students" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/room/:roomId" element={<Room />} />
 

@@ -1,6 +1,6 @@
 .selected-question-container {
   width: 350px;
-  height: 350px;
+  height: 330px;
   border: 1px solid #ccc;
   display: flex;
   flex-direction: column;

@@ -1,104 +1,105 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom"; // useNavigate import 추가
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import StudentInfo from "./StudentInfo";
 import "./TeacherHome.css";
-import AddStudent from "./AddStudent";
+
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-function TeacherHome() {
-  const navigate = useNavigate(); // useNavigate 훅 선언
+const Access = () => {
+  const navigate = useNavigate();
+  const [students, setStudents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [teacher, setTeacher] = useState("");
   const [showStudentInfo, setShowStudentInfo] = useState(false);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  useEffect(() => {
-    const checkAccessToken = async () => {
-      const token = localStorage.getItem("token");
-      console.log(token);
-      if (!token) {
-        console.log("!token");
-        window.location.href = "/main";
-      } else {
-        try {
-          const response = await fetch(`${address}/home`, {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+  // 토큰 검증
+  const checkAccessToken = async () => {
+    const token = localStorage.getItem("token");
 
-          const result = await response.json();
-          console.log(result);
+    if (!token) {
+      window.location.href = "/main";
+      return;
+    } else {
+      try {
+        const response = await fetch(`${address}/home`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
 
-          if (!result.success) {
-            window.location.href = "/main";
-          }
-        } catch (error) {
-          console.error("checkAccessToken", error);
+        const result = await response.json();
+
+        if (result.success) {
+          setTeacher(result.user.name);
+        } else {
           window.location.href = "/main";
         }
+      } catch (error) {
+        console.error(error);
+        window.location.href = "/main";
       }
-    };
+    }
+    try {
+      const response = await axios.get(`${address}/get_students`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setStudents(response.data.students);
+    } catch (err) {
+      setError(err);
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     checkAccessToken();
   }, []);
 
-  const [studentData, setStudentData] = useState([
-    {
-      student_name: "이민지",
-      student_gender: "여",
-      student_birthday: "2010-06-15",
-      student_parent_name: "김가연",
-      student_phone: "010-1234-1234",
-      isOnline: false,
-    },
-    {
-      student_name: "박준영",
-      student_gender: "남",
-      student_birthday: "2011-03-22",
-      student_parent_name: "김가연",
-      student_phone: "010-1234-1234",
-      isOnline: true,
-    },
-    {
-      student_name: "정수빈",
-      student_gender: "여",
-      student_birthday: "2012-09-05",
-      student_parent_name: "김가연",
-      student_phone: "010-1234-1234",
-      isOnline: true,
-    },
-  ]);
+  if (loading) return <p>loading....</p>;
 
+  // 학생 추가 버튼 클릭 시 /get_students 페이지로 이동
+  const handleAddStudent = () => {
+    navigate("/get_students");
+  };
+
+  // 학생 정보 자세히보기 버튼 이벤트
   const handleViewDetails = (student) => {
     setSelectedStudent(student);
     setShowStudentInfo(true);
   };
 
+  // 자세히 보기 창 닫기
   const handleCloseFeedback = () => {
     setShowStudentInfo(false);
     setSelectedStudent(null);
   };
 
+  // 게임시작 이벤트 (TODO: 실제 게임 시작 로직 추가)
   const handleGameStart = (student) => {
     console.log(`${student.student_name}의 게임이 시작되었습니다.`);
+    navigate(`/room/${student.id}`);
   };
 
+  // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
     alert("로그인 화면으로 넘어갑니다.");
     window.location.href = "/teacher_login";
   };
 
-  // 학생 추가 버튼 클릭 시 /add_student 페이지로 이동
-  const handleAddStudent = () => {
-    navigate("/add_student");
-  };
-
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">김철수 선생님</h2>
+      <h2 id="teacher-name">{teacher} 선생님</h2>
+      {error}
       <ul>
-        {studentData.map((student, index) => (
+        {students.map((student, index) => (
           <li className="student-select" key={index}>
             <span className="student-name">{student.student_name}</span>
             <p className="student-gender">({student.student_gender})</p>
@@ -106,14 +107,14 @@ function TeacherHome() {
             {student.isOnline ? (
               <button
                 className="student-is-online"
-                onClick={() => handleViewDetails(student)}
+                onClick={() => handleViewDetails(student.id)}
               >
                 자세히보기
               </button>
             ) : (
               <button
                 className="student-is-online"
-                onClick={() => handleGameStart(student)}
+                onClick={() => handleGameStart(student.id)}
               >
                 게임시작
               </button>
@@ -121,6 +122,7 @@ function TeacherHome() {
           </li>
         ))}
       </ul>
+
       {showStudentInfo && selectedStudent && (
         <StudentInfo
           onClose={handleCloseFeedback}
@@ -135,6 +137,6 @@ function TeacherHome() {
       </button>
     </div>
   );
-}
+};
 
-export default TeacherHome;
+export default Access;

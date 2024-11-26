@@ -32,14 +32,9 @@ const Access = () => {
         });
 
         const result = await response.json();
-        console.log(result);
 
         if (result.success) {
-          if (result.user.role !== "teacher") {
-            window.location.href = "/main";
-          } else {
-            setTeacher(result.user.name);
-          }
+          setTeacher(result.user.id);
         } else {
           window.location.href = "/main";
         }
@@ -49,7 +44,7 @@ const Access = () => {
       }
     }
     try {
-      const response = await axios.get(`${address}/get_students`, {
+      const response = await axios.get(`${address}/access`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -63,46 +58,69 @@ const Access = () => {
     }
   };
 
+  const handleConnectStudent = async (studentId) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      window.location.href = "/main";
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${address}/access/connect`,
+        {
+          student_id: studentId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // 학생 연결 성공 시 학생 이름을 포함한 알림 표시
+        alert(
+          `${selectedStudent.student_name} 을(를) 내 학생으로 추가했습니다.`
+        );
+        checkAccessToken();
+      } else {
+        alert("연결에 실패했습니다.");
+      }
+    } catch (error) {
+      setError(error);
+      alert("서버 오류로 연결을 실패했습니다.");
+    }
+  };
+
   useEffect(() => {
     checkAccessToken();
   }, []);
 
   if (loading) return <p>loading....</p>;
 
-  // 학생 추가 버튼 클릭 시 /add_student 페이지로 이동
-  const handleAddStudent = () => {
-    navigate("/access");
-  };
-
-  // 학생 정보 자세히보기 버튼 이벤트
-  const handleViewDetails = (student_info) => {
-    setSelectedStudent(student_info);
+  // "자세히 보기" 버튼 클릭 이벤트
+  const handleViewDetails = (student) => {
+    setSelectedStudent(student);
     setShowStudentInfo(true);
   };
 
-  // 자세히 보기 창 닫기
+  // StudentInfo 컴포넌트 닫기
   const handleCloseFeedback = () => {
     setShowStudentInfo(false);
     setSelectedStudent(null);
   };
 
-  // 게임 시작
-  const handleGameStart = (studentId) => {
-    console.log(`${studentId}의 게임이 시작되었습니다.`);
-    navigate(`/room/${studentId}`); // studentId를 URL에 포함
-  };
-
-  // 로그아웃
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    alert("로그인 화면으로 넘어갑니다.");
-    window.location.href = "/teacher_login";
+  // 뒤로 가기 버튼 클릭 이벤트
+  const handleBack = () => {
+    navigate("/TeacherHome");
   };
 
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">{teacher} 선생님</h2>
-      {error}
+      <h2 id="teacher-name">매칭 가능한 학생 리스트</h2>
+      {error && <p>{error.message}</p>}
+
       <ul>
         {students.map((student, index) => (
           <li className="student-select" key={index}>
@@ -110,16 +128,10 @@ const Access = () => {
             <p className="student-gender">({student.student_gender})</p>
             <p className="student-birthday">{student.student_birthday}</p>
             <button
-              className="student-view-details"
+              className="student-is-online"
               onClick={() => handleViewDetails(student)}
             >
               자세히보기
-            </button>
-            <button
-              className="student-game-start"
-              onClick={() => handleGameStart(student.id)}
-            >
-              게임시작
             </button>
           </li>
         ))}
@@ -128,14 +140,18 @@ const Access = () => {
       {showStudentInfo && selectedStudent && (
         <StudentInfo
           onClose={handleCloseFeedback}
-          studentData={selectedStudent}
+          studentData={selectedStudent} // 선택된 학생 데이터만 전달
         />
       )}
-      <button id="student-add" onClick={handleAddStudent}>
-        내 학생 추가
+      <button id="student-add" onClick={handleBack}>
+        뒤로 가기
       </button>
-      <button id="logout" onClick={handleLogout}>
-        로그아웃
+      <button
+        id="logout"
+        disabled={!selectedStudent}
+        onClick={() => handleConnectStudent(selectedStudent.id)}
+      >
+        내 학생으로 등록
       </button>
     </div>
   );

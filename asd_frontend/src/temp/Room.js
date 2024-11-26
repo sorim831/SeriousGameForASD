@@ -1,7 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
+import "./room.css";
+import QuestionSelect from "./QuestionSelect";
+import SelectedQuestion from "./SelectedQuestion";
+import ClassData from "./ClassData";
+import ScoreAndFeedBack from "./ScoreAndFeedBack";
 import axios from "axios";
+
+const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
   const myFace = useRef(null);
@@ -12,95 +19,103 @@ const Room = () => {
   const [socket, setSocket] = useState(null);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
-  const [userRole, setUserRole] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [userRole, setUserRole] = useState(""); // userRole 상태 추가
+  const [loading, setLoading] = useState(true); // loading 상태 추가
   const navigate = useNavigate();
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
+  const [selectedButtonId, setSelectedButtonId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [studentId, setStudentId] = useState(null);
+  const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
+    score: null,
+    feedback: "",
+  });
+
+  const handleButtonClick = (id) => {
+    setSelectedButtonId(id);
+  };
+
+  const sendButtonClick = () => {
+    setSelectedId(selectedButtonId);
+  };
+
+  const handleFeedbackSubmit = (data) => {
+    setScoreAndFeedBackData(data);
+  };
 
   useEffect(() => {
     const checkAccessToken = async () => {
       const token = localStorage.getItem("token");
-      console.log(token);
       if (!token) {
-        console.log("!token");
-        window.location.href = "/main";
-      } else {
-        try {
-          const response = await fetch(
-            `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
+        navigate("/main");
+        return;
+      }
 
-          const result = await response.json();
-          console.log(result);
-          if (
-            result.user.role !== "teacher" &&
-            result.user.role !== "student"
-          ) {
-            window.location.href = "/main";
-          } else {
-            setUserRole(result.user.role);
-            console.log("good!");
-          }
-        } catch (error) {
-          console.error("checkAccessToken", error);
-          window.location.href = "/main";
+      try {
+        const response = await fetch(`${address}/home`, {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const result = await response.json();
+        if (result.user.role !== "teacher" && result.user.role !== "student") {
+          navigate("/main");
+          return;
         }
+
+        setUserRole(result.user.role);
+        setLoading(false); // 로딩 완료 후 상태 업데이트
+      } catch (error) {
+        console.error("checkAccessToken error:", error);
+        navigate("/main");
       }
     };
 
     checkAccessToken();
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchStudentAndUserId = async () => {
       const token = localStorage.getItem("token");
       if (!token) return;
 
       try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_BACKEND_ADDRESS}/c/room/${roomId}`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+        const studentResponse = await axios.get(`${address}/get_student_id`);
+        setStudentId(studentResponse.data.studentId);
 
-        if (response.status === 403) {
+        const userResponse = await axios.get(`${address}/c/room/${roomId}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (userResponse.status === 403) {
           navigate("/");
           return;
         }
 
-        const userId = response.data.userId;
+        const userId = userResponse.data.userId;
 
         if (!userId) {
           navigate("/login");
           return;
         }
 
-        const socketConnection = io(
-          `${process.env.REACT_APP_BACKEND_ADDRESS}`,
-          {
-            query: { userId },
-          }
-        );
+        const socketConnection = io(`${address}`, {
+          query: { userId },
+        });
         setSocket(socketConnection);
-        console.log(userId);
 
         return () => socketConnection.disconnect();
       } catch (error) {
-        console.error("Error fetching user ID:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchUserId();
+    fetchStudentAndUserId();
   }, [roomId]);
 
   useEffect(() => {
@@ -205,108 +220,87 @@ const Room = () => {
   }, [roomId]);
 
   useEffect(() => {
-    if (!socket || !myPeerConnection) return;
-
-    socket.on("welcome", async () => {
-      const offer = await myPeerConnection.createOffer({ iceRestart: true });
-      await myPeerConnection.setLocalDescription(offer);
-      socket.emit("offer", offer, roomId);
-    });
-
-    socket.on("offer", async (offer) => {
-      await myPeerConnection.setRemoteDescription(
-        new RTCSessionDescription(offer)
-      );
-      const answer = await myPeerConnection.createAnswer();
-      await myPeerConnection.setLocalDescription(answer);
-      socket.emit("answer", answer, roomId);
-    });
-
-    socket.on("answer", async (answer) => {
-      await myPeerConnection.setRemoteDescription(
-        new RTCSessionDescription(answer)
-      );
-    });
-
-    socket.on("ice", async (ice) => {
-      if (ice) {
-        try {
-          const candidate = new RTCIceCandidate({
-            candidate: ice.candidate,
-            sdpMid: ice.sdpMid,
-            sdpMLineIndex: ice.sdpMLineIndex,
-          });
-          await myPeerConnection.addIceCandidate(candidate);
-        } catch (error) {
-          console.error("Error adding received ice candidate", error);
-        }
-      }
-    });
-
-    return () => {
-      socket.off("welcome");
-      socket.off("offer");
-      socket.off("answer");
-      socket.off("ice");
-    };
-  }, [socket, myPeerConnection, roomId]);
-
-  useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
-      setLoading(false);
     }
   }, [socket, roomId]);
 
   if (loading) {
-    return <p>loading...</p>;
+    return <p>loading...</p>; // 로딩 상태 표시
   }
 
+  const handleEndClass = async () => {
+    const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
+    if (!confirmEnd) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("인증 정보가 없습니다. 다시 로그인해주세요.");
+        navigate("/login");
+        return;
+      }
+
+      // 서버에 수업 종료 요청 보내기
+      await axios.post(
+        `${address}/end_class`,
+        { roomId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("수업이 종료되었습니다.");
+      navigate("/home"); // 홈 화면으로 이동
+    } catch (error) {
+      console.error("수업 종료 중 오류 발생:", error);
+      alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
+    }
+  };
+
   return (
-    <div>
-      {userRole === "teacher" ? (
-        <div>
-          <h1>선생님</h1>
-          <video
-            ref={myFace}
-            style={{ width: "200px" }}
-            autoPlay
-            muted
-            playsInline
-          />
-          <video
-            ref={peerFace}
-            style={{ width: "200px" }}
-            autoPlay
-            playsInline
-          />
-          <button onClick={handleMuteClick}>{muted ? "Unmute" : "Mute"}</button>
-          <button onClick={handleCameraClick}>
-            {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
-          </button>
+    <div className="classroom-container">
+      <div className="header">
+        <sapn className="student-id">학생 아이디</sapn>
+        <button className="end-class-button" onClick={handleEndClass}>
+          수업 종료
+        </button>
+      </div>
+
+      <div className="top">
+        <video className="video" ref={peerFace} autoPlay playsInline />
+        <div className="QuestionSelect">
+          <QuestionSelect onButtonClick={handleButtonClick} />
         </div>
-      ) : (
-        <div>
-          <h1>학생</h1>
-          <video
-            ref={myFace}
-            style={{ width: "200px" }}
-            autoPlay
-            muted
-            playsInline
+      </div>
+
+      <div className="bottom">
+        <video ref={myFace} className="video" autoPlay muted playsInline />
+        <div className="SelectedQuestion">
+          <SelectedQuestion
+            selectedId={selectedButtonId}
+            sendButtonClick={sendButtonClick}
           />
-          <video
-            ref={peerFace}
-            style={{ width: "200px" }}
-            autoPlay
-            playsInline
-          />
-          <button onClick={handleMuteClick}>{muted ? "Unmute" : "Mute"}</button>
-          <button onClick={handleCameraClick}>
-            {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
-          </button>
         </div>
-      )}
+        <div>
+          <ScoreAndFeedBack
+            selectedId={selectedId}
+            onSubmitFeedback={handleFeedbackSubmit}
+          />
+        </div>
+        <div className="ClassData">
+          <ClassData scoreAndFeedBackData={scoreAndFeedBackData} />
+        </div>
+      </div>
+
+      <button onClick={handleMuteClick} className="media-set">
+        {muted ? "Unmute" : "Mute"}
+      </button>
+      <button onClick={handleCameraClick} className="media-set">
+        {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+      </button>
     </div>
   );
 };

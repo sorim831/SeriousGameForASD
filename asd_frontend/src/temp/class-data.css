@@ -1,13 +1,13 @@
 .graph {
-  width: 600px;
-  height: 280px;
+  width: 500px;
+  height: 270px;
 }
 
 .classdata-container {
   border: 1px solid #ccc;
   padding: 10px;
-  width: 600px;
-  height: 330px;
+  width: 500px;
+  height: 310px;
 }
 
 /*햄버거 버튼*/

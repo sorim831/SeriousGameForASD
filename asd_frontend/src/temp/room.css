@@ -1,0 +1,48 @@
+.classroom-container {
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.classroom-container > * {
+  max-width: 100%; 
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.top {
+  display: flex;
+  height: 330px;
+}
+
+.bottom {
+  display: flex;
+  margin-bottom: 10px;
+  height: 330px;
+}
+
+.student-id {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.end-class-button {
+  padding: 5px 10px;
+  background-color: red;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.video {
+  width: 400px;
+  border-color: #ccc;
+  border-radius: 0%;
+}
+
+.media-set {
+  border-color: #ccc;
+  margin-left: 5px;
+}
