@@ -108,7 +108,7 @@ function Login() {
       const result = await response.json();
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
-        window.location.href = "/student_home_page";
+        window.location.href = "/student_home";
       } else {
         setError(result.message); // 실패 메시지 표시
       }

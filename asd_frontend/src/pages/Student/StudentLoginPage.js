@@ -3,13 +3,12 @@ import { useNavigate } from "react-router-dom";
 import "../../styles/Student/StudentLoginPage.css";
 import "../../styles/Student/global.css";
 
-
 const StudentLoginPage = () => {
   const [name, setName] = useState("");
-  const [month, setMonth] = useState(""); 
-  const [day, setDay] = useState(""); 
-  const [months, setMonths] = useState([]); 
-  const [days, setDays] = useState([]); 
+  const [month, setMonth] = useState("");
+  const [day, setDay] = useState("");
+  const [months, setMonths] = useState([]);
+  const [days, setDays] = useState([]);
   const navigate = useNavigate();
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
@@ -23,7 +22,9 @@ const StudentLoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const formattedDate = `${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const formattedDate = `${String(month).padStart(2, "0")}-${String(
+      day
+    ).padStart(2, "0")}`;
 
     try {
       const response = await fetch(`${address}/student_login_process`, {
@@ -41,7 +42,7 @@ const StudentLoginPage = () => {
 
       if (result.success) {
         localStorage.setItem("token", result.token); // JWT 토큰 저장
-        navigate("/student_home_page"); // 홈 화면으로 이동
+        navigate("/student_home");
       } else {
         alert(result.message || "로그인 실패! 정보를 확인해주세요.");
       }

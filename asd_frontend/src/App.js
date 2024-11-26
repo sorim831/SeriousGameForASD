@@ -44,8 +44,8 @@ function App() {
         <Route path="/room/:roomId" element={<Room />} />
 
         {/*Student*/}
-        <Route path="/student_login_page" element={<StudentLoginPage />} />
-        <Route path="/student_home_page" element={<StudentHomePage />} />
+        {/* <Route path="/student_login_page" element={<StudentLoginPage />} />
+        <Route path="/student_home_page" element={<StudentHomePage />} /> */}
         <Route path="/GamePage/:studentId" element={<GamePage />} />
       </Routes>
     </Router>
