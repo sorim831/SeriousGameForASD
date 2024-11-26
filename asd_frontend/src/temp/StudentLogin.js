@@ -155,7 +155,7 @@ function Login() {
               onChange={(e) => setStudentName(e.target.value)}
               className={styles.nameInput}
               autoComplete="on"
-              tabindex="1"
+              tabIndex="1"
             />
           </div>
           <div className={styles.birthdayInfo}>
@@ -165,7 +165,7 @@ function Login() {
                 className={styles.selectBox}
                 name="year"
                 onChange={handleStudentBirthdayChange}
-                tabindex="2"
+                tabIndex="2"
               >
                 <option disabled selected></option>
                 {studentYear.map((year) => (
@@ -181,7 +181,7 @@ function Login() {
                 className={styles.selectBox}
                 name="month"
                 onChange={handleStudentBirthdayChange}
-                tabindex="3"
+                tabIndex="3"
               >
                 <option disabled selected></option>
                 {studentMonth.map((month) => (
@@ -197,7 +197,7 @@ function Login() {
                 className={styles.selectBox}
                 name="day"
                 onChange={handleStudentBirthdayChange}
-                tabindex="4"
+                tabIndex="4"
               >
                 <option disabled selected></option>
                 {studentDay.map((day) => (
@@ -214,11 +214,11 @@ function Login() {
             <a
               className={styles.registerBtn}
               href="/student_register"
-              tabindex="6"
+              tabIndex="6"
             >
               신규 등록
             </a>
-            <button type="submit" className={styles.loginBtn} tabindex="5">
+            <button type="submit" className={styles.loginBtn} tabIndex="5">
               로그인
             </button>
           </div>
