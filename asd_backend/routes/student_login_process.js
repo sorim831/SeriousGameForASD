@@ -8,7 +8,7 @@ router.post("/", async (req, res) => {
   const { student_name, student_birthday } = req.body;
 
   const birthdayFormatted = student_birthday.replace(/-/g, "");
-  //const studentId = `${name}_${birthdayFormatted}`;
+  const studentId = `${student_name}_${birthdayFormatted}`;
 
   const query = "loginStudent"; // "SELECT * FROM student_table WHERE student_name = ? AND student_birthday = ?",
 
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
     if (result.length > 0) {
       // 토큰 부여
       try {
-        const id = result[0].student_name;
+        const id = studentId;
         const token = jwt.sign(
           {
             id,
