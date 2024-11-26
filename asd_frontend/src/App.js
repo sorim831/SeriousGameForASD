@@ -32,7 +32,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/main" element={<First />} />
-        <Route path="/" element={<Navigate to="/main" />} />
+        <Route path="/" element={<Navigate to="/student_home" />} />
         <Route path="/student_home" element={<StudentHome />} />
         <Route path="/teacher_register" element={<TeacherRegister />} />
         <Route path="/student_register" element={<StudentRegister />} />
