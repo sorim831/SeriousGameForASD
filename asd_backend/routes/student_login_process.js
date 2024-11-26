@@ -59,7 +59,7 @@ router.post("/", async (req, res) => {
     } else {
       res.send({
         success: false,
-        message: "이름 또는 생일이 유효하지 않습니다",
+        message: "이름 또는 생일이 유효하지 않아요.",
       });
     }
   } catch (err) {
