@@ -6,7 +6,7 @@ import "./TeacherHome.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-const Access = () => {
+const TeacherHome = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +32,14 @@ const Access = () => {
         });
 
         const result = await response.json();
+        console.log(result);
 
         if (result.success) {
-          setTeacher(result.user.name);
+          if (result.user.role !== "teacher") {
+            window.location.href = "/main";
+          } else {
+            setTeacher(result.user.name);
+          }
         } else {
           window.location.href = "/main";
         }
@@ -43,6 +48,7 @@ const Access = () => {
         window.location.href = "/main";
       }
     }
+
     try {
       const response = await axios.get(`${address}/get_students`, {
         headers: {
@@ -71,7 +77,7 @@ const Access = () => {
 
   // 학생 정보 자세히보기 버튼 이벤트
   const handleViewDetails = (student) => {
-    setSelectedStudent(student);
+    setSelectedStudent(student); // 학생 객체 전체를 저장
     setShowStudentInfo(true);
   };
 
@@ -81,10 +87,10 @@ const Access = () => {
     setSelectedStudent(null);
   };
 
-  // 게임시작 이벤트 (TODO: 실제 게임 시작 로직 추가)
-  const handleGameStart = (student) => {
-    console.log(`${student.student_name}의 게임이 시작되었습니다.`);
-    navigate(`/room/${student.id}`);
+  // 게임 시작
+  const handleGameStart = (studentId) => {
+    console.log(`${studentId}의 게임이 시작되었습니다.`);
+    navigate(`/room/${studentId}`); // studentId를 URL에 포함
   };
 
   // 로그아웃
@@ -104,21 +110,18 @@ const Access = () => {
             <span className="student-name">{student.student_name}</span>
             <p className="student-gender">({student.student_gender})</p>
             <p className="student-birthday">{student.student_birthday}</p>
-            {student.isOnline ? (
-              <button
-                className="student-is-online"
-                onClick={() => handleViewDetails(student.id)}
-              >
-                자세히보기
-              </button>
-            ) : (
-              <button
-                className="student-is-online"
-                onClick={() => handleGameStart(student.id)}
-              >
-                게임시작
-              </button>
-            )}
+            <button
+              className="student-view-details"
+              onClick={() => handleViewDetails(student)} // 학생 객체 전체 전달
+            >
+              자세히보기
+            </button>
+            <button
+              className="student-game-start"
+              onClick={() => handleGameStart(student.id)}
+            >
+              게임시작
+            </button>
           </li>
         ))}
       </ul>
@@ -126,7 +129,7 @@ const Access = () => {
       {showStudentInfo && selectedStudent && (
         <StudentInfo
           onClose={handleCloseFeedback}
-          studentData={selectedStudent}
+          studentData={selectedStudent} // 전체 학생 객체를 전달
         />
       )}
       <button id="student-add" onClick={handleAddStudent}>
@@ -139,4 +142,4 @@ const Access = () => {
   );
 };
 
-export default Access;
+export default TeacherHome;

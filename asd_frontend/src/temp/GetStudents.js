@@ -6,7 +6,7 @@ import "./TeacherHome.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-const Access = () => {
+const GetStudent = () => {
   const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +34,11 @@ const Access = () => {
         const result = await response.json();
 
         if (result.success) {
-          setTeacher(result.user.id);
+          if (result.user.role !== "teacher") {
+            window.location.href = "/main";
+          } else {
+            setTeacher(result.user.id);
+          }
         } else {
           window.location.href = "/main";
         }
@@ -49,6 +53,7 @@ const Access = () => {
           Authorization: `Bearer ${token}`,
         },
       });
+      console.log(response.data);
       setStudents(response.data.students);
     } catch (err) {
       setError(err);
@@ -120,7 +125,6 @@ const Access = () => {
     <div className="teacher-home">
       <h2 id="teacher-name">매칭 가능한 학생 리스트</h2>
       {error && <p>{error.message}</p>}
-
       <ul>
         {students.map((student, index) => (
           <li className="student-select" key={index}>
@@ -157,4 +161,4 @@ const Access = () => {
   );
 };
 
-export default Access;
+export default GetStudent;
