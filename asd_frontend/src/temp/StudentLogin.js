@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import "./StudentLogin.css";
+import styles from "./StudentLogin.module.css";
 
 function Login() {
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -15,6 +15,7 @@ function Login() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
@@ -75,6 +76,19 @@ function Login() {
   const handleStudentLogin = async (e) => {
     e.preventDefault();
 
+    if (!studentName) {
+      setError("이름을 입력해주세요.");
+      return;
+    }
+    if (
+      !studentBirthday.year ||
+      !studentBirthday.month ||
+      !studentBirthday.day
+    ) {
+      setError("생년월일을 모두 선택해주세요.");
+      return;
+    }
+
     const fullBirthday = `${studentBirthday.year}-${String(
       studentBirthday.month
     ).padStart(2, "0")}-${String(studentBirthday.day).padStart(2, "0")}`;
@@ -94,19 +108,14 @@ function Login() {
       const result = await response.json();
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
-        window.location.href = "/student_home_page";
+        window.location.href = "/student_home";
       } else {
-        alert(result.message); // 실패 메시지 표시
+        setError(result.message); // 실패 메시지 표시
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("학생 로그인 중 오류 발생");
+      setError("학생 로그인 중 오류 발생");
     }
-  };
-
-  // 회원가입 버튼 누르면 회원가입 페이지로 이동
-  const RegisterBtn = () => {
-    window.location.href = "/student_register";
   };
 
   const handleLogout = () => {
@@ -119,75 +128,99 @@ function Login() {
   }
 
   return (
-    <div className="App">
+    <div className={styles.App}>
       {isLoggedIn ? (
-        <div>
-          <p>로그인 되어 있습니다.</p>
-          <button onClick={handleLogout}>로그아웃</button>
+        <div className={styles.loginForm}>
+          <p className={styles.loginMessage}>이미 로그인이 되어있어요.</p>
+          <a className={styles.goBackBtn} href="/student_home">
+            돌아가기
+          </a>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
+            로그아웃
+          </button>
         </div>
       ) : (
         <form
-          className="login-form"
+          className={styles.loginForm}
           action="/student_login_process"
           onSubmit={handleStudentLogin}
         >
-          <p>
+          <h1 className={styles.title}>로그인</h1>
+          <div className={styles.nameBox}>
+            <label className={styles.nameLabel}>이름:</label>
             <input
               type="text"
               name="name"
               placeholder="이름"
               onChange={(e) => setStudentName(e.target.value)}
+              className={styles.nameInput}
+              autoComplete="on"
+              tabIndex="1"
             />
-          </p>
-          <div className="info" id="info__birth">
-            <select
-              className="box"
-              name="year"
-              onChange={handleStudentBirthdayChange}
-            >
-              <option disabled selected>
-                출생 연도
-              </option>
-              {studentYear.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <select
-              className="box"
-              name="month"
-              onChange={handleStudentBirthdayChange}
-            >
-              <option disabled selected>
-                월
-              </option>
-              {studentMonth.map((month) => (
-                <option key={month} value={month}>
-                  {month}
-                </option>
-              ))}
-            </select>
-            <select
-              className="box"
-              name="day"
-              onChange={handleStudentBirthdayChange}
-            >
-              <option disabled selected>
-                일
-              </option>
-              {studentDay.map((day) => (
-                <option key={day} value={day}>
-                  {day}
-                </option>
-              ))}
-            </select>
           </div>
-          <div className="btn">
-            <button type="button" onClick={RegisterBtn}>
-              회원가입
+          <div className={styles.birthdayInfo}>
+            <label>생일:</label>
+            <div className={styles.birthdayBox}>
+              <select
+                className={styles.selectBox}
+                name="year"
+                onChange={handleStudentBirthdayChange}
+                tabIndex="2"
+              >
+                <option disabled selected></option>
+                {studentYear.map((year) => (
+                  <option key={year} value={year}>
+                    {year}
+                  </option>
+                ))}
+              </select>
+              <label>년</label>
+            </div>
+            <div className={styles.birthdayBox}>
+              <select
+                className={styles.selectBox}
+                name="month"
+                onChange={handleStudentBirthdayChange}
+                tabIndex="3"
+              >
+                <option disabled selected></option>
+                {studentMonth.map((month) => (
+                  <option key={month} value={month}>
+                    {month}
+                  </option>
+                ))}
+              </select>
+              <label>월</label>
+            </div>
+            <div className={styles.birthdayBox}>
+              <select
+                className={styles.selectBox}
+                name="day"
+                onChange={handleStudentBirthdayChange}
+                tabIndex="4"
+              >
+                <option disabled selected></option>
+                {studentDay.map((day) => (
+                  <option key={day} value={day}>
+                    {day}
+                  </option>
+                ))}
+              </select>
+              <label>일</label>
+            </div>
+          </div>
+          {error && <p className={styles.errorMessage}>{error}</p>}
+          <div className={styles.btnBox}>
+            <a
+              className={styles.registerBtn}
+              href="/student_register"
+              tabIndex="6"
+            >
+              신규 등록
+            </a>
+            <button type="submit" className={styles.loginBtn} tabIndex="5">
+              로그인
             </button>
-            <button type="submit">로그인</button>
           </div>
         </form>
       )}
