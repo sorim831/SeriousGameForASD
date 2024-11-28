@@ -11,26 +11,26 @@ import axios from "axios";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
-  // 참고용 DOM 요소 및 상태 정의
-  const myFace = useRef(null); // 내 비디오 요소 참조
-  const peerFace = useRef(null); // 상대방 비디오 요소 참조
-  const [myStream, setMyStream] = useState(null); // 내 미디어 스트림
-  const [muted, setMuted] = useState(false); // 음소거 상태
-  const [cameraOff, setCameraOff] = useState(false); // 카메라 상태
-  const [socket, setSocket] = useState(null); // 소켓 연결
-  const [myPeerConnection, setMyPeerConnection] = useState(null); // WebRTC 피어 연결
-  const [peerConnected, setPeerConnected] = useState(false); // 피어 연결 상태
-  const [userRole, setUserRole] = useState(""); // 사용자 역할 (학생/교사)
-  const [loading, setLoading] = useState(true); // 로딩 상태
-  const navigate = useNavigate(); // 페이지 이동을 위한 네비게이트
-  const roomId = decodeURIComponent(window.location.pathname.split("/")[2]); // URL에서 roomId 추출
-  const [selectedButtonId, setSelectedButtonId] = useState(null); // 선택된 질문 ID
-  const [selectedId, setSelectedId] = useState(null); // 최종 선택된 ID
-  const [studentId, setStudentId] = useState(null); // 학생 ID
+  const myFace = useRef(null);
+  const peerFace = useRef(null);
+  const [myStream, setMyStream] = useState(null);
+  const [muted, setMuted] = useState(false);
+  const [cameraOff, setCameraOff] = useState(false);
+  const [socket, setSocket] = useState(null);
+  const [myPeerConnection, setMyPeerConnection] = useState(null);
+  const [peerConnected, setPeerConnected] = useState(false);
+  const [userRole, setUserRole] = useState("");
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
+  const [selectedButtonId, setSelectedButtonId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [studentId, setStudentId] = useState(null);
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
-  }); // 점수 및 피드백 데이터
+  });
 
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
@@ -78,6 +78,28 @@ const Room = () => {
 
     checkAccessToken();
   }, [navigate]);
+
+  // 학생 정보 띄워주기 위해 데이터 받아오기
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get(`${address}/students/${roomId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setStudents(response.data.students);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, [roomId]);
 
   // 학생 및 사용자 정보 가져오기
   useEffect(() => {
@@ -267,7 +289,7 @@ const Room = () => {
       );
 
       alert("수업이 종료되었습니다.");
-      navigate("/TeacherHome"); // 교사용 홈으로 이동
+      navigate("/TeacherHome");
     } catch (error) {
       console.error("수업 종료 중 오류 발생:", error);
       alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
@@ -308,7 +330,10 @@ const Room = () => {
           />
         </div>
         <div className="ClassData">
-          <ClassData scoreAndFeedBackData={scoreAndFeedBackData} />
+          <ClassData
+            scoreAndFeedBackData={scoreAndFeedBackData}
+            students={students}
+          />
         </div>
       </div>
 
