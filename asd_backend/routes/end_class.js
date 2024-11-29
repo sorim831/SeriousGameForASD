@@ -21,7 +21,7 @@ router.post("/", async (req, res) => {
 
     res.json({ message: "데이터가 성공적으로 저장되었습니당" });
   } catch (error) {
-    console.error(err);
+    console.error(error);
     res.json({ message: "DB 저장 +중 오류 발생" });
   }
 });
