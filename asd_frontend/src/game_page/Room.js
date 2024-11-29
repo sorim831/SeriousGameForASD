@@ -79,27 +79,27 @@ const Room = () => {
     checkAccessToken();
   }, [navigate]);
 
-  // 학생 정보 띄워주기 위해 데이터 받아오기
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
+  // // 학생 정보 띄워주기 위해 데이터 받아오기
+  // useEffect(() => {
+  //   const fetchStudents = async () => {
+  //     try {
+  //       const token = localStorage.getItem("token");
+  //       if (!token) return;
 
-        const response = await axios.get(`${address}/students/${roomId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+  //       const response = await axios.get(`${address}/students/${roomId}`, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       });
 
-        setStudents(response.data.students);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
+  //       setStudents(response.data.students);
+  //     } catch (error) {
+  //       console.error("Error fetching students:", error);
+  //     }
+  //   };
 
-    fetchStudents();
-  }, [roomId]);
+  //   fetchStudents();
+  // }, [roomId]);
 
   // 학생 및 사용자 정보 가져오기
   useEffect(() => {
@@ -108,26 +108,24 @@ const Room = () => {
       if (!token) return;
 
       try {
-        const studentResponse = await axios.get(`${address}/get_student_id`);
-        setStudentId(studentResponse.data.studentId);
+        const studentResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        const userResponse = await axios.get(`${address}/c/room/${roomId}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const result = await studentResponse.json();
 
-        if (userResponse.status === 403) {
-          navigate("/");
-          return;
+        if (!result.success) {
+          window.location.href = "/main";
         }
 
-        const userId = userResponse.data.userId;
-        if (!userId) {
-          navigate("/login");
-          return;
-        }
+        setStudentId(result.user.id);
+        const userId = result.user.id;
 
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
@@ -253,6 +251,57 @@ const Room = () => {
   useEffect(() => {
     getMedia();
   }, [roomId]);
+
+  useEffect(() => {
+    console.log("socket:", socket);
+    console.log("myPeerConnection:", myPeerConnection);
+    console.log("roomId:", roomId);
+    if (!socket || !myPeerConnection) return;
+    console.log("asdf");
+
+    socket.on("welcome", async () => {
+      const offer = await myPeerConnection.createOffer({ iceRestart: true });
+      await myPeerConnection.setLocalDescription(offer);
+      socket.emit("offer", offer, roomId);
+    });
+
+    socket.on("offer", async (offer) => {
+      await myPeerConnection.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+      const answer = await myPeerConnection.createAnswer();
+      await myPeerConnection.setLocalDescription(answer);
+      socket.emit("answer", answer, roomId);
+    });
+
+    socket.on("answer", async (answer) => {
+      await myPeerConnection.setRemoteDescription(
+        new RTCSessionDescription(answer)
+      );
+    });
+
+    socket.on("ice", async (ice) => {
+      if (ice) {
+        try {
+          const candidate = new RTCIceCandidate({
+            candidate: ice.candidate,
+            sdpMid: ice.sdpMid,
+            sdpMLineIndex: ice.sdpMLineIndex,
+          });
+          await myPeerConnection.addIceCandidate(candidate);
+        } catch (error) {
+          console.error("Error adding received ice candidate", error);
+        }
+      }
+    });
+
+    return () => {
+      socket.off("welcome");
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice");
+    };
+  }, [socket, myPeerConnection, roomId]);
 
   // 룸 참여 메시지 전송
   useEffect(() => {
