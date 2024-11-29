@@ -54,8 +54,6 @@ const StudentInfo = ({ onClose, studentData }) => {
           <p id="birthday">{studentData.student_birthday}</p>
         </div>
         <div className="parent-info">
-          <span>보호자:</span>
-          <span id="parent-name">{studentData.student_parent_name}</span>
           <span>연락처:</span>
           <span id="parent-phone-number">{studentData.student_phone}</span>
         </div>
