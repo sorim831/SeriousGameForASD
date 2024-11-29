@@ -27,7 +27,8 @@ function Login() {
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
-        //window.location.href = "/main";
+        localStorage.removeItem("token");
+        window.location.href = "/teacher_login";
       }
     }
   };

@@ -36,15 +36,18 @@ const TeacherHome = () => {
 
         if (result.success) {
           if (result.user.role !== "teacher") {
+            localStorage.removeItem("token");
             window.location.href = "/main";
           } else {
             setTeacher(result.user.name);
           }
         } else {
+          localStorage.removeItem("token");
           window.location.href = "/main";
         }
       } catch (error) {
         console.error(error);
+        localStorage.removeItem("token");
         window.location.href = "/main";
       }
     }
@@ -96,7 +99,6 @@ const TeacherHome = () => {
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
-    alert("로그인 화면으로 넘어갑니다.");
     window.location.href = "/teacher_login";
   };
 

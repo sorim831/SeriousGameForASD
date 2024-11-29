@@ -41,6 +41,7 @@ function Register() {
   const [teacherId, setTeacherId] = useState("");
   const [teacherPassword, setTeacherPassword] = useState("");
   const [teacherName, setTeacherName] = useState("");
+  const [error, setError] = useState("");
 
   // 선생 : 비밀번호(pwd, pwd2) 일치 확인
   const [teacherpwd, setTeacherPwd] = useState("");
@@ -78,12 +79,11 @@ function Register() {
         }),
       });
 
-      const result = await response.text();
-      alert(result);
+      await response.text();
       window.location.href = "/teacher_login";
     } catch (error) {
       console.error("Error:", error);
-      alert("선생님 등록 중 오류 발생");
+      setError("선생님 등록 중 오류가 발생했습니다.");
     }
   };
 
@@ -117,7 +117,7 @@ function Register() {
       }
     } catch (error) {
       console.error("Error:", error);
-      alert("아이디 중복 체크 중 오류 발생");
+      setError("아이디 중복 체크 중 오류가 발생했습니다.");
     }
   };
 
@@ -184,6 +184,7 @@ function Register() {
             onChange={(e) => setTeacherName(e.target.value)}
           />
         </p>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <p>
           <button type="submit" name="submit" value="가입" disabled={submitbtn}>
             가입

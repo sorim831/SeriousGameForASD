@@ -15,7 +15,8 @@ router.post("/", (req, res) => {
     db.query(query, [teacher_id, teacher_hashed_password, teacher_name])
       .then((result) => {
         res.json({ message: "선생님이 성공적으로 등록되었습니다" });
-        //window.location.href = "/";
+        localStorage.removeItem("token");
+        window.location.href = "/teacher_login";
       })
       .catch((err) => {
         console.error("Database error:", err);

@@ -35,15 +35,18 @@ const GetStudent = () => {
 
         if (result.success) {
           if (result.user.role !== "teacher") {
+            localStorage.removeItem("token");
             window.location.href = "/main";
           } else {
             setTeacher(result.user.id);
           }
         } else {
+          localStorage.removeItem("token");
           window.location.href = "/main";
         }
       } catch (error) {
         console.error(error);
+        localStorage.removeItem("token");
         window.location.href = "/main";
       }
     }
