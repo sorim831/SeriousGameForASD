@@ -13,10 +13,10 @@ import First from "./temp/First";
 import TeacherHome from "./main_page/teacher/TeacherHome";
 import GetStudents from "./auth_page/teacher/GetStudents";
 
-import StudentLogin from "./temp/StudentLogin";
-import StudentRegister from "./temp/StudentRegister";
-import TeacherLogin from "./temp/TeacherLogin";
-import TeacherRegister from "./temp/TeacherRegister";
+import StudentLogin from "./auth_page/student/StudentLogin";
+import StudentRegister from "./auth_page/student/StudentRegister";
+import TeacherLogin from "./auth_page/teacher/TeacherLogin";
+import TeacherRegister from "./auth_page/teacher/TeacherRegister";
 import StudentHome from "./main_page/student/StudentHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
 import TotalAnimation from "./game_page/TotalAnimation";
