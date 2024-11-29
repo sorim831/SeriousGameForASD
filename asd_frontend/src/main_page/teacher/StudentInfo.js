@@ -6,6 +6,7 @@ const StudentInfo = ({ onClose, studentData }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [totalScore, setTotalScore] = useState({});
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -51,6 +52,35 @@ const StudentInfo = ({ onClose, studentData }) => {
     });
   };
 
+  useEffect(() => {
+    const fetchTotalScore = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_ADDRESS}/get_student_info/total_score/${studentData.student_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`oops... ${response.status}`);
+        }
+
+        const data = await response.json();
+        setTotalScore(data.scores || {});
+        console.log(data.scores);
+      } catch (error) {
+        console.error("err at fetchTotalScore", error);
+        setTotalScore({});
+      }
+    };
+
+    fetchTotalScore();
+  }, [studentData.student_id]);
+
   return (
     <div className="feedback-list">
       <button className="close-feedback-list" onClick={onClose}>
@@ -73,17 +103,17 @@ const StudentInfo = ({ onClose, studentData }) => {
         <div className="total-emotion-data-div">
           {/* 감정 데이터를 보여주는 부분 */}
           <span className="total-emotion-data">행복: </span>
-          <span id="total-happy">5</span>
+          <span id="total-happy">{totalScore.happy || 0}</span>
           <span className="total-emotion-data">슬픔: </span>
-          <span id="total-sad">5</span>
+          <span id="total-sad">{totalScore.sad || 0}</span>
           <span className="total-emotion-data">분노: </span>
-          <span id="total-angry">5</span>
+          <span id="total-angry">{totalScore.angry || 0}</span>
           <span className="total-emotion-data">공포: </span>
-          <span id="current-fear">5</span>
+          <span id="current-fear">{totalScore.scary || 0}</span>
           <span className="total-emotion-data">혐오: </span>
-          <span id="total-disgust">5</span>
+          <span id="total-disgust">{totalScore.disgusting || 0}</span>
           <span className="total-emotion-data">놀람: </span>
-          <span id="total-surprise">5</span>
+          <span id="total-surprise">0</span>
         </div>
 
         <div className="total-feedback-div">
@@ -147,7 +177,7 @@ const StudentInfo = ({ onClose, studentData }) => {
             <span id="previous-surprise">5</span>
           </div>
           <div id="feedback-details">
-            수업 때 학생에 대한 의견을 적으면 여기에 기록됨.
+            수업 �� 학생에 대한 의견을 적으면 여기에 기록됨.
           </div>
         </div>
         {/* 기록이 동적으로 추가 */}
