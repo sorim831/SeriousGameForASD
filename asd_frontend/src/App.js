@@ -11,21 +11,18 @@ import First from "./temp/First";
 //import Register from "./temp/Register";
 
 import TeacherHome from "./main_page/teacher/TeacherHome";
-import GetStudents from "./auth_page/teacher/GetStudents";
+import GetStudents from "./main_page/teacher/GetStudents";
 
-import StudentLogin from "./temp/StudentLogin";
-import StudentRegister from "./temp/StudentRegister";
-import TeacherLogin from "./temp/TeacherLogin";
-import TeacherRegister from "./temp/TeacherRegister";
+import StudentLogin from "./auth_page/student/StudentLogin";
+import StudentRegister from "./auth_page/student/StudentRegister";
+import TeacherLogin from "./auth_page/teacher/TeacherLogin";
+import TeacherRegister from "./auth_page/teacher/TeacherRegister";
 import StudentHome from "./main_page/student/StudentHome";
-import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
+import ScoreAndFeedBack from "./game_page/ScoreAndFeedBack";
 import TotalAnimation from "./game_page/TotalAnimation";
 
 import Room from "./game_page/Room";
 
-// Student
-import StudentLoginPage from "./pages/Student/StudentLoginPage";
-import StudentHomePage from "./pages/Student/StudentHomePage";
 import GamePage from "./pages/Student/GamePage";
 
 function App() {

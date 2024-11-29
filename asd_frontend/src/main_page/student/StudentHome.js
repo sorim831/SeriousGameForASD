@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import StudentTree from "../../temp/StudentTree";
+import StudentTree from "./StudentTree";
 import styles from "./StudentHome.module.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
-function Home() {
+function StudentHome() {
   const [userId, setUserId] = useState(null);
 
   const checkAccessToken = async () => {
@@ -80,4 +80,4 @@ function Home() {
   );
 }
 
-export default Home;
+export default StudentHome;

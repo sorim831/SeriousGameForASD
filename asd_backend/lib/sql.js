@@ -30,8 +30,8 @@ module.exports = {
   checkTeacherId: `SELECT * FROM teacher_table WHERE teacher_id = ?`,
   updateStudentTotalComment: `UPDATE student_table SET student_opinion = ? WHERE student_id = ?`,
 
-  getStudentScore:
-    "SELECT student_score FROM student_table WHERE student_id = ?",
+  getStudentTotalScore:
+    "SELECT student_score_happy, student_score_sad, student_score_scary, student_score_disgusting, student_score_angry FROM student_table WHERE student_id = ?",
   updateStuentInfo:
     "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
   updateTotalStuentInfo:
