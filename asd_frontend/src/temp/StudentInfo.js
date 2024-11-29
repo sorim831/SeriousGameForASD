@@ -63,7 +63,7 @@ const StudentInfo = ({ onClose, studentData }) => {
           <p id="birthday">{formatDate(studentData.student_birthday)}</p>
         </div>
         <div className="parent-info">
-          <span>보호자 연락처:</span>
+          <span>연락처:</span>
           <span id="parent-phone-number">{studentData.student_phone}</span>
         </div>
       </div>
