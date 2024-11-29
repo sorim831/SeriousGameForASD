@@ -92,22 +92,6 @@ const QuestionSelect = ({ onButtonClick }) => {
           </li>
         ))}
       </ul>
-      <ul>
-        <li>😲놀람😲</li>
-        {Array.from({ length: 6 }).map((_, index) => (
-          <li key={`6-${index + 1}`}>
-            <button
-              className={`question ${
-                selectedButtonId === `6-${index + 1}` ? "selected" : ""
-              }`}
-              id={`6-${index + 1}`}
-              onClick={() => handleButtonClick(`6-${index + 1}`)}
-            >
-              6-{index + 1}
-            </button>
-          </li>
-        ))}
-      </ul>
     </div>
   );
 };

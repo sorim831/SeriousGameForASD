@@ -14,8 +14,6 @@ const studentAccessRouter = require("./routes/access");
 const getStudnetsListRouter = require("./routes/get_students");
 
 const homeRouter = require("./routes/home");
-
-const feedbackRouter = require("./routes/total_feedback_list");
 const getStudentInfo = require("./routes/get_student_info");
 const updateStudentInfo = require("./routes/update_student_info");
 
@@ -61,7 +59,6 @@ app.use("/teacher_login_process", teacherloginRouter);
 app.use("/home", homeRouter);
 app.use("/access", studentAccessRouter);
 app.use("/get_students", getStudnetsListRouter);
-app.use("/total-feedback", feedbackRouter);
 app.use("/get_student_info", getStudentInfo);
 app.use("/update_student_info", updateStudentInfo);
 

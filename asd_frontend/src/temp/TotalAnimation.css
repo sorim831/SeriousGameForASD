@@ -1,9 +1,10 @@
 /* 전체 부분 스타일 */
-html, body {
+html,
+body {
   height: 100%;
   margin: 0;
   overflow: hidden;
-  background-color: #FDF3F3;
+  background-color: #fdf3f3;
 }
 
 /* 애니메이션 기본 스타일 */
@@ -45,4 +46,3 @@ html, body {
     transform: translateY(90vh);
   }
 }
-

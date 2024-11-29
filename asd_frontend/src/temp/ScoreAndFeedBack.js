@@ -18,7 +18,6 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
       3: "공포",
       4: "혐오",
       5: "분노",
-      6: "놀람",
     };
     return emotionMap[category] || "";
   };
@@ -35,10 +34,6 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
 
     // 입력된 점수가 숫자이고 0~10 사이의 범위에 있는지 확인
     const score = Number(inputScore);
-    if (isNaN(score) || score < 0 || score > 10) {
-      alert("점수는 0에서 10 사이의 숫자로 입력해주세요.");
-      return;
-    }
 
     // 점수와 점수 아이디 값과 피드백을 `ClassData`로 전달
     onSubmitFeedback({ score, selectedId, feedback });
@@ -54,7 +49,9 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
             className="teacher-score"
             value={inputScore}
             onChange={(e) => setInputScore(e.target.value)}
-            placeholder="0 ~ 10"
+            placeholder="0"
+            min="0"
+            max="10"
           />
           <span>점</span>
         </div>

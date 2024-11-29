@@ -25,4 +25,6 @@ const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
   );
 };
 
+// TODO: 애니메이션 socket으로 학생에게 전달하는 부분 구현
+
 export default SelectedQuestion;

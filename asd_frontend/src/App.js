@@ -19,6 +19,7 @@ import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
 import StudentHome from "./temp/StudentHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
+import TotalAnimation from "./temp/TotalAnimation";
 
 import Room from "./temp/Room";
 
@@ -42,6 +43,7 @@ function App() {
         <Route path="/get_students" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/room/:roomId" element={<Room />} />
+        <Route path="/animation" element={<TotalAnimation />} /> {/* 테스트용 */}
 
         {/*Student*/}
         {/* <Route path="/student_login_page" element={<StudentLoginPage />} />

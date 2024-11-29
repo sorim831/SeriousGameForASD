@@ -32,18 +32,8 @@ const ClassData = ({ scoreAndFeedBackData, students }) => {
     surprise: [],
   });
 
-  const [showStudentInfo, setShowStudentInfo] = useState(false);
-  const [selectedStudent, setSelectedStudent] = useState(null);
-
   const [chartData, setChartData] = useState({
-    labels: [
-      "😄기쁨😄",
-      "😭슬픔😭",
-      "😬공포😬",
-      "😨혐오😨",
-      "😡분노😡",
-      "😲놀람😲",
-    ],
+    labels: ["😄기쁨😄", "😭슬픔😭", "😬공포😬", "😨혐오😨", "😡분노😡"],
     datasets: [
       {
         label: "각 감정에 대한 평균 점수",
@@ -82,8 +72,6 @@ const ClassData = ({ scoreAndFeedBackData, students }) => {
         return "disgust";
       case "5":
         return "anger";
-      case "6":
-        return "surprise";
       default:
         return null;
     }
@@ -123,59 +111,32 @@ const ClassData = ({ scoreAndFeedBackData, students }) => {
             calculateAverage(emotionScores.fear),
             calculateAverage(emotionScores.disgust),
             calculateAverage(emotionScores.anger),
-            calculateAverage(emotionScores.surprise),
           ],
         },
       ],
     }));
   }, [emotionScores]);
 
-  const handleOpenStudentInfo = (student) => {
-    setSelectedStudent(student);
-    setShowStudentInfo(true);
-  };
-
-  const handleCloseStudentInfo = () => {
-    setShowStudentInfo(false);
-    setSelectedStudent(null);
-  };
-
   return (
     <div className="classdata-container">
       <div className="header">
         <p className="graph-name">오늘의 수업 데이터</p>
-        {/* 햄버거 버튼 */}
-        <button className="hamburger-button">
-          <span></span>
-          <span></span>
-          <span></span>
-        </button>
-      </div>
-      <div className="student-list-container">
-        <ul className="student-list">
-          {students.map((student) => (
-            <li key={student.id}>
-              <button
-                onClick={() => handleOpenStudentInfo(student)}
-                className="student-button"
-              >
-                {student.name}
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
       <div className="graph">
-        <Bar data={chartData} />
-      </div>
-      {showStudentInfo && selectedStudent && (
-        <StudentInfo
-          studentData={selectedStudent}
-          onClose={handleCloseStudentInfo}
+        <Bar
+          data={chartData}
+          options={{
+            plugins: {
+              legend: {
+                display: false,
+              },
+            },
+          }}
         />
-      )}
+      </div>
     </div>
   );
 };
 
+// TODO: StudentInfo 그대로 복붙. 그래프 아래쪽으로 스크롤 하면 학생의 과거 정보 볼 수 있게 하기.
 export default ClassData;

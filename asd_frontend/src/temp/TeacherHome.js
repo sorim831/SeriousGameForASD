@@ -100,6 +100,16 @@ const TeacherHome = () => {
     window.location.href = "/teacher_login";
   };
 
+  // 학생 생일 날짜 형식
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="teacher-home">
       <h2 id="teacher-name">{teacher} 선생님</h2>
@@ -109,7 +119,9 @@ const TeacherHome = () => {
           <li className="student-select" key={index}>
             <span className="student-name">{student.student_name}</span>
             <p className="student-gender">({student.student_gender})</p>
-            <p className="student-birthday">{student.student_birthday}</p>
+            <p className="student-birthday">
+              {formatDate(student.student_birthday)}
+            </p>
             <button
               className="student-view-details"
               onClick={() => handleViewDetails(student)} // 학생 객체 전체 전달

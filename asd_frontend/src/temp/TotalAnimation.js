@@ -69,3 +69,4 @@ const TotalAnimation = () => {
 };
 
 export default TotalAnimation;
+// TODO: 애니메이션 초반에 망가져 있는거 고치기 Total 문제인가

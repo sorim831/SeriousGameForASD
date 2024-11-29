@@ -1,4 +1,3 @@
-// get_student_info
 const express = require("express");
 const router = express.Router();
 const db = require("../lib/db");

@@ -2,15 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./student-info.css";
 
 const StudentInfo = ({ onClose, studentData }) => {
-  // studentData를 props로 받음
   const [feedback, setFeedback] = useState(studentData.student_opinion || "");
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleEditClick = () => {
-    setIsEditing(true); // 수정 모드로 전환
-    setErrorMessage(""); // 오류 메시지 초기화
+    setIsEditing(true);
+    setErrorMessage("");
   };
 
   const handleSaveClick = async () => {
@@ -42,6 +41,16 @@ const StudentInfo = ({ onClose, studentData }) => {
     }
   };
 
+  // 학생 생일 날짜 형식
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="feedback-list">
       <button className="close-feedback-list" onClick={onClose}>
@@ -51,12 +60,10 @@ const StudentInfo = ({ onClose, studentData }) => {
         <div className="name-gender-birth">
           <h3 id="student-name">{studentData.student_name}</h3>
           <p id="gender">({studentData.student_gender})</p>
-          <p id="birthday">{studentData.student_birthday}</p>
+          <p id="birthday">{formatDate(studentData.student_birthday)}</p>
         </div>
         <div className="parent-info">
-          <span>보호자:</span>
-          <span id="parent-name">{studentData.student_parent_name}</span>
-          <span>연락처:</span>
+          <span>보호자 연락처:</span>
           <span id="parent-phone-number">{studentData.student_phone}</span>
         </div>
       </div>

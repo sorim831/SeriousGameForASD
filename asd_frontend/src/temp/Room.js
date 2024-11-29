@@ -279,15 +279,6 @@ const Room = () => {
         return;
       }
 
-      // 서버로 수업 종료 요청
-      await axios.post(
-        `${address}/end_class`,
-        { roomId },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-
       alert("수업이 종료되었습니다.");
       navigate("/TeacherHome");
     } catch (error) {
@@ -347,5 +338,7 @@ const Room = () => {
     </div>
   );
 };
+
+// 방으로 이동하는 경로 roomID 말고 학생ID 사용해서 넘어갈 수 있게 하기.
 
 export default Room;
