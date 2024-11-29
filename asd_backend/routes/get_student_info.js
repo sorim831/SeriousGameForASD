@@ -74,4 +74,31 @@ router.get("/total_score/:student_id", verifyToken, (req, res) => {
     });
 });
 
+router.get("/total_history/:student_id", verifyToken, (req, res) => {
+  const student_id = req.params.student_id;
+  const query = "getStudentTotalHistory";
+
+  db.query(query, [student_id])
+    .then((rows) => {
+      const rowsWithOpinion = rows.map((row) => {
+        return {
+          date: row.date,
+          happy: row.happy,
+          sad: row.sad,
+          scary: row.scary,
+          disgusting: row.disgusting,
+          angry: row.angry,
+          score: row.score,
+          opinion: "테스트용 opinion... 아마 gpt 쓰지 않을까요?",
+        };
+      });
+      console.log(rowsWithOpinion);
+      res.json({ rows: rowsWithOpinion });
+    })
+    .catch((err) => {
+      console.error("Database error:", err);
+      res.status(500);
+    });
+});
+
 module.exports = router;

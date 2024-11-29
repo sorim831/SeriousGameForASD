@@ -7,6 +7,7 @@ const StudentInfo = ({ onClose, studentData }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [totalScore, setTotalScore] = useState({});
+  const [totalHistory, setTotalHistory] = useState([]);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -77,8 +78,32 @@ const StudentInfo = ({ onClose, studentData }) => {
         setTotalScore({});
       }
     };
+    const fetchTotalHistory = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_ADDRESS}/get_student_info/total_history/${studentData.student_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`oops... ${response.status}`);
+        }
+
+        const data = await response.json();
+        setTotalHistory(data.rows || []);
+        console.log(data.rows);
+      } catch (error) {
+        console.error("err at fetchTotalHistory", error);
+      }
+    };
 
     fetchTotalScore();
+    fetchTotalHistory();
   }, [studentData.student_id]);
 
   return (
@@ -112,8 +137,6 @@ const StudentInfo = ({ onClose, studentData }) => {
           <span id="current-fear">{totalScore.scary || 0}</span>
           <span className="total-emotion-data">혐오: </span>
           <span id="total-disgust">{totalScore.disgusting || 0}</span>
-          <span className="total-emotion-data">놀람: </span>
-          <span id="total-surprise">0</span>
         </div>
 
         <div className="total-feedback-div">
@@ -160,27 +183,28 @@ const StudentInfo = ({ onClose, studentData }) => {
 
       <div id="previous-feedback">
         <p>이전 기록</p>
-        <div className="previous-feedback-detail">
-          <span id="feedback-date">24.09.29</span>
-          <div className="emotion-data-div">
-            <span className="total-emotion-data">행복: </span>
-            <span id="previous-happy">5</span>
-            <span className="total-emotion-data">슬픔: </span>
-            <span id="previous-sad">5</span>
-            <span className="total-emotion-data">분노: </span>
-            <span id="previous-angry">5</span>
-            <span className="total-emotion-data">공포: </span>
-            <span id="previous-fear">5</span>
-            <span className="total-emotion-data">혐오: </span>
-            <span id="previous-disgust">5</span>
-            <span className="total-emotion-data">놀람: </span>
-            <span id="previous-surprise">5</span>
+        {totalHistory.map((record, index) => (
+          <div key={index} className="previous-feedback-detail">
+            <span id="feedback-date">{record.date}</span>
+            <div className="emotion-data-div">
+              <span className="total-emotion-data">행복: </span>
+              <span id="previous-happy">{record.happy || 0}</span>
+              <span className="total-emotion-data">슬픔: </span>
+              <span id="previous-sad">{record.sad || 0}</span>
+              <span className="total-emotion-data">분노: </span>
+              <span id="previous-angry">{record.angry || 0}</span>
+              <span className="total-emotion-data">공포: </span>
+              <span id="previous-fear">{record.scary || 0}</span>
+              <span className="total-emotion-data">혐오: </span>
+              <span id="previous-disgust">{record.disgusting || 0}</span>
+              <span className="total-emotion-data">평균: </span>
+              <span id="previous-average">{record.score || 0}</span>
+            </div>
+            <div>
+              <p>gpt 의견: {record.opinion}</p>
+            </div>
           </div>
-          <div id="feedback-details">
-            수업 �� 학생에 대한 의견을 적으면 여기에 기록됨.
-          </div>
-        </div>
-        {/* 기록이 동적으로 추가 */}
+        ))}
       </div>
     </div>
   );

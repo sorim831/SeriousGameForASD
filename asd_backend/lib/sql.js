@@ -36,5 +36,16 @@ module.exports = {
     "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
   updateTotalStuentInfo:
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
-  LoadStudentHistory: "SELECT * FROM stduent_scores_table WHERE student_id=?",
+
+  getStudentTotalHistory:
+    "SELECT DATE_FORMAT(date, '%y.%m.%d') as date, " +
+    "ROUND(AVG(CASE WHEN student_action = 'happy' THEN student_score END), 2) as happy, " +
+    "ROUND(AVG(CASE WHEN student_action = 'sad' THEN student_score END), 2) as sad, " +
+    "ROUND(AVG(CASE WHEN student_action = 'scary' THEN student_score END), 2) as scary, " +
+    "ROUND(AVG(CASE WHEN student_action = 'disgusting' THEN student_score END), 2) as disgusting, " +
+    "ROUND(AVG(CASE WHEN student_action = 'angry' THEN student_score END), 2) as angry, " +
+    "ROUND(AVG(student_score), 2) as score " +
+    "FROM student_scores_table " +
+    "GROUP BY DATE_FORMAT(date, '%y.%m.%d') " +
+    "ORDER BY date;",
 };
