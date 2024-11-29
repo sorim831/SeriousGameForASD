@@ -48,9 +48,6 @@ router.get("/total_score/:student_id", verifyToken, (req, res) => {
   const student_id = req.params.student_id;
   const query = "getStudentTotalScore";
 
-  console.log("in total score");
-  console.log(student_id);
-
   db.query(query, [student_id])
     .then((rows) => {
       if (rows.length === 0) {
@@ -92,7 +89,6 @@ router.get("/total_history/:student_id", verifyToken, (req, res) => {
           opinion: "테스트용 opinion... 아마 gpt 쓰지 않을까요?",
         };
       });
-      console.log(rowsWithOpinion);
       res.json({ rows: rowsWithOpinion });
     })
     .catch((err) => {
@@ -100,5 +96,25 @@ router.get("/total_history/:student_id", verifyToken, (req, res) => {
       res.status(500);
     });
 });
+
+router.get(
+  "/total_history/history_detail/:student_id/:date",
+  verifyToken,
+  (req, res) => {
+    const student_id = req.params.student_id;
+    const date = req.params.date;
+    const query = "getStudentHistoryDetail";
+    console.log(student_id, date);
+
+    db.query(query, [student_id, date])
+      .then((rows) => {
+        res.json({ rows });
+      })
+      .catch((error) => {
+        console.error("/total/history_detail/:student_id/:date err", error);
+        res.status(500);
+      });
+  }
+);
 
 module.exports = router;

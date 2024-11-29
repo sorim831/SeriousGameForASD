@@ -8,6 +8,9 @@ const StudentInfo = ({ onClose, studentData }) => {
   const [loading, setLoading] = useState(false);
   const [totalScore, setTotalScore] = useState({});
   const [totalHistory, setTotalHistory] = useState([]);
+  const [totalHistoryDetail, setTotalHistoryDetail] = useState([]);
+  const [expandTotalHistoryDetail, setExpandTotalHistoryDetail] =
+    useState(null);
 
   const handleEditClick = () => {
     setIsEditing(true);
@@ -106,6 +109,37 @@ const StudentInfo = ({ onClose, studentData }) => {
     fetchTotalHistory();
   }, [studentData.student_id]);
 
+  const handleHistoryDetailClick = async (date) => {
+    if (expandTotalHistoryDetail === date) {
+      setExpandTotalHistoryDetail(null);
+      setTotalHistoryDetail([]);
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_ADDRESS}/get_student_info/total_history/history_detail/${studentData.student_id}/${date}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`oops... ${response.status}`);
+      }
+
+      const data = await response.json();
+      setTotalHistoryDetail(data.rows || []);
+      setExpandTotalHistoryDetail(date);
+    } catch (error) {
+      console.error("err at fetchTotalScore", error);
+      setTotalHistoryDetail([]);
+    }
+  };
+
   return (
     <div className="feedback-list">
       <button className="close-feedback-list" onClick={onClose}>
@@ -202,6 +236,39 @@ const StudentInfo = ({ onClose, studentData }) => {
             </div>
             <div>
               <p>gpt 의견: {record.opinion}</p>
+            </div>
+            <div
+              onClick={() => handleHistoryDetailClick(record.date)}
+              style={{ cursor: "pointer" }}
+            >
+              {expandTotalHistoryDetail === record.date
+                ? "▼ 접기"
+                : "▶ 상세 보기"}
+            </div>
+            <div>
+              {totalHistoryDetail.length > 0 &&
+                expandTotalHistoryDetail === record.date && (
+                  <div className="history-detail">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>감정</th>
+                          <th>점수</th>
+                          <th>의견</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {totalHistoryDetail.map((detail, detailIndex) => (
+                          <tr key={detailIndex}>
+                            <td>{detail.student_action}</td>
+                            <td>{detail.student_score}</td>
+                            <td>{detail.student_opinion}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
             </div>
           </div>
         ))}

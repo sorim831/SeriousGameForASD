@@ -48,4 +48,9 @@ module.exports = {
     "FROM student_scores_table " +
     "GROUP BY DATE_FORMAT(date, '%y.%m.%d') " +
     "ORDER BY date;",
+
+  getStudentHistoryDetail:
+    "SELECT sst.* FROM student_scores_table sst " +
+    "INNER JOIN student_table st ON st.id = sst.student_fk " +
+    "WHERE st.student_id = ? AND DATE_FORMAT(sst.date, '%y.%m.%d') = ?",
 };
