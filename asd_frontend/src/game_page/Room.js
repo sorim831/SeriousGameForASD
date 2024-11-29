@@ -2,10 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import { useNavigate } from "react-router-dom";
 import "./room.css";
-import QuestionSelect from "./QuestionSelect";
-import SelectedQuestion from "./SelectedQuestion";
+import QuestionSelect from "../temp/QuestionSelect";
+import SelectedQuestion from "../temp/SelectedQuestion";
 import ClassData from "./ClassData";
-import ScoreAndFeedBack from "./ScoreAndFeedBack";
+import ScoreAndFeedBack from "../temp/ScoreAndFeedBack";
 import axios from "axios";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;

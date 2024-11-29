@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import StudentTree from "./StudentTree";
+import StudentTree from "../../temp/StudentTree";
 import styles from "./StudentHome.module.css";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;

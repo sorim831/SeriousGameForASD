@@ -10,18 +10,18 @@ import First from "./temp/First";
 //import Home from "./temp/Home";
 //import Register from "./temp/Register";
 
-import TeacherHome from "./temp/TeacherHome";
-import GetStudents from "./temp/GetStudents";
+import TeacherHome from "./main_page/teacher/TeacherHome";
+import GetStudents from "./auth_page/teacher/GetStudents";
 
 import StudentLogin from "./temp/StudentLogin";
 import StudentRegister from "./temp/StudentRegister";
 import TeacherLogin from "./temp/TeacherLogin";
 import TeacherRegister from "./temp/TeacherRegister";
-import StudentHome from "./temp/StudentHome";
+import StudentHome from "./main_page/student/StudentHome";
 import ScoreAndFeedBack from "./temp/ScoreAndFeedBack";
-import TotalAnimation from "./temp/TotalAnimation";
+import TotalAnimation from "./game_page/TotalAnimation";
 
-import Room from "./temp/Room";
+import Room from "./game_page/Room";
 
 // Student
 import StudentLoginPage from "./pages/Student/StudentLoginPage";
@@ -43,8 +43,8 @@ function App() {
         <Route path="/get_students" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/room/:roomId" element={<Room />} />
-        <Route path="/animation" element={<TotalAnimation />} /> {/* 테스트용 */}
-
+        <Route path="/animation" element={<TotalAnimation />} />{" "}
+        {/* 테스트용 */}
         {/*Student*/}
         {/* <Route path="/student_login_page" element={<StudentLoginPage />} />
         <Route path="/student_home_page" element={<StudentHomePage />} /> */}

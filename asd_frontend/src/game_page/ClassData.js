@@ -9,7 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import StudentInfo from "./StudentInfo";
+import StudentInfo from "../main_page/teacher/StudentInfo";
 import "./class-data.css";
 
 // Chart.js 모듈 등록

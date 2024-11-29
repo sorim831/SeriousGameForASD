@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import DropAnimation from './DropAnimation';
-import './TotalAnimation.css';
+import React, { useEffect, useState } from "react";
+import DropAnimation from "./DropAnimation";
+import "./TotalAnimation.css";
 
 const TotalAnimation = () => {
   // 이모지 비를 나타내기 위한 상태 변수
@@ -8,7 +8,7 @@ const TotalAnimation = () => {
   const [backDrops, setBackDrops] = useState([]);
 
   // 사용할 이모지 리스트
-  const emojis = ['☀️', '💧', '🌼', '✨', '🌳', '🌱']; 
+  const emojis = ["☀️", "💧", "🌼", "✨", "🌳", "🌱"];
 
   // 이모지 비를 생성하는 함수
   const makeItRain = () => {
@@ -24,19 +24,19 @@ const TotalAnimation = () => {
       increment += randoFiver; // 증가값을 더하여 다음 위치 설정
 
       // 새로운 이모지 데이터 추가
-      newDrops.push({ 
-        left: increment, 
-        bottom: randoFiver * 2 + 100, 
-        delay: 0.1 * randoHundo, 
-        duration: 2.5 + randoHundo * 0.01, 
-        emoji: randomEmoji 
+      newDrops.push({
+        left: increment,
+        bottom: randoFiver * 2 + 100,
+        delay: 0.1 * randoHundo,
+        duration: 2.5 + randoHundo * 0.01,
+        emoji: randomEmoji,
       });
-      newBackDrops.push({ 
-        left: increment, 
-        bottom: randoFiver * 2 + 100, 
-        delay: 0.1 * randoHundo, 
-        duration: 2.5 + randoHundo * 0.01, 
-        emoji: randomEmoji 
+      newBackDrops.push({
+        left: increment,
+        bottom: randoFiver * 2 + 100,
+        delay: 0.1 * randoHundo,
+        duration: 2.5 + randoHundo * 0.01,
+        emoji: randomEmoji,
       });
     }
 
