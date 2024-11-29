@@ -19,30 +19,35 @@ const Room = () => {
   const [socket, setSocket] = useState(null);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
-  const [userRole, setUserRole] = useState(""); // userRole 상태 추가
-  const [loading, setLoading] = useState(true); // loading 상태 추가
+  const [userRole, setUserRole] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [students, setStudents] = useState([]);
   const [studentId, setStudentId] = useState(null);
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
 
+  // 질문 선택 핸들러
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
   };
 
+  // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
   };
 
+  // 피드백 제출 핸들러
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
   };
 
+  // 사용자 인증 및 권한 확인
   useEffect(() => {
     const checkAccessToken = async () => {
       const token = localStorage.getItem("token");
@@ -54,9 +59,7 @@ const Room = () => {
       try {
         const response = await fetch(`${address}/home`, {
           method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         });
 
         const result = await response.json();
@@ -65,8 +68,8 @@ const Room = () => {
           return;
         }
 
-        setUserRole(result.user.role);
-        setLoading(false); // 로딩 완료 후 상태 업데이트
+        setUserRole(result.user.role); // 사용자 역할 설정
+        setLoading(false); // 로딩 종료
       } catch (error) {
         console.error("checkAccessToken error:", error);
         navigate("/main");
@@ -76,6 +79,29 @@ const Room = () => {
     checkAccessToken();
   }, [navigate]);
 
+  // 학생 정보 띄워주기 위해 데이터 받아오기
+  useEffect(() => {
+    const fetchStudents = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const response = await axios.get(`${address}/students/${roomId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        setStudents(response.data.students);
+      } catch (error) {
+        console.error("Error fetching students:", error);
+      }
+    };
+
+    fetchStudents();
+  }, [roomId]);
+
+  // 학생 및 사용자 정보 가져오기
   useEffect(() => {
     const fetchStudentAndUserId = async () => {
       const token = localStorage.getItem("token");
@@ -98,18 +124,16 @@ const Room = () => {
         }
 
         const userId = userResponse.data.userId;
-
         if (!userId) {
           navigate("/login");
           return;
         }
 
-        const socketConnection = io(`${address}`, {
-          query: { userId },
-        });
+        // 소켓 연결 생성
+        const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
 
-        return () => socketConnection.disconnect();
+        return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -118,12 +142,14 @@ const Room = () => {
     fetchStudentAndUserId();
   }, [roomId]);
 
+  // 미디어 가져오기 및 WebRTC 연결 초기화
   useEffect(() => {
     if (myStream) {
       makeConnection();
     }
   }, [myStream]);
 
+  // 사용 가능한 카메라 가져오기
   const getCameras = async (stream) => {
     try {
       const devices = await navigator.mediaDevices.enumerateDevices();
@@ -142,6 +168,7 @@ const Room = () => {
     }
   };
 
+  // 카메라와 마이크 활성화
   const getMedia = async (deviceId) => {
     const constraints = {
       audio: true,
@@ -152,16 +179,17 @@ const Room = () => {
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
-      setMyStream(stream);
-      myFace.current.srcObject = stream;
+      setMyStream(stream); // 스트림 설정
+      myFace.current.srcObject = stream; // 비디오 연결
       if (!deviceId) {
-        await getCameras(stream);
+        await getCameras(stream); // 카메라 옵션 설정
       }
     } catch (e) {
       console.log(e);
     }
   };
 
+  // 음소거 버튼 핸들러
   const handleMuteClick = () => {
     myStream
       .getAudioTracks()
@@ -169,6 +197,7 @@ const Room = () => {
     setMuted((prev) => !prev);
   };
 
+  // 카메라 전환 버튼 핸들러
   const handleCameraClick = () => {
     myStream
       .getVideoTracks()
@@ -176,6 +205,7 @@ const Room = () => {
     setCameraOff((prev) => !prev);
   };
 
+  // WebRTC 연결 생성
   const makeConnection = () => {
     if (!myStream || !socket) return;
 
@@ -193,42 +223,50 @@ const Room = () => {
     });
     setMyPeerConnection(peerConnection);
 
+    // ICE 후보 처리
     peerConnection.addEventListener("icecandidate", (data) => {
       if (data.candidate) {
         socket.emit("ice", data.candidate, roomId);
       }
     });
 
+    // 상대방 스트림 수신
     peerConnection.addEventListener("track", (data) => {
       peerFace.current.srcObject = data.streams[0];
       setPeerConnected(true);
     });
 
+    // 연결 상태 변경 감지
     peerConnection.addEventListener("connectionstatechange", () => {
       if (peerConnection.connectionState === "disconnected") {
         setPeerConnected(false);
       }
     });
 
+    // 로컬 트랙 추가
     myStream
       .getTracks()
       .forEach((track) => peerConnection.addTrack(track, myStream));
   };
 
+  // 초기 미디어 설정
   useEffect(() => {
     getMedia();
   }, [roomId]);
 
+  // 룸 참여 메시지 전송
   useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
     }
   }, [socket, roomId]);
 
+  // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
-    return <p>loading...</p>; // 로딩 상태 표시
+    return <p>loading...</p>;
   }
 
+  // 수업 종료 핸들러
   const handleEndClass = async () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
@@ -241,19 +279,17 @@ const Room = () => {
         return;
       }
 
-      // 서버에 수업 종료 요청 보내기
+      // 서버로 수업 종료 요청
       await axios.post(
         `${address}/end_class`,
         { roomId },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          headers: { Authorization: `Bearer ${token}` },
         }
       );
 
       alert("수업이 종료되었습니다.");
-      navigate("/home"); // 홈 화면으로 이동
+      navigate("/TeacherHome");
     } catch (error) {
       console.error("수업 종료 중 오류 발생:", error);
       alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
@@ -262,6 +298,7 @@ const Room = () => {
 
   return (
     <div className="classroom-container">
+      {/* 헤더 */}
       <div className="header">
         <sapn className="student-id">학생 아이디</sapn>
         <button className="end-class-button" onClick={handleEndClass}>
@@ -269,6 +306,7 @@ const Room = () => {
         </button>
       </div>
 
+      {/* 상단 영역 */}
       <div className="top">
         <video className="video" ref={peerFace} autoPlay playsInline />
         <div className="QuestionSelect">
@@ -276,6 +314,7 @@ const Room = () => {
         </div>
       </div>
 
+      {/* 하단 영역 */}
       <div className="bottom">
         <video ref={myFace} className="video" autoPlay muted playsInline />
         <div className="SelectedQuestion">
@@ -291,10 +330,14 @@ const Room = () => {
           />
         </div>
         <div className="ClassData">
-          <ClassData scoreAndFeedBackData={scoreAndFeedBackData} />
+          <ClassData
+            scoreAndFeedBackData={scoreAndFeedBackData}
+            students={students}
+          />
         </div>
       </div>
 
+      {/* 미디어 컨트롤 버튼 */}
       <button onClick={handleMuteClick} className="media-set">
         {muted ? "Unmute" : "Mute"}
       </button>
