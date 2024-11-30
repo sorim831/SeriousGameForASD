@@ -32,7 +32,7 @@ module.exports = {
 
   getStudentTotalScore:
     "SELECT student_score_happy, student_score_sad, student_score_scary, student_score_disgusting, student_score_angry FROM student_table WHERE student_id = ?",
-  updateStuentInfo:
+  updateStudentInfo:
     "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
   updateTotalStuentInfo:
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
@@ -56,4 +56,7 @@ module.exports = {
 
   updateAverageScore:
     "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_id = ? AND student_action = ?) WHERE student_id = ?",
+
+  sumStudentScore:
+    "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_id = ?",
 };
