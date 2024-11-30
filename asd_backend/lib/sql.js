@@ -53,4 +53,7 @@ module.exports = {
     "SELECT sst.* FROM student_scores_table sst " +
     "INNER JOIN student_table st ON st.id = sst.student_fk " +
     "WHERE st.student_id = ? AND DATE_FORMAT(sst.date, '%y.%m.%d') = ?",
+
+  updateAverageScore:
+    "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_id = ? AND student_action = ?) WHERE student_id = ?",
 };
