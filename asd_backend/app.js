@@ -17,9 +17,11 @@ const homeRouter = require("./routes/home");
 const getStudentInfo = require("./routes/get_student_info");
 const updateStudentInfo = require("./routes/update_student_info");
 
-const endClass = require("./routes/end_class");
+//const endClass = require("./routes/end_class");
 const loadGameHistory = require("./routes/load_game_history");
 const saveGameTask = require("./routes/save_task");
+
+const sumScore = require("./routes/scores_for_tree");
 
 //const tokenRouter = require("./routes/token");
 
@@ -62,9 +64,11 @@ app.use("/get_students", getStudnetsListRouter);
 app.use("/get_student_info", getStudentInfo);
 app.use("/update_student_info", updateStudentInfo);
 
-app.use("/end_class", endClass);
+//app.use("/end_class", endClass);
 app.use("/load_game_history", loadGameHistory);
 app.use("/save_task", saveGameTask);
+
+app.use("/sum_score", sumScore);
 //app.use("/token", tokenRouter);
 
 module.exports = app;

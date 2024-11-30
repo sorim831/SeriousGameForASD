@@ -42,6 +42,17 @@ const Room = () => {
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
+
+    const imageName = selectedButtonId;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
+
+    socket.on("overlay_image", (overlay_image) => {
+      //console.log(overlay_image, "gdgdddffddddd");
+      const imagelocation = document.querySelector(".questionImage");
+      //console.log(imagelocation);
+      imagelocation.src = overlay_image;
+    });
   };
 
   // 피드백 제출 핸들러
@@ -345,6 +356,7 @@ const Room = () => {
         <div className="video-container">
           {/* 비디오 화면 */}
           <video className="video" ref={peerFace} autoPlay playsInline />
+          <img className="questionImage" src="" alt="" />
 
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (

@@ -47,6 +47,15 @@
   border-radius: 0%;
 }
 
+.questionImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
 .animation-overlay {
   position: absolute;
   top: 0;
