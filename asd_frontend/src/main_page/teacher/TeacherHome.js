@@ -132,7 +132,7 @@ const TeacherHome = () => {
             </button>
             <button
               className="student-game-start"
-              onClick={() => handleGameStart(student.id)}
+              onClick={() => handleGameStart(student.student_id)}
             >
               게임시작
             </button>
