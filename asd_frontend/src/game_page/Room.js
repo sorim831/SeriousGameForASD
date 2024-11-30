@@ -295,6 +295,11 @@ const Room = () => {
       }
     });
 
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
+
     return () => {
       socket.off("welcome");
       socket.off("offer");
@@ -328,6 +333,7 @@ const Room = () => {
         return;
       }
 
+      socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
       alert("수업이 종료되었습니다.");
       navigate("/TeacherHome");
     } catch (error) {

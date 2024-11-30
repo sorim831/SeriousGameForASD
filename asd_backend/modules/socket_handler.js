@@ -66,6 +66,12 @@ const socketHandler = (server) => {
       socket.to(roomName).emit("sendImagepath", imgPath);
     });
 
+    // 수업 종료 처리
+    socket.on("end_class", (roomId) => {
+      // 해당 방(roomId)에 있는 모든 클라이언트에게 종료 메시지 전송
+      socket.to(roomId).emit("alert_end");
+    });
+
     socket.on("EffectData", (DropAnimation, roomName) => {
       // 뭐가 와야되지?
       io.to(roomName).emit("showDropAnimation", DropAnimation);
