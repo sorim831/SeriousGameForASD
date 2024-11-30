@@ -6,6 +6,7 @@ import QuestionSelect from "./QuestionSelect";
 import SelectedQuestion from "./SelectedQuestion";
 import ClassData from "./ClassData";
 import ScoreAndFeedBack from "./ScoreAndFeedBack";
+import TotalAnimation from "./TotalAnimation";
 import axios from "axios";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -27,6 +28,7 @@ const Room = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [students, setStudents] = useState([]);
   const [studentId, setStudentId] = useState(null);
+  const [animationVisible, setAnimationVisible] = useState(false);
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
@@ -45,6 +47,14 @@ const Room = () => {
   // 피드백 제출 핸들러
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
+
+    // 점수가 4점 이상일 경우 애니메이션 표시
+    if (data.score >= 4) {
+      setAnimationVisible(true);
+
+      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
+      setTimeout(() => setAnimationVisible(false), 3000);
+    }
   };
 
   // 사용자 인증 및 권한 확인
@@ -78,28 +88,6 @@ const Room = () => {
 
     checkAccessToken();
   }, [navigate]);
-
-  // // 학생 정보 띄워주기 위해 데이터 받아오기
-  // useEffect(() => {
-  //   const fetchStudents = async () => {
-  //     try {
-  //       const token = localStorage.getItem("token");
-  //       if (!token) return;
-
-  //       const response = await axios.get(`${address}/students/${roomId}`, {
-  //         headers: {
-  //           Authorization: `Bearer ${token}`,
-  //         },
-  //       });
-
-  //       setStudents(response.data.students);
-  //     } catch (error) {
-  //       console.error("Error fetching students:", error);
-  //     }
-  //   };
-
-  //   fetchStudents();
-  // }, [roomId]);
 
   // 학생 및 사용자 정보 가져오기
   useEffect(() => {
@@ -354,7 +342,17 @@ const Room = () => {
 
       {/* 상단 영역 */}
       <div className="top">
-        <video className="video" ref={peerFace} autoPlay playsInline />
+        <div className="video-container">
+          {/* 비디오 화면 */}
+          <video className="video" ref={peerFace} autoPlay playsInline />
+
+          {/* TotalAnimation 컴포넌트 */}
+          {animationVisible && (
+            <div className="animation-overlay">
+              <TotalAnimation />
+            </div>
+          )}
+        </div>
         <div className="QuestionSelect">
           <QuestionSelect onButtonClick={handleButtonClick} />
         </div>
