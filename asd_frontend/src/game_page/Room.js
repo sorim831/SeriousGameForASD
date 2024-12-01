@@ -6,6 +6,7 @@ import QuestionSelect from "./QuestionSelect";
 import SelectedQuestion from "./SelectedQuestion";
 import ClassData from "./ClassData";
 import ScoreAndFeedBack from "./ScoreAndFeedBack";
+import TotalAnimation from "./TotalAnimation";
 import axios from "axios";
 import problemData from "./problemData.json";
 
@@ -28,6 +29,7 @@ const Room = () => {
   const [selectedId, setSelectedId] = useState(null);
   const [students, setStudents] = useState([]);
   const [studentId, setStudentId] = useState(null);
+  const [animationVisible, setAnimationVisible] = useState(false);
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
@@ -41,11 +43,34 @@ const Room = () => {
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
+
+    const imageName = selectedButtonId;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
+
+    /*
+
+    socket.on("overlay_image", (overlay_image) => {
+      console.log(overlay_image, "gdgdddffddddd");
+      const imagelocation = document.querySelector(".questionImage");
+      //console.log(imagelocation);
+      imagelocation.src = overlay_image;
+    });
+
+    */
   };
 
   // 피드백 제출 핸들러
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
+
+    // 점수가 4점 이상일 경우 애니메이션 표시
+    if (data.score >= 4) {
+      setAnimationVisible(true);
+
+      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
+      setTimeout(() => setAnimationVisible(false), 3000);
+    }
   };
 
   // 사용자 인증 및 권한 확인
@@ -80,28 +105,6 @@ const Room = () => {
     checkAccessToken();
   }, [navigate]);
 
-  // 학생 정보 띄워주기 위해 데이터 받아오기
-  useEffect(() => {
-    const fetchStudents = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const response = await axios.get(`${address}/students/${roomId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        setStudents(response.data.students);
-      } catch (error) {
-        console.error("Error fetching students:", error);
-      }
-    };
-
-    fetchStudents();
-  }, [roomId]);
-
   // 학생 및 사용자 정보 가져오기
   useEffect(() => {
     const fetchStudentAndUserId = async () => {
@@ -109,30 +112,39 @@ const Room = () => {
       if (!token) return;
 
       try {
-        const studentResponse = await axios.get(`${address}/get_student_id`);
-        setStudentId(studentResponse.data.studentId);
+        const studentResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-        const userResponse = await axios.get(`${address}/c/room/${roomId}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const result = await studentResponse.json();
 
-        if (userResponse.status === 403) {
-          navigate("/");
-          return;
+        if (!result.success) {
+          window.location.href = "/main";
         }
 
-        const userId = userResponse.data.userId;
-        if (!userId) {
-          navigate("/login");
-          return;
-        }
+        setStudentId(result.user.id);
+        const userId = result.user.id;
 
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+
+        // 소켓 이벤트 리스너 등록
+        socketConnection.on("overlay_image", (overlay_image) => {
+          const imagelocation = document.querySelector(".questionImage");
+          imagelocation.src = overlay_image;
+        });
+
+        socketConnection.on("alert_end", () => {
+          alert("수업이 종료되었습니다.");
+          navigate("/student_home");
+        });
 
         return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
       } catch (error) {
@@ -255,6 +267,57 @@ const Room = () => {
     getMedia();
   }, [roomId]);
 
+  useEffect(() => {
+    console.log("socket:", socket);
+    console.log("myPeerConnection:", myPeerConnection);
+    console.log("roomId:", roomId);
+    if (!socket || !myPeerConnection) return;
+    console.log("asdf");
+
+    socket.on("welcome", async () => {
+      const offer = await myPeerConnection.createOffer({ iceRestart: true });
+      await myPeerConnection.setLocalDescription(offer);
+      socket.emit("offer", offer, roomId);
+    });
+
+    socket.on("offer", async (offer) => {
+      await myPeerConnection.setRemoteDescription(
+        new RTCSessionDescription(offer)
+      );
+      const answer = await myPeerConnection.createAnswer();
+      await myPeerConnection.setLocalDescription(answer);
+      socket.emit("answer", answer, roomId);
+    });
+
+    socket.on("answer", async (answer) => {
+      await myPeerConnection.setRemoteDescription(
+        new RTCSessionDescription(answer)
+      );
+    });
+
+    socket.on("ice", async (ice) => {
+      if (ice) {
+        try {
+          const candidate = new RTCIceCandidate({
+            candidate: ice.candidate,
+            sdpMid: ice.sdpMid,
+            sdpMLineIndex: ice.sdpMLineIndex,
+          });
+          await myPeerConnection.addIceCandidate(candidate);
+        } catch (error) {
+          console.error("Error adding received ice candidate", error);
+        }
+      }
+    });
+
+    return () => {
+      socket.off("welcome");
+      socket.off("offer");
+      socket.off("answer");
+      socket.off("ice");
+    };
+  }, [socket, myPeerConnection, roomId]);
+
   // 룸 참여 메시지 전송
   useEffect(() => {
     if (roomId && socket) {
@@ -280,8 +343,18 @@ const Room = () => {
         return;
       }
 
+      socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
       alert("수업이 종료되었습니다.");
       navigate("/TeacherHome");
+
+      /*
+
+      socket.on("alert_end", () => {
+        alert("수업이 종료되었습니다아.");
+        navigate("/student_home");
+      });
+
+      */
     } catch (error) {
       console.error("수업 종료 중 오류 발생:", error);
       alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
@@ -344,7 +417,18 @@ const Room = () => {
 
       {/* 상단 영역 */}
       <div className="top">
-        <video className="video" ref={peerFace} autoPlay playsInline />
+        <div className="video-container">
+          {/* 비디오 화면 */}
+          <video className="video" ref={peerFace} autoPlay playsInline />
+          <img className="questionImage" src="" alt="" />
+
+          {/* TotalAnimation 컴포넌트 */}
+          {animationVisible && (
+            <div className="animation-overlay">
+              <TotalAnimation />
+            </div>
+          )}
+        </div>
         <div className="QuestionSelect">
           <QuestionSelect onButtonClick={handleButtonClick} />
         </div>

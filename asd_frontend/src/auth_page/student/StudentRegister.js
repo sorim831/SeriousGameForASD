@@ -23,6 +23,8 @@ function Register() {
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
+        localStorage.removeItem("token");
+        window.location.href = "/student_login";
       }
     }
   };

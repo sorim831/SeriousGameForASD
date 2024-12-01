@@ -36,15 +36,18 @@ const TeacherHome = () => {
 
         if (result.success) {
           if (result.user.role !== "teacher") {
+            localStorage.removeItem("token");
             window.location.href = "/main";
           } else {
             setTeacher(result.user.name);
           }
         } else {
+          localStorage.removeItem("token");
           window.location.href = "/main";
         }
       } catch (error) {
         console.error(error);
+        localStorage.removeItem("token");
         window.location.href = "/main";
       }
     }
@@ -96,7 +99,6 @@ const TeacherHome = () => {
   // 로그아웃
   const handleLogout = () => {
     localStorage.removeItem("token");
-    alert("로그인 화면으로 넘어갑니다.");
     window.location.href = "/teacher_login";
   };
 
@@ -110,27 +112,45 @@ const TeacherHome = () => {
     });
   };
 
+  // 성별 변환
+  const formatGender = (gender) => {
+    return gender === "male" ? "남" : "여";
+  };
+
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">{teacher} 선생님</h2>
+      <div className="teacher-home-header">
+        <h2 id="teacher-name">{teacher} 선생님</h2>
+        <button
+          id="logout"
+          className="teacher-home-logout"
+          onClick={handleLogout}
+        >
+          로그아웃
+        </button>
+      </div>
       {error}
-      <ul>
+      <ul className="teacher-home-student-list">
         {students.map((student, index) => (
-          <li className="student-select" key={index}>
-            <span className="student-name">{student.student_name}</span>
-            <p className="student-gender">({student.student_gender})</p>
-            <p className="student-birthday">
-              {formatDate(student.student_birthday)}
-            </p>
+          <li
+            className="teacher-home-student-item"
+            key={index}
+            onClick={() => handleViewDetails(student)}
+          >
+            <div className="teacher-home-student-info">
+              <p className="teacher-home-student-name">
+                {student.student_name}
+              </p>
+              <p className="teacher-home-student-gender">
+                ({formatGender(student.student_gender)})
+              </p>
+              <p className="teacher-home-student-birthday">
+                {formatDate(student.student_birthday)}
+              </p>
+            </div>
             <button
-              className="student-view-details"
-              onClick={() => handleViewDetails(student)} // 학생 객체 전체 전달
-            >
-              자세히보기
-            </button>
-            <button
-              className="student-game-start"
-              onClick={() => handleGameStart(student.id)}
+              className="teacher-home-student-game-start"
+              onClick={() => handleGameStart(student.student_id)}
             >
               게임시작
             </button>
@@ -144,11 +164,8 @@ const TeacherHome = () => {
           studentData={selectedStudent} // 전체 학생 객체를 전달
         />
       )}
-      <button id="student-add" onClick={handleAddStudent}>
+      <button className="teacher-home-student-add" onClick={handleAddStudent}>
         내 학생 추가
-      </button>
-      <button id="logout" onClick={handleLogout}>
-        로그아웃
       </button>
     </div>
   );

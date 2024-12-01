@@ -10,12 +10,13 @@
 .score-input-div {
   font-size: 40px;
   font-weight: 600;
-  margin-left: 105px;
+  display: flex;
+  justify-content: center;
 }
 
 .teacher-score {
   font-weight: 600;
   font-size: 40px;
   border: none;
-  width: 58px;
+  width: 120px;
 }

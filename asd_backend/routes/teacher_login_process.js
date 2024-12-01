@@ -6,8 +6,9 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 function hashingPassword(password, salt) {
-  return new Promise((resolve, rejject) => {
+  return new Promise((resolve, reject) => {
     crypto.pbkdf2(password, salt, 100000, 64, "sha512", (err, key) => {
+      if (err) reject(err);
       resolve(key.toString("base64"));
     });
   });
@@ -20,7 +21,7 @@ router.post("/", async (req, res) => {
 
   if (!teacher_id || !teacher_password) {
     return res.send({
-      sucess: false,
+      success: false,
       message: "아이디와 비밀번호를 모두 입력해주세요.",
     });
   }

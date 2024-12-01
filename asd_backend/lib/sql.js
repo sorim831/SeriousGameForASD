@@ -32,9 +32,31 @@ module.exports = {
 
   getStudentTotalScore:
     "SELECT student_score_happy, student_score_sad, student_score_scary, student_score_disgusting, student_score_angry FROM student_table WHERE student_id = ?",
-  updateStuentInfo:
+  updateStudentInfo:
     "INSERT INTO student_scores_table (student_id, stduent_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
   updateTotalStuentInfo:
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
-  LoadStudentHistory: "SELECT * FROM stduent_scores_table WHERE student_id=?",
+
+  getStudentTotalHistory:
+    "SELECT DATE_FORMAT(date, '%y.%m.%d') as date, " +
+    "ROUND(AVG(CASE WHEN student_action = 'happy' THEN student_score END), 2) as happy, " +
+    "ROUND(AVG(CASE WHEN student_action = 'sad' THEN student_score END), 2) as sad, " +
+    "ROUND(AVG(CASE WHEN student_action = 'scary' THEN student_score END), 2) as scary, " +
+    "ROUND(AVG(CASE WHEN student_action = 'disgusting' THEN student_score END), 2) as disgusting, " +
+    "ROUND(AVG(CASE WHEN student_action = 'angry' THEN student_score END), 2) as angry, " +
+    "ROUND(AVG(student_score), 2) as score " +
+    "FROM student_scores_table " +
+    "WHERE student_fk = ? " +
+    "GROUP BY DATE_FORMAT(date, '%y.%m.%d') " +
+    "ORDER BY date;",
+
+  getStudentHistoryDetail:
+    "SELECT sst.* FROM student_scores_table sst " +
+    "WHERE sst.student_fk = ? AND DATE_FORMAT(sst.date, '%y.%m.%d') = ?",
+
+  updateAverageScore:
+    "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_id = ? AND student_action = ?) WHERE student_id = ?",
+
+  sumStudentScore:
+    "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_id = ?",
 };

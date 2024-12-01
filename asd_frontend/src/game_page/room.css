@@ -6,7 +6,7 @@
 }
 
 .classroom-container > * {
-  max-width: 100%; 
+  max-width: 100%;
   box-sizing: border-box;
   overflow: hidden;
 }
@@ -36,10 +36,37 @@
   margin-bottom: 10px;
 }
 
+.video-container {
+  position: relative;
+  display: inline-block;
+}
+
 .video {
   width: 400px;
   border-color: #ccc;
   border-radius: 0%;
+}
+
+.questionImage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.animation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
 }
 
 .media-set {

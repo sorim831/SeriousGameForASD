@@ -35,8 +35,8 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
     // 입력된 점수가 숫자이고 0~10 사이의 범위에 있는지 확인
     const score = Number(inputScore);
 
-    // 점수와 점수 아이디 값과 피드백을 `ClassData`로 전달
-    onSubmitFeedback({ score, selectedId, feedback });
+    // 점수와 점수 아이디 값을 `ClassData`로 전달
+    onSubmitFeedback({ score, selectedId });
   };
 
   return (
@@ -49,7 +49,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
             className="teacher-score"
             value={inputScore}
             onChange={(e) => setInputScore(e.target.value)}
-            placeholder="0"
+            placeholder="0~10 점 입력"
             min="0"
             max="10"
           />

@@ -3,7 +3,7 @@
   text-align: center;
   font-size: 32px;
   font-weight: bold;
-  margin-bottom: 50px;
+  margin: 10px 0;
 }
 
 /* 학생 리스트 아이템 */
@@ -64,17 +64,83 @@
   background-color: #cccccc;
 }
 
-#logout {
-  border-radius: 100px;
-  background-color: #eaeaea;
-  padding: 10px 20px;
+.teacher-home-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 0 30px 0;
+}
+.teacher-home-logout {
+  text-decoration: underline;
+  color: #666;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+.teacher-home-student-list {
+  padding: 0;
+}
+.teacher-home-student-item {
+  background-color: white;
+  border-radius: 15px;
+  padding: 10px;
+  margin: 10px 0;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.15);
+  list-style: none;
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+  transition: 0.2s ease-out;
+  justify-content: space-between;
+}
+.teacher-home-student-info {
+  display: flex;
+  align-items: center;
+}
+.teacher-home-student-item:hover .teacher-home-student-name {
+  transform: scale(1.03);
+  transition: 0.2s ease-out;
+  text-decoration: underline;
+}
+.teacher-home-student-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin: 0 10px 0 10px;
+  transition: 0.2s ease-out;
+  color: #333;
+}
+.teacher-home-student-gender,
+.teacher-home-student-birthday {
+  font-size: 18px;
+  color: #777777;
+  margin: 0 10px 0 0;
+}
+.teacher-home-student-game-start {
+  margin: 0 0 0 20px;
+  border-radius: 10px;
+  padding: 10px 10px;
   border: none;
   cursor: pointer;
   font-size: 18px;
-  float: right;
-  margin-right: 30px;
+  background-color: #f0f0f0;
+  transition: 0.2s ease-out;
 }
-
-#logout:hover {
-  background-color: #cccccc;
+.teacher-home-student-game-start:hover {
+  transform: scale(1.03);
+  background-color: green;
+  color: white;
+}
+.teacher-home-student-add {
+  border-radius: 10px;
+  padding: 10px 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  background-color: #f0f0f0;
+  transition: 0.1s ease-out;
+  float: right;
+}
+.teacher-home-student-add:hover {
+  background-color: #e0e0e0;
 }

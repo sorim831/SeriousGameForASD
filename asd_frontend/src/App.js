@@ -38,8 +38,7 @@ function App() {
         <Route path="/get_students" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />
         <Route path="/room/:roomId" element={<Room />} />
-        <Route path="/animation" element={<TotalAnimation />} />{" "}
-        {/* 테스트용 */}
+        <Route path="/animation" element={<TotalAnimation />} />
         {/*Student*/}
         {/* <Route path="/student_login_page" element={<StudentLoginPage />} />
         <Route path="/student_home_page" element={<StudentHomePage />} /> */}

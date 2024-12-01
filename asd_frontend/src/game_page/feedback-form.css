@@ -21,10 +21,10 @@ textarea:focus {
 
 .feedback-button {
   padding: 10px 15px;
-  background-color: white;
-  color: black;
-  border: 1px solid #777777;
-  border-radius: 16px;
+  background-color: #807e7e;
+  color: white;
+  border: none;
+  border-radius: 7px;
   cursor: pointer;
   margin-left: 10px;
   margin-bottom: 10px;
