@@ -45,6 +45,8 @@ function Register() {
   const [duplicatePasswordMessage, setDuplicatePasswordMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isIdVerified, setIsIdVerified] = useState(false);
+  const [nameMessage, setNameMessage] = useState("");
+  const [idChecked, setIdChecked] = useState(false);
 
   // 선생 : 비밀번호(pwd, pwd2) 일치 확인
   const [teacherpwd, setTeacherPwd] = useState("");
@@ -52,7 +54,12 @@ function Register() {
   const [pwdMatch, setpwdMatch] = useState(false);
 
   const checkPassword = (pw) => {
-    console.log(teacherpwd, teacherpwd2, pw);
+    if (!teacherpwd || !teacherpwd2) {
+      setDuplicatePasswordMessage("비밀번호를 입력해주세요");
+      setpwdMatch(false);
+      return;
+    }
+
     if (
       teacherpwd &&
       teacherpwd2 &&
@@ -80,7 +87,10 @@ function Register() {
 
   useEffect(() => {
     setsubmitbtn(!isFormValid());
-  }, [isIdVerified, pwdMatch, teacherPassword, teacherName]);
+    if (teacherId && teacherPassword && !teacherName) {
+      setNameMessage("이름을 입력해주세요");
+    }
+  }, [isIdVerified, pwdMatch, teacherPassword, teacherName, teacherId]);
 
   // 선생 : 회원가입 처리 함수
   const handleTeacherRegister = async (e) => {
@@ -132,6 +142,7 @@ function Register() {
       );
 
       const data = await response.json();
+      setIdChecked(true);
 
       if (!data.available) {
         setDuplicateIdMessage("이미 사용 중인 ID에요.");
@@ -148,86 +159,132 @@ function Register() {
 
   return (
     <div className="App">
-      <h1>회원가입</h1>
       <form
-        className="register-form"
+        className="teacher-register-form"
         action="/teacher_register_process"
         method="post"
         onSubmit={handleTeacherRegister}
       >
-        <p>
-          <input
-            type="text"
-            name="id"
-            className="inputId"
-            placeholder="아이디"
-            onChange={(e) => {
-              setTeacherId(e.target.value);
-              setIsIdVerified(false);
-              setDuplicateIdMessage("");
-            }}
-          />
-          <button
-            type="button"
-            className="checkIdButton"
-            onClick={handleCheckId}
-          >
-            중복 ID 체크
-          </button>
-        </p>
-        {duplicateIdMessage && (
-          <p
-            style={{
-              color: duplicateIdMessage.includes("사용 가능") ? "green" : "red",
-            }}
-          >
-            {duplicateIdMessage}
-          </p>
-        )}
-        <p>
-          <input
-            type="password"
-            name="pwd"
-            placeholder="비밀번호"
-            onChange={(e) => {
-              setTeacherPassword(e.target.value);
-              setTeacherPwd(e.target.value);
-              checkPassword(e.target.value);
-            }}
-            onBlur={checkPassword}
-          />
-        </p>
-        <p>
-          <input
-            type="password"
-            name="pwd2"
-            placeholder="비밀번호 확인"
-            onChange={(e) => {
-              setTeacherPwd2(e.target.value);
-              checkPassword(e.target.value);
-            }}
-            onBlur={checkPassword}
-          />
-        </p>
-        {duplicatePasswordMessage && (
-          <p style={{ color: pwdMatch ? "green" : "red" }}>
-            {duplicatePasswordMessage}
-          </p>
-        )}
-        <p>
+        <h1 className="teacher-register-title">회원가입</h1>
+        <div style={{ position: "relative" }}>
+          <div className="teacher-register-id-box">
+            <input
+              type="text"
+              name="id"
+              className="teacher-register-input-id"
+              placeholder="아이디"
+              onChange={(e) => {
+                setTeacherId(e.target.value);
+                setIsIdVerified(false);
+                setIdChecked(false);
+                setDuplicateIdMessage(
+                  e.target.value ? "중복확인을 해주세요." : ""
+                );
+              }}
+            />
+            <button
+              type="button"
+              className={`teacher-register-check-id-button ${
+                isIdVerified ? "teacher-register-check-id-button-disabled" : ""
+              }`}
+              onClick={handleCheckId}
+            >
+              중복 확인
+            </button>
+          </div>
+          {(duplicateIdMessage || (teacherId && !idChecked)) && (
+            <p
+              className="teacher-register-duplicate-id-message"
+              style={{
+                color: duplicateIdMessage.includes("사용 가능")
+                  ? "green"
+                  : "red",
+              }}
+            >
+              {idChecked ? duplicateIdMessage : "중복확인을 해주세요."}
+            </p>
+          )}
+        </div>
+        <div style={{ position: "relative" }}>
+          <div className="teacher-register-pwd-box">
+            <input
+              type="password"
+              name="pwd"
+              placeholder="비밀번호"
+              onChange={(e) => {
+                setTeacherPassword(e.target.value);
+                setTeacherPwd(e.target.value);
+                checkPassword(e.target.value);
+              }}
+              onBlur={checkPassword}
+              className="teacher-register-input-pwd"
+            />
+
+            <input
+              type="password"
+              name="pwd2"
+              placeholder="비밀번호 확인"
+              onChange={(e) => {
+                setTeacherPwd2(e.target.value);
+                checkPassword(e.target.value);
+              }}
+              onBlur={checkPassword}
+              className="teacher-register-input-pwd"
+            />
+          </div>
+          {duplicatePasswordMessage && (
+            <p
+              className="teacher-register-duplicate-pwd-message"
+              style={{ color: pwdMatch ? "green" : "red" }}
+            >
+              {duplicatePasswordMessage}
+            </p>
+          )}
+        </div>
+        <div
+          className="teacher-register-name-box"
+          style={{ position: "relative" }}
+        >
           <input
             type="text"
             name="displayName"
             placeholder="이름"
-            onChange={(e) => setTeacherName(e.target.value)}
+            onChange={(e) => {
+              setTeacherName(e.target.value);
+              if (!e.target.value && teacherId && teacherpwd && teacherpwd2) {
+                setNameMessage("이름을 입력해주세요");
+              } else {
+                setNameMessage("");
+              }
+            }}
+            onBlur={(e) => {
+              if (!e.target.value && teacherId && teacherpwd && teacherpwd2) {
+                setNameMessage("이름을 입력해주세요");
+              }
+            }}
+            className="teacher-register-input-name"
           />
-        </p>
+          {nameMessage && (
+            <p
+              className="teacher-register-name-message"
+              style={{ color: "red" }}
+            >
+              {nameMessage}
+            </p>
+          )}
+        </div>
         {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>}
-        <p>
-          <button type="submit" name="submit" value="가입" disabled={submitbtn}>
-            가입
-          </button>
-        </p>
+        <button
+          type="submit"
+          name="submit"
+          value="가입"
+          disabled={submitbtn}
+          className={`teacher-register-btn ${
+            submitbtn ? "teacher-register-btn-disabled" : ""
+          }`}
+        >
+          선생님으로 가입
+        </button>
       </form>
     </div>
   );

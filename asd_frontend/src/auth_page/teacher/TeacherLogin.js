@@ -67,36 +67,42 @@ function Login() {
     }
   };
 
-  // 회원가입 버튼 누르면 회원가입 페이지로 이동
-  const RegisterBtn = () => {
-    window.location.href = "/teacher_register";
-  };
-
   return (
     <div className="App">
       <form
-        className="login-form"
+        className="teacher-login-form"
         action="/teacher_login_process"
         method="post"
         onSubmit={handleTeacherLogin}
       >
-        <input
-          type="text"
-          name="id"
-          placeholder="아이디"
-          onChange={(e) => setTeacherId(e.target.value)}
-        />
-        <input
-          type="password"
-          name="teacherPassword"
-          placeholder="비밀번호"
-          onChange={(e) => setTeacherPassword(e.target.value)}
-        />
-        <div className="btn">
-          <button type="button" onClick={RegisterBtn}>
+        <h1 className="teacher-login-title">선생님 로그인</h1>
+        <div className="teacher-login-id-box">
+          <label className="teacher-login-id-label">아이디: </label>
+          <input
+            type="text"
+            name="id"
+            placeholder="아이디"
+            onChange={(e) => setTeacherId(e.target.value)}
+            className="teacher-login-id-input"
+          />
+        </div>
+        <div className="teacher-login-pw-box">
+          <label className="teacher-login-pw-label">비밀번호: </label>
+          <input
+            type="password"
+            name="teacherPassword"
+            placeholder="비밀번호"
+            onChange={(e) => setTeacherPassword(e.target.value)}
+            className="teacher-login-pw-input"
+          />
+        </div>
+        <div className="teacher-login-btn-box">
+          <a href="/teacher_register" className="teacher-login-register-a ">
             회원가입
+          </a>
+          <button type="submit" className="teacher-login-login-btn">
+            로그인
           </button>
-          <button type="submit">로그인</button>
         </div>
       </form>
     </div>
