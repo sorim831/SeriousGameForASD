@@ -47,12 +47,16 @@ const Room = () => {
     //console.log(imageName);
     socket.emit("imagePath", imageName, roomId);
 
+    /*
+
     socket.on("overlay_image", (overlay_image) => {
-      //console.log(overlay_image, "gdgdddffddddd");
+      console.log(overlay_image, "gdgdddffddddd");
       const imagelocation = document.querySelector(".questionImage");
       //console.log(imagelocation);
       imagelocation.src = overlay_image;
     });
+
+    */
   };
 
   // 피드백 제출 핸들러
@@ -129,6 +133,17 @@ const Room = () => {
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+
+        // 소켓 이벤트 리스너 등록
+        socketConnection.on("overlay_image", (overlay_image) => {
+          const imagelocation = document.querySelector(".questionImage");
+          imagelocation.src = overlay_image;
+        });
+
+        socketConnection.on("alert_end", () => {
+          alert("수업이 종료되었습니다.");
+          navigate("/student_home");
+        });
 
         return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
       } catch (error) {
@@ -294,11 +309,6 @@ const Room = () => {
       }
     });
 
-    socket.on("alert_end", () => {
-      alert("수업이 종료되었습니다.");
-      navigate("/student_home");
-    });
-
     return () => {
       socket.off("welcome");
       socket.off("offer");
@@ -335,6 +345,15 @@ const Room = () => {
       socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
       alert("수업이 종료되었습니다.");
       navigate("/TeacherHome");
+
+      /*
+
+      socket.on("alert_end", () => {
+        alert("수업이 종료되었습니다아.");
+        navigate("/student_home");
+      });
+
+      */
     } catch (error) {
       console.error("수업 종료 중 오류 발생:", error);
       alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
