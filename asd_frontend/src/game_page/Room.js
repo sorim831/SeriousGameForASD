@@ -7,12 +7,13 @@ import SelectedQuestion from "./SelectedQuestion";
 import ClassData from "./ClassData";
 import ScoreAndFeedBack from "./ScoreAndFeedBack";
 import axios from "axios";
+import problemData from "./problemData.json";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
-  const myFace = useRef(null);
-  const peerFace = useRef(null);
+  const myFace = useRef(null); 
+  const peerFace = useRef(null); 
   const [myStream, setMyStream] = useState(null);
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
@@ -286,6 +287,50 @@ const Room = () => {
       alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };
+
+  // 학생 화면 추가
+  if (userRole === "student") {
+    const problem = problemData[selectedButtonId];
+
+    return (
+      <div className="student-container">
+        <div className="video-container">
+          {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
+          <div className="video-overlay-container">
+            <video
+              ref={myFace}
+              autoPlay
+              muted
+              playsInline
+              className="student-video"
+            />
+            {problem && (
+              <img
+                src={problem.image_url}
+                alt={`Problem ${selectedButtonId}`}
+                className="problem-image-overlay"
+              />
+            )}
+          </div>
+
+          {/* 중간: 문제 텍스트 */}
+          {problem ? (
+            <p className="problem-text">{problem.text}</p>
+          ) : (
+            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
+          )}
+
+          {/* 하단: 교사 비디오 */}
+          <video
+            ref={peerFace}
+            autoPlay
+            playsInline
+            className="teacher-video"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="classroom-container">
