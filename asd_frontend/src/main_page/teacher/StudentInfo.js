@@ -23,7 +23,7 @@ ChartJS.register(
 );
 
 const StudentInfo = ({ onClose, studentData }) => {
-  const [feedback, setFeedback] = useState(studentData.student_opinion || "");
+  const [feedback, setFeedback] = useState("");
   const [showSaveButton, setShowSaveButton] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -32,6 +32,10 @@ const StudentInfo = ({ onClose, studentData }) => {
   const [totalHistoryDetail, setTotalHistoryDetail] = useState([]);
   const [expandTotalHistoryDetail, setExpandTotalHistoryDetail] =
     useState(null);
+
+  useEffect(() => {
+    setFeedback(studentData.student_opinion || "");
+  }, [studentData]);
 
   const handleSaveClick = async () => {
     setLoading(true);
@@ -95,7 +99,6 @@ const StudentInfo = ({ onClose, studentData }) => {
 
         const data = await response.json();
         setTotalScore(data.scores || {});
-        console.log("totalScore", data.scores);
       } catch (error) {
         console.error("err at fetchTotalScore", error);
         setTotalScore({});
