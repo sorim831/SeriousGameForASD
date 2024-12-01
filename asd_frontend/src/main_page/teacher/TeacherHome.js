@@ -112,26 +112,44 @@ const TeacherHome = () => {
     });
   };
 
+  // 성별 변환
+  const formatGender = (gender) => {
+    return gender === "male" ? "남" : "여";
+  };
+
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">{teacher} 선생님</h2>
+      <div className="teacher-home-header">
+        <h2 id="teacher-name">{teacher} 선생님</h2>
+        <button
+          id="logout"
+          className="teacher-home-logout"
+          onClick={handleLogout}
+        >
+          로그아웃
+        </button>
+      </div>
       {error}
-      <ul>
+      <ul className="teacher-home-student-list">
         {students.map((student, index) => (
-          <li className="student-select" key={index}>
-            <span className="student-name">{student.student_name}</span>
-            <p className="student-gender">({student.student_gender})</p>
-            <p className="student-birthday">
-              {formatDate(student.student_birthday)}
-            </p>
+          <li
+            className="teacher-home-student-item"
+            key={index}
+            onClick={() => handleViewDetails(student)}
+          >
+            <div className="teacher-home-student-info">
+              <p className="teacher-home-student-name">
+                {student.student_name}
+              </p>
+              <p className="teacher-home-student-gender">
+                ({formatGender(student.student_gender)})
+              </p>
+              <p className="teacher-home-student-birthday">
+                {formatDate(student.student_birthday)}
+              </p>
+            </div>
             <button
-              className="student-view-details"
-              onClick={() => handleViewDetails(student)} // 학생 객체 전체 전달
-            >
-              자세히보기
-            </button>
-            <button
-              className="student-game-start"
+              className="teacher-home-student-game-start"
               onClick={() => handleGameStart(student.student_id)}
             >
               게임시작
@@ -147,11 +165,8 @@ const TeacherHome = () => {
           key={selectedStudent.student_id}
         />
       )}
-      <button id="student-add" onClick={handleAddStudent}>
+      <button className="teacher-home-student-add" onClick={handleAddStudent}>
         내 학생 추가
-      </button>
-      <button id="logout" onClick={handleLogout}>
-        로그아웃
       </button>
     </div>
   );

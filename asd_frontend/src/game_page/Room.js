@@ -11,6 +11,8 @@ import StudentData from "./StudentData";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 
+import problemData from "./problemData.json";
+
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
@@ -29,19 +31,19 @@ const Room = () => {
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [animationVisible, setAnimationVisible] = useState(false);
-  const [scorekData, setScoreData] = useState({
+  const [studentID, setStudentId] = useState(null);
+
+  const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
+
   const [studentDataVisible, setStudentDataVisible] = useState(false);
-  const [roomStudents, setRoomStudents] = useState([]); // Room에 있는 학생 목록
+  const [roomStudents, setRoomStudents] = useState([]);
   const [error, setError] = useState(null);
   const location = useLocation();
-  const students = location.state?.students; // 학생 기본정보 받아옴
-  const studentId = location.state?.studentId; // '학생' 아이디 받아옴
-
-  console.log("students:", students);
-  console.log("roomId:", roomId);
+  const students = location.state?.students;
+  const studentId = location.state?.studentId;
 
   useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
@@ -73,18 +75,33 @@ const Room = () => {
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
+
+    const imageName = selectedButtonId;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
+
+    /*
+
+    socket.on("overlay_image", (overlay_image) => {
+      console.log(overlay_image, "gdgdddffddddd");
+      const imagelocation = document.querySelector(".questionImage");
+      //console.log(imagelocation);
+      imagelocation.src = overlay_image;
+    });
+
+    */
   };
 
   // 피드백 제출 핸들러
   const handleFeedbackSubmit = (data) => {
-    setScoreData(data);
+    setScoreAndFeedBackData(data);
 
     // 점수가 4점 이상일 경우 애니메이션 표시
     if (data.score >= 4) {
       setAnimationVisible(true);
 
-      // 일정 시간 후 애니메이션 숨기기
-      setTimeout(() => setAnimationVisible(false), 4000);
+      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
+      setTimeout(() => setAnimationVisible(false), 3000);
     }
   };
 
@@ -119,6 +136,56 @@ const Room = () => {
 
     checkAccessToken();
   }, [navigate]);
+
+  // 학생 및 사용자 정보 가져오기
+  useEffect(() => {
+    const fetchStudentAndUserId = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      try {
+        const studentResponse = await fetch(
+          `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const result = await studentResponse.json();
+
+        if (!result.success) {
+          window.location.href = "/main";
+        }
+
+        setStudentId(result.user.id);
+        const userId = result.user.id;
+
+        // 소켓 연결 생성
+        const socketConnection = io(`${address}`, { query: { userId } });
+        setSocket(socketConnection);
+
+        // 소켓 이벤트 리스너 등록
+        socketConnection.on("overlay_image", (overlay_image) => {
+          const imagelocation = document.querySelector(".questionImage");
+          imagelocation.src = overlay_image;
+        });
+
+        socketConnection.on("alert_end", () => {
+          alert("수업이 종료되었습니다.");
+          navigate("/student_home");
+        });
+
+        return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchStudentAndUserId();
+  }, [roomId]);
 
   // 미디어 가져오기 및 WebRTC 연결 초기화
   useEffect(() => {
@@ -305,7 +372,60 @@ const Room = () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
     navigate("/TeacherHome");
+
+    /*
+
+      socket.on("alert_end", () => {
+        alert("수업이 종료되었습니다아.");
+        navigate("/student_home");
+      });
+
+      */
   };
+
+  // 학생 화면 추가
+  if (userRole === "student") {
+    const problem = problemData[selectedButtonId];
+
+    return (
+      <div className="student-container">
+        <div className="video-container">
+          {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
+          <div className="video-overlay-container">
+            <video
+              ref={myFace}
+              autoPlay
+              muted
+              playsInline
+              className="student-video"
+            />
+            {problem && (
+              <img
+                src={problem.image_url}
+                alt={`Problem ${selectedButtonId}`}
+                className="problem-image-overlay"
+              />
+            )}
+          </div>
+
+          {/* 중간: 문제 텍스트 */}
+          {problem ? (
+            <p className="problem-text">{problem.text}</p>
+          ) : (
+            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
+          )}
+
+          {/* 하단: 교사 비디오 */}
+          <video
+            ref={peerFace}
+            autoPlay
+            playsInline
+            className="teacher-video"
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="classroom-container">
@@ -332,6 +452,7 @@ const Room = () => {
         <div className="video-container">
           {/* 비디오 화면 */}
           <video className="video" ref={peerFace} autoPlay playsInline />
+          <img className="questionImage" src="" alt="" />
 
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
@@ -362,7 +483,10 @@ const Room = () => {
           />
         </div>
         <div className="ClassData">
-          <ClassData scoreData={scorekData} />
+          <ClassData
+            scoreAndFeedBackData={scoreAndFeedBackData}
+            students={students}
+          />
         </div>
       </div>
 

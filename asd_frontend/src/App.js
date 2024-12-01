@@ -23,8 +23,6 @@ import TotalAnimation from "./game_page/TotalAnimation";
 
 import Room from "./game_page/Room";
 
-import GamePage from "./pages/Student/GamePage";
-
 function App() {
   return (
     <Router>
@@ -44,7 +42,6 @@ function App() {
         {/*Student*/}
         {/* <Route path="/student_login_page" element={<StudentLoginPage />} />
         <Route path="/student_home_page" element={<StudentHomePage />} /> */}
-        <Route path="/GamePage/:studentId" element={<GamePage />} />
       </Routes>
     </Router>
   );
