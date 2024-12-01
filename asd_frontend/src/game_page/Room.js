@@ -7,7 +7,9 @@ import SelectedQuestion from "./SelectedQuestion";
 import ClassData from "./ClassData";
 import ScoreAndFeedBack from "./ScoreAndFeedBack";
 import TotalAnimation from "./TotalAnimation";
+import StudentData from "./StudentData";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
 
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
@@ -26,13 +28,42 @@ const Room = () => {
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [students, setStudents] = useState([]);
-  const [studentId, setStudentId] = useState(null);
   const [animationVisible, setAnimationVisible] = useState(false);
-  const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
+  const [scorekData, setScoreData] = useState({
     score: null,
     feedback: "",
   });
+  const [studentDataVisible, setStudentDataVisible] = useState(false);
+  const [roomStudents, setRoomStudents] = useState([]); // Room에 있는 학생 목록
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const students = location.state?.students; // 학생 기본정보 받아옴
+  const studentId = location.state?.studentId; // '학생' 아이디 받아옴
+
+  console.log("students:", students);
+  console.log("roomId:", roomId);
+
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
+
+  const handleStudentDataClick = () => {
+    console.log("Before toggle:", studentDataVisible);
+
+    setStudentDataVisible(true);
+  };
+
+  const handleStudentDataClose = () => {
+    setStudentDataVisible(false);
+  };
 
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
@@ -46,14 +77,14 @@ const Room = () => {
 
   // 피드백 제출 핸들러
   const handleFeedbackSubmit = (data) => {
-    setScoreAndFeedBackData(data);
+    setScoreData(data);
 
     // 점수가 4점 이상일 경우 애니메이션 표시
     if (data.score >= 4) {
       setAnimationVisible(true);
 
-      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
-      setTimeout(() => setAnimationVisible(false), 3000);
+      // 일정 시간 후 애니메이션 숨기기
+      setTimeout(() => setAnimationVisible(false), 4000);
     }
   };
 
@@ -88,45 +119,6 @@ const Room = () => {
 
     checkAccessToken();
   }, [navigate]);
-
-  // 학생 및 사용자 정보 가져오기
-  useEffect(() => {
-    const fetchStudentAndUserId = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) return;
-
-      try {
-        const studentResponse = await fetch(
-          `${process.env.REACT_APP_BACKEND_ADDRESS}/home`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const result = await studentResponse.json();
-
-        if (!result.success) {
-          window.location.href = "/main";
-        }
-
-        setStudentId(result.user.id);
-        const userId = result.user.id;
-
-        // 소켓 연결 생성
-        const socketConnection = io(`${address}`, { query: { userId } });
-        setSocket(socketConnection);
-
-        return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchStudentAndUserId();
-  }, [roomId]);
 
   // 미디어 가져오기 및 WebRTC 연결 초기화
   useEffect(() => {
@@ -312,29 +304,24 @@ const Room = () => {
   const handleEndClass = async () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("인증 정보가 없습니다. 다시 로그인해주세요.");
-        navigate("/login");
-        return;
-      }
-
-      socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
-      alert("수업이 종료되었습니다.");
-      navigate("/TeacherHome");
-    } catch (error) {
-      console.error("수업 종료 중 오류 발생:", error);
-      alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
-    }
+    navigate("/TeacherHome");
   };
 
   return (
     <div className="classroom-container">
       {/* 헤더 */}
       <div className="header">
-        <sapn className="student-id">학생 아이디</sapn>
+        <span className="student-id">{studentId}</span>
+        <button className="student-info" onClick={handleStudentDataClick}>
+          학생 정보
+        </button>
+
+        {studentDataVisible && roomStudents.length > 0 ? (
+          <StudentData
+            studentData={roomStudents}
+            onClose={handleStudentDataClose}
+          />
+        ) : null}
         <button className="end-class-button" onClick={handleEndClass}>
           수업 종료
         </button>
@@ -371,13 +358,11 @@ const Room = () => {
           <ScoreAndFeedBack
             selectedId={selectedId}
             onSubmitFeedback={handleFeedbackSubmit}
+            studentId={studentId}
           />
         </div>
         <div className="ClassData">
-          <ClassData
-            scoreAndFeedBackData={scoreAndFeedBackData}
-            students={students}
-          />
+          <ClassData scoreData={scorekData} />
         </div>
       </div>
 
@@ -391,7 +376,5 @@ const Room = () => {
     </div>
   );
 };
-
-// 방으로 이동하는 경로 roomID 말고 학생ID 사용해서 넘어갈 수 있게 하기.
 
 export default Room;

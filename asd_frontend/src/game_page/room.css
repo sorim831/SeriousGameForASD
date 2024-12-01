@@ -28,12 +28,12 @@
 }
 
 .end-class-button {
-  padding: 5px 10px;
+  padding: 10px 15px;
   background-color: red;
   color: white;
   border: none;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  border-radius: 7px;
+  cursor: pointer;
 }
 
 .video-container {
@@ -63,4 +63,14 @@
 .media-set {
   border-color: #ccc;
   margin-left: 5px;
+}
+
+.student-info {
+  padding: 10px 15px;
+  background-color: #807e7e;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-left: 1050px;
 }

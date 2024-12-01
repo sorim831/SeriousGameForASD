@@ -62,7 +62,6 @@ app.use("/get_students", getStudnetsListRouter);
 app.use("/get_student_info", getStudentInfo);
 app.use("/update_student_info", updateStudentInfo);
 
-app.use("/end_class", endClass);
 app.use("/load_game_history", loadGameHistory);
 app.use("/save_task", saveGameTask);
 //app.use("/token", tokenRouter);
