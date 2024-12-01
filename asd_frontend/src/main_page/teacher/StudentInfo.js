@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./student-info.css";
 
 const StudentInfo = ({ onClose, studentData }) => {
-  const [feedback, setFeedback] = useState(studentData.student_opinion || "");
+  const [feedback, setFeedback] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
@@ -19,7 +19,6 @@ const StudentInfo = ({ onClose, studentData }) => {
 
   const handleSaveClick = async () => {
     setLoading(true); // 수정 버튼 누르면 [ 수정 버튼 -> 완료 버튼 ] 활성화
-    console.log(studentData);
     try {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_ADDRESS}/update_student_info/total_comment`,
@@ -75,7 +74,7 @@ const StudentInfo = ({ onClose, studentData }) => {
 
         const data = await response.json();
         setTotalScore(data.scores || {});
-        console.log(data.scores);
+        console.log("totalScore", data.scores);
       } catch (error) {
         console.error("err at fetchTotalScore", error);
         setTotalScore({});
@@ -99,7 +98,6 @@ const StudentInfo = ({ onClose, studentData }) => {
 
         const data = await response.json();
         setTotalHistory(data.rows || []);
-        console.log(data.rows);
       } catch (error) {
         console.error("err at fetchTotalHistory", error);
       }
@@ -206,7 +204,7 @@ const StudentInfo = ({ onClose, studentData }) => {
               />
             ) : (
               <p className="total-feedback-input">
-                {feedback ||
+                {studentData.student_opinion ||
                   "종합 의견 기록이 존재하지 않습니다. 추가해주세요!"}
               </p>
             )}
@@ -217,6 +215,7 @@ const StudentInfo = ({ onClose, studentData }) => {
 
       <div id="previous-feedback">
         <p>이전 기록</p>
+        {/* 이전 기록들 바탕으로 그래프도 보여주도록*/}
         {totalHistory.map((record, index) => (
           <div key={index} className="previous-feedback-detail">
             <span id="feedback-date">{record.date}</span>
