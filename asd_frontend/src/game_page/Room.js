@@ -23,6 +23,7 @@ const Room = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [isSocketConnection, setisSocketConnection] = useState(false);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
   const [userRole, setUserRole] = useState("");
@@ -51,6 +52,7 @@ const Room = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
+  /* 작동 안되서 일단 주석처리 해놨어요 (승규가)
   useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
       const filteredStudents = students.filter(
@@ -62,6 +64,7 @@ const Room = () => {
       console.error("Invalid students or roomId:", { students, roomId });
     }
   }, [students, roomId]);
+  */
 
   const [studentDataVisible, setStudentDataVisible] = useState(false);
   const [roomStudents, setRoomStudents] = useState([]);
@@ -95,26 +98,26 @@ const Room = () => {
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
+    const imageName = id;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, userRole, roomId);
   };
 
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
-
     const imageName = selectedButtonId;
-    //console.log(imageName);
-    socket.emit("imagePath", imageName, roomId);
 
-    /*
+    socket.emit("selectedimagePath", imageName, roomId);
 
-    socket.on("overlay_image", (overlay_image) => {
-      console.log(overlay_image, "gdgdddffddddd");
+    socket.on("overlay_selected_image", (overlay_image, res) => {
+      console.log(overlay_image, "gdgdddffdsssddddd");
       const imagelocation = document.querySelector(".questionImage");
+      const textlocation = document.querySelector(".questionText");
       //console.log(imagelocation);
       imagelocation.src = overlay_image;
+      textlocation.textContent = res.text;
     });
-
-    */
   };
 
   // 피드백 제출 핸들러
@@ -191,12 +194,17 @@ const Room = () => {
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+        window.socket = socketConnection;
+
+        setisSocketConnection(true);
 
         // 소켓 이벤트 리스너 등록
+        /*
         socketConnection.on("overlay_image", (overlay_image) => {
           const imagelocation = document.querySelector(".questionImage");
           imagelocation.src = overlay_image;
         });
+        */
 
         socketConnection.on("alert_end", () => {
           alert("수업이 종료되었습니다.");
@@ -502,16 +510,14 @@ const Room = () => {
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-
           <video
             className="teacher-video"
             ref={peerFace}
             autoPlay
             playsInline
           />
-
           <img className="questionImage" src="" alt="" />
-
+          <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
             <div className="animation-overlay">
@@ -542,13 +548,20 @@ const Room = () => {
             </div>
           </div>
         )}
+        {isSocketConnection ? (
+          <div className="SelectedQuestion">
+            <SelectedQuestion
+              selectedId={selectedButtonId}
+              sendButtonClick={sendButtonClick}
+            />
+          </div>
+        ) : (
+          <div className="loader">
+            <div className="spinner"></div>
+            <p>캠 켜는 중...</p>
+          </div>
+        )}
 
-        <div className="SelectedQuestion">
-          <SelectedQuestion
-            selectedId={selectedButtonId}
-            sendButtonClick={sendButtonClick}
-          />
-        </div>
         <div>
           <ScoreAndFeedBack
             selectedId={selectedId}

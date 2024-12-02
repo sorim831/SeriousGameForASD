@@ -1,7 +1,16 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./selected-question.css";
 
 const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
+  const [imageLocation, setImageLocation] = useState("");
+  useEffect(() => {
+    window.socket.on("overlay_image", (overlay_image) => {
+      setImageLocation(overlay_image);
+      //const imagelocation = document.querySelector(".questionImage");
+      //imagelocation.src = overlay_image;
+    });
+  });
+
   const generateQuestionText = (id) => {
     if (!id) return "문제";
     const [category, number] = id.split("-");
@@ -15,6 +24,7 @@ const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
       <p className="selected-question">
         {selectedId ? `${selectedId}` : "선택된 질문이 없습니다."}
       </p>
+      <img className="selected-image" src={imageLocation} alt="" />
       <div id="question-description-container">
         <p id="question-description">{questionText}</p>
         <button id="send-question" onClick={() => sendButtonClick(selectedId)}>
