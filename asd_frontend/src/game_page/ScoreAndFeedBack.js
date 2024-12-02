@@ -51,6 +51,11 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
     // 입력된 점수가 숫자인지 확인
     const score = Number(inputScore);
 
+    console.log("전달할 데이터:", { score, selectedId }); // 데이터 확인
+
+    // 점수와 점수 아이디 값을 `ClassData`로 전달
+    onSubmitFeedback({ score, selectedId });
+
     // 감정 이름 추출
     const emotionCategory = getEmotionCategory(selectedId);
 
@@ -61,10 +66,10 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
     // 데이터 전송 객체 생성
     const feedbackData = {
-      student_id: studentId,
-      student_action: emotionCategory,
-      student_score: score,
-      student_opinion: feedback,
+      student_id: studentId, // 학생 아이디
+      student_action: emotionCategory, // 감정 이름
+      student_score: score, // 점수
+      student_opinion: feedback, // 피드백
     };
 
     try {
@@ -91,6 +96,9 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
       alert("네트워크 오류가 발생했습니다. 다시 시도해주세요.");
     }
   };
+  if (isLoading) {
+    return <p>학생 정보를 불러오는 중입니다...</p>;
+  }
 
   if (isLoading) {
     return <p>학생 정보를 불러오는 중입니다...</p>;

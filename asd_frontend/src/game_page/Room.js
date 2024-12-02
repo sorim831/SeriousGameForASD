@@ -12,6 +12,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 
 import problemData from "./problemData.json";
+
 import "../loader.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
@@ -49,6 +50,18 @@ const Room = () => {
 
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
+
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
 
   const [studentDataVisible, setStudentDataVisible] = useState(false);
   const [roomStudents, setRoomStudents] = useState([]);
