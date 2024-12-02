@@ -9,12 +9,12 @@ import ScoreAndFeedBack from "./ScoreAndFeedBack";
 import TotalAnimation from "./TotalAnimation";
 import axios from "axios";
 import problemData from "./problemData.json";
-
+import "../loader.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
-  const myFace = useRef(null); 
-  const peerFace = useRef(null); 
+  const myFace = useRef(null);
+  const peerFace = useRef(null);
   const [myStream, setMyStream] = useState(null);
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
@@ -30,10 +30,22 @@ const Room = () => {
   const [students, setStudents] = useState([]);
   const [studentId, setStudentId] = useState(null);
   const [animationVisible, setAnimationVisible] = useState(false);
+  const [showResizeMessage, setShowResizeMessage] = useState(false);
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
+  const [camLoading, setCamLoading] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setShowResizeMessage(window.innerWidth < 1600);
+    };
+
+    window.addEventListener("resize", checkScreenSize);
+    checkScreenSize();
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
@@ -183,6 +195,7 @@ const Room = () => {
 
   // 카메라와 마이크 활성화
   const getMedia = async (deviceId) => {
+    setCamLoading(false);
     const constraints = {
       audio: true,
       video: deviceId
@@ -197,8 +210,11 @@ const Room = () => {
       if (!deviceId) {
         await getCameras(stream); // 카메라 옵션 설정
       }
+      setCamLoading(true);
     } catch (e) {
       console.log(e);
+    } finally {
+      setCamLoading(true);
     }
   };
 
@@ -327,7 +343,12 @@ const Room = () => {
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
-    return <p>loading...</p>;
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>수업 페이지 불러오는 중...</p>
+      </div>
+    );
   }
 
   // 수업 종료 핸들러
@@ -398,7 +419,7 @@ const Room = () => {
             ref={peerFace}
             autoPlay
             playsInline
-            className="teacher-video"
+            className="student-video-at-student"
           />
         </div>
       </div>
@@ -407,8 +428,13 @@ const Room = () => {
 
   return (
     <div className="classroom-container">
+      {showResizeMessage && (
+        <div className="plz-resize-message">
+          <p>화면을 축소해주세요!</p>
+        </div>
+      )}
       {/* 헤더 */}
-      <div className="header">
+      <div className="classroom-header">
         <sapn className="student-id">학생 아이디</sapn>
         <button className="end-class-button" onClick={handleEndClass}>
           수업 종료
@@ -419,7 +445,16 @@ const Room = () => {
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-          <video className="video" ref={peerFace} autoPlay playsInline />
+          {peerConnected ? (
+            <video className="video" ref={peerFace} autoPlay playsInline />
+          ) : (
+            <div className="cam-loading">
+              <div className="loader">
+                <div className="spinner"></div>
+                <p>연결 중...</p>
+              </div>
+            </div>
+          )}
           <img className="questionImage" src="" alt="" />
 
           {/* TotalAnimation 컴포넌트 */}
@@ -436,7 +471,23 @@ const Room = () => {
 
       {/* 하단 영역 */}
       <div className="bottom">
-        <video ref={myFace} className="video" autoPlay muted playsInline />
+        {camLoading ? (
+          <video
+            ref={myFace}
+            className="teacher-video"
+            autoPlay
+            muted
+            playsInline
+          />
+        ) : (
+          <div className="cam-loading">
+            <div className="loader">
+              <div className="spinner"></div>
+              <p>캠 켜는 중...</p>
+            </div>
+          </div>
+        )}
+
         <div className="SelectedQuestion">
           <SelectedQuestion
             selectedId={selectedButtonId}
@@ -459,10 +510,10 @@ const Room = () => {
 
       {/* 미디어 컨트롤 버튼 */}
       <button onClick={handleMuteClick} className="media-set">
-        {muted ? "Unmute" : "Mute"}
+        {muted ? "마이크 켜기" : "마이크 끄기"}
       </button>
       <button onClick={handleCameraClick} className="media-set">
-        {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+        {cameraOff ? "카메라 켜기" : "카메라 끄기"}
       </button>
     </div>
   );

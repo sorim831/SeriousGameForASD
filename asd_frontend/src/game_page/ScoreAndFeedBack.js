@@ -31,27 +31,33 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    onSubmitFeedback({ score: Number(inputScore), selectedId });
+  };
 
-    // 입력된 점수가 숫자이고 0~10 사이의 범위에 있는지 확인
-    const score = Number(inputScore);
+  const handleScoreChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
 
-    // 점수와 점수 아이디 값을 `ClassData`로 전달
-    onSubmitFeedback({ score, selectedId });
+    if (value === "" || (Number(value) >= 0 && Number(value) <= 10)) {
+      setInputScore(value);
+    }
   };
 
   return (
     <div className="score-and-feedback-container">
-      <span className="emotion">{generateQuestionText(selectedId)}</span>
       <form onSubmit={handleSubmit}>
         <div className="score-input-div">
+          <span className="emotion">{generateQuestionText(selectedId)}</span>
+
           <input
             type="number"
-            className="teacher-score"
-            value={inputScore}
-            onChange={(e) => setInputScore(e.target.value)}
-            placeholder="0~10 점 입력"
             min="0"
             max="10"
+            step="1"
+            className="teacher-score"
+            value={inputScore}
+            onChange={handleScoreChange}
+            placeholder="0~10 점 입력"
+            style={{ textAlign: "right" }}
           />
           <span>점</span>
         </div>
@@ -64,7 +70,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback }) {
             onChange={(e) => setFeedback(e.target.value)}
           />
         </div>
-        <button type="submit" className="feedback-button">
+        <button type="submit" className="game-feedback-button">
           저장 및 다음 상황
         </button>
       </form>

@@ -12,9 +12,9 @@ const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
 
   return (
     <div className="selected-question-container">
-      <span className="selected-question">
+      <p className="selected-question">
         {selectedId ? `${selectedId}` : "선택된 질문이 없습니다."}
-      </span>
+      </p>
       <div id="question-description-container">
         <p id="question-description">{questionText}</p>
         <button id="send-question" onClick={() => sendButtonClick(selectedId)}>
