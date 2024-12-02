@@ -62,27 +62,19 @@ const Room = () => {
   useEffect(() => {
     if (!socket) return;
 
-    // 애니메이션 이벤트 수신
-    socket.on("triggerAnimation", () => {
-      console.log("애니메이션 이벤트 수신");
-      playTotalAnimation();
+    // 학생 화면 애니메이션 트리거
+    socket.on("playAnimation", () => {
+      console.log("애니메이션 이벤트 수신: 학생 화면");
+      setAnimationVisible(true);
+
+      // 일정 시간 후 애니메이션 숨기기
+      setTimeout(() => setAnimationVisible(false), 4000);
     });
 
-    return () => socket.off("triggerAnimation");
+    return () => {
+      socket.off("playAnimation");
+    };
   }, [socket]);
-
-  const playTotalAnimation = () => {
-    // TotalAnimation 실행 로직
-    const animationElement = document.querySelector(".TotalAnimation");
-    if (animationElement) {
-      animationElement.classList.add("active"); // 애니메이션 시작
-
-      //video-overlay-container (학생 화면 - 학생 카메라 부분) 에 전송된 애니메이션이 출력되게 하기
-
-      // 일정 시간 후 애니메이션 종료
-      setTimeout(() => animationElement.classList.remove("active"), 4000);
-    }
-  };
 
   useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
@@ -138,11 +130,10 @@ const Room = () => {
     });
   };
 
-  // 피드백 제출 핸들러
+  // 자세히 보기 버튼 이벤트 (서버로 데이터 전송 + 소켓으로 학생에게 애니메이션)
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
 
-    // 점수가 4점 이상일 경우 애니메이션 표시
     if (data.score >= 4) {
       setAnimationVisible(true);
 
@@ -150,7 +141,9 @@ const Room = () => {
       setTimeout(() => setAnimationVisible(false), 3000);
 
       // 서버로 애니메이션 이벤트 전송
-      socket.emit("playAnimation", roomId);
+      if (socket) {
+        socket.emit("playAnimation", roomId);
+      }
     }
   };
 
@@ -476,9 +469,13 @@ const Room = () => {
             <img src="" alt="" className="problem-image-overlay" />
           </div>
 
+          {animationVisible && (
+            <div className="student-animation-overlay">
+              <TotalAnimation />
+            </div>
+          )}
           {/* 중간: 문제 텍스트 */}
           <p className="problem-text">문제가 선택되지 않았습니다.</p>
-
           {/* 하단: 교사 비디오 */}
           <video
             ref={peerFace}
@@ -486,7 +483,6 @@ const Room = () => {
             playsInline
             className="student-video"
           />
-          {/* 여기도 TotalAnimation 컴포넌트 추가해야 학생화면에 애니메이션 뜨나? */}
         </div>
       </div>
     ) : (
@@ -536,7 +532,7 @@ const Room = () => {
           <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
-            <div className="animation-overlay">
+            <div className="teacher-animation-overlay">
               <TotalAnimation />
             </div>
           )}

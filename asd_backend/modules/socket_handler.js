@@ -107,10 +107,12 @@ const socketHandler = (server) => {
       */
     });
 
-    // playAnimation 애니메이션 이벤트 처리
-    socket.on("playAnimation", (roomId) => {
-      console.log(`애니메이션 요청, 방 ID: ${roomId}`);
-      socket.to(roomId).emit("triggerAnimation");
+    // 애니메이션 이벤트 처리
+    io.on("connection", (socket) => {
+      socket.on("playAnimation", (roomId) => {
+        console.log(`애니메이션 이벤트: ${roomId}`);
+        socket.to(roomId).emit("playAnimation");
+      });
     });
 
     // 수업 종료 처리
