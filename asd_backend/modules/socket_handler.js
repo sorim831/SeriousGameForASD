@@ -61,14 +61,10 @@ const socketHandler = (server) => {
     });
 
     // 특정 이미지를 요청하는 이벤트 ( fe에서 에밋 )
-    socket.on("imagePath", (imageName, userRole, roomName) => {
+    socket.on("imagePath", (imageName, roomName) => {
       let imgPath;
 
-      if (userRole === "teacher") {
-        imgPath = `/images/teacher/${imageName}.jpg`;
-      } else if (userRole === "student") {
-        imgPath = `/images/student/${imageName}.png`;
-      }
+      imgPath = `/images/teacher/${imageName}.jpg`;
 
       const overlay_image = imgPath;
       // FE로 이미지 경로 전송 ( fe에서 on)

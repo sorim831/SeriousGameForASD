@@ -52,20 +52,6 @@ const Room = () => {
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  /* 작동 안되서 일단 주석처리 해놨어요 (승규가)
-  useEffect(() => {
-    if (students && Array.isArray(students) && roomId) {
-      const filteredStudents = students.filter(
-        (student) => student.student_id === roomId
-      );
-      console.log("Filtered students:", filteredStudents);
-      setRoomStudents(filteredStudents);
-    } else {
-      console.error("Invalid students or roomId:", { students, roomId });
-    }
-  }, [students, roomId]);
-  */
-
   const [studentDataVisible, setStudentDataVisible] = useState(false);
   const [roomStudents, setRoomStudents] = useState([]);
   const [error, setError] = useState(null);
@@ -100,7 +86,7 @@ const Room = () => {
     setSelectedButtonId(id);
     const imageName = id;
     //console.log(imageName);
-    socket.emit("imagePath", imageName, userRole, roomId);
+    socket.emit("imagePath", imageName, roomId);
   };
 
   // 선택 ID 전송 핸들러
@@ -111,12 +97,19 @@ const Room = () => {
     socket.emit("selectedimagePath", imageName, roomId);
 
     socket.on("overlay_selected_image", (overlay_image, res) => {
-      console.log(overlay_image, "gdgdddffdsssddddd");
+      console.log("gd");
+      console.log(overlay_image, "gddddgdd");
       const imagelocation = document.querySelector(".questionImage");
       const textlocation = document.querySelector(".questionText");
-      //console.log(imagelocation);
       imagelocation.src = overlay_image;
       textlocation.textContent = res.text;
+
+      if (userRole === "student") {
+        const studentimage = document.querySelector(".problem-image-overlay");
+        const studenttext = document.querySelector(".problem-text");
+        studentimage.src = overlay_image;
+        studenttext.textContent = res.text;
+      }
     });
   };
 
@@ -391,10 +384,12 @@ const Room = () => {
       }
     });
 
+    /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
       navigate("/student_home");
     });
+    */
 
     return () => {
       socket.off("welcome");
@@ -426,22 +421,19 @@ const Room = () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
     navigate("/TeacherHome");
+    socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
 
-    /*
-
-      socket.on("alert_end", () => {
-        alert("수업이 종료되었습니다아.");
-        navigate("/student_home");
-      });
-
-      */
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
   };
 
   // 학생 화면 추가
   if (userRole === "student") {
     const problem = problemData[selectedButtonId];
 
-    return (
+    return isSocketConnection ? (
       <div className="student-container">
         <div className="video-container">
           {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
@@ -453,21 +445,11 @@ const Room = () => {
               playsInline
               className="student-video"
             />
-            {problem && (
-              <img
-                src={problem.image_url}
-                alt={`Problem ${selectedButtonId}`}
-                className="problem-image-overlay"
-              />
-            )}
+            <img src="" alt="" className="problem-image-overlay" />
           </div>
 
           {/* 중간: 문제 텍스트 */}
-          {problem ? (
-            <p className="problem-text">{problem.text}</p>
-          ) : (
-            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
-          )}
+          <p className="problem-text">문제가 선택되지 않았습니다.</p>
 
           {/* 하단: 교사 비디오 */}
           <video
@@ -477,6 +459,11 @@ const Room = () => {
             className="student-video"
           />
         </div>
+      </div>
+    ) : (
+      <div className="loader3">
+        <div className="spinner3"></div>
+        <p>캠 켜는 중...</p>
       </div>
     );
   }
@@ -556,8 +543,8 @@ const Room = () => {
             />
           </div>
         ) : (
-          <div className="loader">
-            <div className="spinner"></div>
+          <div className="loader2">
+            <div className="spinner2"></div>
             <p>캠 켜는 중...</p>
           </div>
         )}
