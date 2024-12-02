@@ -99,7 +99,7 @@ const TeacherHome = () => {
   // 게임 시작
   const handleGameStart = (studentId) => {
     console.log(`${studentId}의 게임이 시작되었습니다.`);
-    navigate(`/room/${studentId}`); // studentId를 URL에 포함
+    navigate(`/room/${studentId}`, { state: { studentId, students } });
   };
 
   // 로그아웃
@@ -167,7 +167,8 @@ const TeacherHome = () => {
       {showStudentInfo && selectedStudent && (
         <StudentInfo
           onClose={handleCloseFeedback}
-          studentData={selectedStudent} // 전체 학생 객체를 전달
+          studentData={selectedStudent}
+          key={selectedStudent.student_id}
         />
       )}
       <button className="teacher-home-student-add" onClick={handleAddStudent}>

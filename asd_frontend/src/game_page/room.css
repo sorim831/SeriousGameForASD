@@ -28,12 +28,12 @@
 }
 
 .end-class-button {
-  padding: 5px 10px;
+  padding: 10px 15px;
   background-color: red;
   color: white;
   border: none;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  border-radius: 7px;
+  cursor: pointer;
 }
 
 .video-container {
@@ -118,6 +118,14 @@
   pointer-events: none; /* 클릭 방지 */
 }
 
+.student-video {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  margin: 20px 10px 10px 10px;
+  transform: scaleX(-1);
+}
+
 /* 문제 텍스트 */
 .problem-text {
   margin: 20px 0;
@@ -164,4 +172,14 @@
   justify-content: space-between;
   padding: 10px 0 10px 20px;
   background-color: transparent;
+}
+
+.student-info {
+  padding: 10px 15px;
+  background-color: #807e7e;
+  color: white;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-left: 1050px;
 }
