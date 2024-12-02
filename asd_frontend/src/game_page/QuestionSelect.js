@@ -14,7 +14,7 @@ const QuestionSelect = ({ onButtonClick }) => {
     <div className="question-container">
       <ul>
         <li>😄기쁨😄</li>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 3 }).map((_, index) => (
           <li key={`1-${index + 1}`}>
             <button
               className={`question ${
@@ -30,7 +30,7 @@ const QuestionSelect = ({ onButtonClick }) => {
       </ul>
       <ul>
         <li>😭슬픔😭</li>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 3 }).map((_, index) => (
           <li key={`2-${index + 1}`}>
             <button
               className={`question ${
@@ -46,7 +46,7 @@ const QuestionSelect = ({ onButtonClick }) => {
       </ul>
       <ul>
         <li>😬공포😬</li>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <li key={`3-${index + 1}`}>
             <button
               className={`question ${
@@ -62,7 +62,7 @@ const QuestionSelect = ({ onButtonClick }) => {
       </ul>
       <ul>
         <li>😨혐오😨</li>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <li key={`4-${index + 1}`}>
             <button
               className={`question ${
@@ -78,7 +78,7 @@ const QuestionSelect = ({ onButtonClick }) => {
       </ul>
       <ul>
         <li>😡분노😡</li>
-        {Array.from({ length: 6 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <li key={`5-${index + 1}`}>
             <button
               className={`question ${

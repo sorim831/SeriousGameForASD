@@ -23,6 +23,7 @@ const Room = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [isSocketConnection, setisSocketConnection] = useState(false);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
   const [userRole, setUserRole] = useState("");
@@ -70,6 +71,18 @@ const Room = () => {
     }
   }, [students, roomId]);
 
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
+
   const handleStudentDataClick = () => {
     console.log("Before toggle:", studentDataVisible);
 
@@ -83,26 +96,33 @@ const Room = () => {
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
+    const imageName = id;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
   };
 
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
-
     const imageName = selectedButtonId;
-    //console.log(imageName);
-    socket.emit("imagePath", imageName, roomId);
 
-    /*
+    socket.emit("selectedimagePath", imageName, roomId);
 
-    socket.on("overlay_image", (overlay_image) => {
-      console.log(overlay_image, "gdgdddffddddd");
+    socket.on("overlay_selected_image", (overlay_image, res) => {
+      console.log("gd");
+      console.log(overlay_image, "gddddgdd");
       const imagelocation = document.querySelector(".questionImage");
-      //console.log(imagelocation);
+      const textlocation = document.querySelector(".questionText");
       imagelocation.src = overlay_image;
-    });
+      textlocation.textContent = res.text;
 
-    */
+      if (userRole === "student") {
+        const studentimage = document.querySelector(".problem-image-overlay");
+        const studenttext = document.querySelector(".problem-text");
+        studentimage.src = overlay_image;
+        studenttext.textContent = res.text;
+      }
+    });
   };
 
   // 피드백 제출 핸들러
@@ -115,6 +135,9 @@ const Room = () => {
 
       // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
       setTimeout(() => setAnimationVisible(false), 3000);
+
+      // 서버로 애니메이션 이벤트 전송
+      socket.emit("playAnimation", roomId);
     }
   };
 
@@ -179,12 +202,17 @@ const Room = () => {
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+        window.socket = socketConnection;
+
+        setisSocketConnection(true);
 
         // 소켓 이벤트 리스너 등록
+        /*
         socketConnection.on("overlay_image", (overlay_image) => {
           const imagelocation = document.querySelector(".questionImage");
           imagelocation.src = overlay_image;
         });
+        */
 
         socketConnection.on("alert_end", () => {
           alert("수업이 종료되었습니다.");
@@ -371,10 +399,12 @@ const Room = () => {
       }
     });
 
+    /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
       navigate("/student_home");
     });
+    */
 
     return () => {
       socket.off("welcome");
@@ -406,22 +436,19 @@ const Room = () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
     navigate("/TeacherHome");
+    socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
 
-    /*
-
-      socket.on("alert_end", () => {
-        alert("수업이 종료되었습니다아.");
-        navigate("/student_home");
-      });
-
-      */
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
   };
 
   // 학생 화면 추가
   if (userRole === "student") {
     const problem = problemData[selectedButtonId];
 
-    return (
+    return isSocketConnection ? (
       <div className="student-container">
         <div className="video-container">
           {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
@@ -433,21 +460,11 @@ const Room = () => {
               playsInline
               className="student-video"
             />
-            {problem && (
-              <img
-                src={problem.image_url}
-                alt={`Problem ${selectedButtonId}`}
-                className="problem-image-overlay"
-              />
-            )}
+            <img src="" alt="" className="problem-image-overlay" />
           </div>
 
           {/* 중간: 문제 텍스트 */}
-          {problem ? (
-            <p className="problem-text">{problem.text}</p>
-          ) : (
-            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
-          )}
+          <p className="problem-text">문제가 선택되지 않았습니다.</p>
 
           {/* 하단: 교사 비디오 */}
           <video
@@ -456,7 +473,13 @@ const Room = () => {
             playsInline
             className="student-video"
           />
+          {/* 여기도 TotalAnimation 컴포넌트 추가해야 학생화면에 애니메이션 뜨나? */}
         </div>
+      </div>
+    ) : (
+      <div className="loader3">
+        <div className="spinner3"></div>
+        <p>캠 켜는 중...</p>
       </div>
     );
   }
@@ -490,16 +513,14 @@ const Room = () => {
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-
           <video
             className="teacher-video"
             ref={peerFace}
             autoPlay
             playsInline
           />
-
           <img className="questionImage" src="" alt="" />
-
+          <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
             <div className="animation-overlay">
@@ -530,13 +551,20 @@ const Room = () => {
             </div>
           </div>
         )}
+        {isSocketConnection ? (
+          <div className="SelectedQuestion">
+            <SelectedQuestion
+              selectedId={selectedButtonId}
+              sendButtonClick={sendButtonClick}
+            />
+          </div>
+        ) : (
+          <div className="loader2">
+            <div className="spinner2"></div>
+            <p>캠 켜는 중...</p>
+          </div>
+        )}
 
-        <div className="SelectedQuestion">
-          <SelectedQuestion
-            selectedId={selectedButtonId}
-            sendButtonClick={sendButtonClick}
-          />
-        </div>
         <div>
           <ScoreAndFeedBack
             selectedId={selectedId}
