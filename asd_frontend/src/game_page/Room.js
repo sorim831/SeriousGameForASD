@@ -35,12 +35,19 @@ const Room = () => {
   const [animationVisible, setAnimationVisible] = useState(false);
   const [showResizeMessage, setShowResizeMessage] = useState(false);
   const [studentID, setStudentId] = useState(null);
+  const [studentDataVisible, setStudentDataVisible] = useState(false);
+  const [roomStudents, setRoomStudents] = useState([]);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const students = location.state?.students;
+  const studentId = location.state?.studentId;
 
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
   const [camLoading, setCamLoading] = useState(false);
+
   useEffect(() => {
     const checkScreenSize = () => {
       setShowResizeMessage(window.innerWidth < 1600);
@@ -51,13 +58,6 @@ const Room = () => {
 
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
-
-  const [studentDataVisible, setStudentDataVisible] = useState(false);
-  const [roomStudents, setRoomStudents] = useState([]);
-  const [error, setError] = useState(null);
-  const location = useLocation();
-  const students = location.state?.students;
-  const studentId = location.state?.studentId;
 
   useEffect(() => {
     if (!socket) return;
@@ -75,6 +75,18 @@ const Room = () => {
       socket.off("playAnimation");
     };
   }, [socket]);
+
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
 
   useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
