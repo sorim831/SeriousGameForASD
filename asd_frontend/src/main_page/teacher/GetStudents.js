@@ -105,7 +105,13 @@ const GetStudent = () => {
     checkAccessToken();
   }, []);
 
-  if (loading) return <p>loading....</p>;
+  if (loading)
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>불러오는 중...</p>
+      </div>
+    );
 
   // "자세히 보기" 버튼 클릭 이벤트
   const handleViewDetails = (student) => {

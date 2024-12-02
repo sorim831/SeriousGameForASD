@@ -132,7 +132,12 @@ function Register() {
   };
 
   if (loading) {
-    return <div>loading...</div>;
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>불러오는 중...</p>
+      </div>
+    );
   }
 
   return (

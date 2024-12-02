@@ -7,14 +7,18 @@ import SelectedQuestion from "./SelectedQuestion";
 import ClassData from "./ClassData";
 import ScoreAndFeedBack from "./ScoreAndFeedBack";
 import TotalAnimation from "./TotalAnimation";
+import StudentData from "./StudentData";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+
 import problemData from "./problemData.json";
 
+import "../loader.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
-  const myFace = useRef(null); 
-  const peerFace = useRef(null); 
+  const myFace = useRef(null);
+  const peerFace = useRef(null);
   const [myStream, setMyStream] = useState(null);
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
@@ -27,13 +31,66 @@ const Room = () => {
   const roomId = decodeURIComponent(window.location.pathname.split("/")[2]);
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const [students, setStudents] = useState([]);
-  const [studentId, setStudentId] = useState(null);
   const [animationVisible, setAnimationVisible] = useState(false);
+  const [showResizeMessage, setShowResizeMessage] = useState(false);
+  const [studentID, setStudentId] = useState(null);
+
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
+  const [camLoading, setCamLoading] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setShowResizeMessage(window.innerWidth < 1600);
+    };
+
+    window.addEventListener("resize", checkScreenSize);
+    checkScreenSize();
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
+
+  const [studentDataVisible, setStudentDataVisible] = useState(false);
+  const [roomStudents, setRoomStudents] = useState([]);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const students = location.state?.students;
+  const studentId = location.state?.studentId;
+
+  useEffect(() => {
+    if (students && Array.isArray(students) && roomId) {
+      const filteredStudents = students.filter(
+        (student) => student.student_id === roomId
+      );
+      console.log("Filtered students:", filteredStudents);
+      setRoomStudents(filteredStudents);
+    } else {
+      console.error("Invalid students or roomId:", { students, roomId });
+    }
+  }, [students, roomId]);
+
+  const handleStudentDataClick = () => {
+    console.log("Before toggle:", studentDataVisible);
+
+    setStudentDataVisible(true);
+  };
+
+  const handleStudentDataClose = () => {
+    setStudentDataVisible(false);
+  };
 
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
@@ -160,6 +217,16 @@ const Room = () => {
     if (myStream) {
       makeConnection();
     }
+
+    return () => {
+      // 컴포넌트 언마운트 시 연결 정리
+      if (myPeerConnection) {
+        myPeerConnection.close();
+      }
+      if (myStream) {
+        myStream.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, [myStream]);
 
   // 사용 가능한 카메라 가져오기
@@ -183,6 +250,7 @@ const Room = () => {
 
   // 카메라와 마이크 활성화
   const getMedia = async (deviceId) => {
+    setCamLoading(false);
     const constraints = {
       audio: true,
       video: deviceId
@@ -197,8 +265,11 @@ const Room = () => {
       if (!deviceId) {
         await getCameras(stream); // 카메라 옵션 설정
       }
+      setCamLoading(true);
     } catch (e) {
       console.log(e);
+    } finally {
+      setCamLoading(true);
     }
   };
 
@@ -245,8 +316,10 @@ const Room = () => {
 
     // 상대방 스트림 수신
     peerConnection.addEventListener("track", (data) => {
-      peerFace.current.srcObject = data.streams[0];
-      setPeerConnected(true);
+      if (peerFace.current) {
+        peerFace.current.srcObject = data.streams[0];
+        setPeerConnected(true);
+      }
     });
 
     // 연결 상태 변경 감지
@@ -310,6 +383,11 @@ const Room = () => {
       }
     });
 
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
+
     return () => {
       socket.off("welcome");
       socket.off("offer");
@@ -327,27 +405,21 @@ const Room = () => {
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
-    return <p>loading...</p>;
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>수업 페이지 불러오는 중...</p>
+      </div>
+    );
   }
 
   // 수업 종료 핸들러
   const handleEndClass = async () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
+    navigate("/TeacherHome");
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("인증 정보가 없습니다. 다시 로그인해주세요.");
-        navigate("/login");
-        return;
-      }
-
-      socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
-      alert("수업이 종료되었습니다.");
-      navigate("/TeacherHome");
-
-      /*
+    /*
 
       socket.on("alert_end", () => {
         alert("수업이 종료되었습니다아.");
@@ -355,10 +427,6 @@ const Room = () => {
       });
 
       */
-    } catch (error) {
-      console.error("수업 종료 중 오류 발생:", error);
-      alert("수업 종료 중 문제가 발생했습니다. 다시 시도해주세요.");
-    }
   };
 
   // 학생 화면 추가
@@ -398,7 +466,7 @@ const Room = () => {
             ref={peerFace}
             autoPlay
             playsInline
-            className="teacher-video"
+            className="student-video"
           />
         </div>
       </div>
@@ -407,9 +475,24 @@ const Room = () => {
 
   return (
     <div className="classroom-container">
+      {showResizeMessage && (
+        <div className="plz-resize-message">
+          <p>화면을 축소해주세요!</p>
+        </div>
+      )}
       {/* 헤더 */}
       <div className="header">
-        <sapn className="student-id">학생 아이디</sapn>
+        <span className="student-id">{studentId}</span>
+        <button className="student-info" onClick={handleStudentDataClick}>
+          학생 정보
+        </button>
+
+        {studentDataVisible && roomStudents.length > 0 ? (
+          <StudentData
+            studentData={roomStudents}
+            onClose={handleStudentDataClose}
+          />
+        ) : null}
         <button className="end-class-button" onClick={handleEndClass}>
           수업 종료
         </button>
@@ -419,7 +502,14 @@ const Room = () => {
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-          <video className="video" ref={peerFace} autoPlay playsInline />
+
+          <video
+            className="teacher-video"
+            ref={peerFace}
+            autoPlay
+            playsInline
+          />
+
           <img className="questionImage" src="" alt="" />
 
           {/* TotalAnimation 컴포넌트 */}
@@ -436,7 +526,23 @@ const Room = () => {
 
       {/* 하단 영역 */}
       <div className="bottom">
-        <video ref={myFace} className="video" autoPlay muted playsInline />
+        {camLoading ? (
+          <video
+            ref={myFace}
+            className="teacher-video"
+            autoPlay
+            muted
+            playsInline
+          />
+        ) : (
+          <div className="cam-loading">
+            <div className="loader">
+              <div className="spinner"></div>
+              <p>캠 켜는 중...</p>
+            </div>
+          </div>
+        )}
+
         <div className="SelectedQuestion">
           <SelectedQuestion
             selectedId={selectedButtonId}
@@ -447,6 +553,7 @@ const Room = () => {
           <ScoreAndFeedBack
             selectedId={selectedId}
             onSubmitFeedback={handleFeedbackSubmit}
+            studentId={studentId}
           />
         </div>
         <div className="ClassData">
@@ -459,15 +566,13 @@ const Room = () => {
 
       {/* 미디어 컨트롤 버튼 */}
       <button onClick={handleMuteClick} className="media-set">
-        {muted ? "Unmute" : "Mute"}
+        {muted ? "마이크 켜기" : "마이크 끄기"}
       </button>
       <button onClick={handleCameraClick} className="media-set">
-        {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+        {cameraOff ? "카메라 켜기" : "카메라 끄기"}
       </button>
     </div>
   );
 };
-
-// 방으로 이동하는 경로 roomID 말고 학생ID 사용해서 넘어갈 수 있게 하기.
 
 export default Room;
