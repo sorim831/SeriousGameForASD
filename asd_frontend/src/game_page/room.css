@@ -71,7 +71,7 @@
   pointer-events: none;
 }
 
-.animation-overlay {
+.teacher-animation-overlay {
   position: absolute;
   top: 0;
   left: 0;
@@ -82,6 +82,7 @@
   align-items: center;
   pointer-events: none;
   z-index: 10;
+  overflow: hidden;
 }
 
 .media-set {
@@ -124,6 +125,21 @@
   height: auto;
   margin: 20px 10px 10px 10px;
   transform: scaleX(-1);
+  object-fit: cover;
+}
+
+.student-animation-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
 }
 
 /* 문제 텍스트 */
@@ -147,6 +163,7 @@
   height: auto;
   margin: 20px 10px 10px 10px;
   transform: scaleX(-1);
+  object-fit: cover;
 }
 
 .plz-resize-message {
