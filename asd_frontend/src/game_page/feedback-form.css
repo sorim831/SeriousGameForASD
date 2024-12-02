@@ -1,6 +1,6 @@
 .feedback-p {
-  margin-left: 20px;
-  margin-bottom: 5px;
+  margin-left: 15px;
+  margin-bottom: 0px;
   font-weight: 600;
 }
 
@@ -12,24 +12,28 @@
   border: none;
   border-radius: 10px;
   resize: none;
-  background-color: #ececec;
+  background-color: #fafafa;
+  padding: 8px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
 }
 
 textarea:focus {
   outline: none;
 }
 
-.feedback-button {
+.game-feedback-button {
   padding: 10px 15px;
   background-color: #807e7e;
   color: white;
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  margin-left: 10px;
-  margin-bottom: 10px;
+  margin-right: 10px;
+  float: right;
 }
 
-.feedback-textarea::placeholder {
-  padding-left: 10px;
+.emotion {
+  font-size: 18px;
+  margin-right: 10px;
 }

@@ -22,6 +22,14 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
     return emotionMap[category] || "";
   };
 
+  const handleScoreChange = (e) => {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+
+    if (value === "" || (Number(value) >= 0 && Number(value) <= 10)) {
+      setInputScore(value);
+    }
+  };
+
   // 감정 카테고리와 문제 ID로 문제 텍스트 생성
   const generateQuestionText = (selectedId) => {
     if (!selectedId) return "문제";
@@ -75,6 +83,8 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
         const result = await response.json();
         console.log(result.message || "피드백이 성공적으로 저장되었습니다!");
 
+        onSubmitFeedback({ score, selectedId });
+
         // 입력값 초기화
         setInputScore("");
         setFeedback("");
@@ -90,19 +100,26 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
     return <p>학생 정보를 불러오는 중입니다...</p>;
   }
 
+  if (isLoading) {
+    return <p>학생 정보를 불러오는 중입니다...</p>;
+  }
+
   return (
     <div className="score-and-feedback-container">
-      <span className="emotion">{generateQuestionText(selectedId)}</span>
       <form onSubmit={handleSubmit}>
         <div className="score-input-div">
+          <span className="emotion">{generateQuestionText(selectedId)}</span>
+
           <input
             type="number"
-            className="teacher-score"
-            value={inputScore}
-            onChange={(e) => setInputScore(e.target.value)}
-            placeholder="0~10 점 입력"
             min="0"
             max="10"
+            step="1"
+            className="teacher-score"
+            value={inputScore}
+            onChange={handleScoreChange}
+            placeholder="0~10 점 입력"
+            style={{ textAlign: "right" }}
           />
           <span>점</span>
         </div>
@@ -115,7 +132,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
             onChange={(e) => setFeedback(e.target.value)}
           />
         </div>
-        <button type="submit" className="feedback-button">
+        <button type="submit" className="game-feedback-button">
           저장 및 다음 상황
         </button>
       </form>

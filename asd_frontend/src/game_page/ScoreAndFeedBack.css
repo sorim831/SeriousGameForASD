@@ -1,7 +1,11 @@
 .score-and-feedback-container {
   border: 1px solid #ccc;
   width: 300px;
-  height: 330px;
+  height: 310px;
+  margin: 0 10px;
+  border-radius: 20px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .teacher-score {

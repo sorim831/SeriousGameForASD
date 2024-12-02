@@ -71,7 +71,13 @@ const TeacherHome = () => {
     checkAccessToken();
   }, []);
 
-  if (loading) return <p>loading....</p>;
+  if (loading)
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>불러오는 중...</p>
+      </div>
+    );
 
   // 학생 추가 버튼 클릭 시 /get_students 페이지로 이동
   const handleAddStudent = () => {

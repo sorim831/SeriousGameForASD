@@ -13,6 +13,7 @@ import { useLocation } from "react-router-dom";
 
 import problemData from "./problemData.json";
 
+import "../loader.css";
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
@@ -22,6 +23,7 @@ const Room = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [isSocketConnection, setisSocketConnection] = useState(false);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
   const [userRole, setUserRole] = useState("");
@@ -31,12 +33,24 @@ const Room = () => {
   const [selectedButtonId, setSelectedButtonId] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const [animationVisible, setAnimationVisible] = useState(false);
+  const [showResizeMessage, setShowResizeMessage] = useState(false);
   const [studentID, setStudentId] = useState(null);
 
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
+  const [camLoading, setCamLoading] = useState(false);
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setShowResizeMessage(window.innerWidth < 1600);
+    };
+
+    window.addEventListener("resize", checkScreenSize);
+    checkScreenSize();
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
 
   const [studentDataVisible, setStudentDataVisible] = useState(false);
   const [roomStudents, setRoomStudents] = useState([]);
@@ -95,26 +109,33 @@ const Room = () => {
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
+    const imageName = id;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
   };
 
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
-
     const imageName = selectedButtonId;
-    //console.log(imageName);
-    socket.emit("imagePath", imageName, roomId);
 
-    /*
+    socket.emit("selectedimagePath", imageName, roomId);
 
-    socket.on("overlay_image", (overlay_image) => {
-      console.log(overlay_image, "gdgdddffddddd");
+    socket.on("overlay_selected_image", (overlay_image, res) => {
+      console.log("gd");
+      console.log(overlay_image, "gddddgdd");
       const imagelocation = document.querySelector(".questionImage");
-      //console.log(imagelocation);
+      const textlocation = document.querySelector(".questionText");
       imagelocation.src = overlay_image;
-    });
+      textlocation.textContent = res.text;
 
-    */
+      if (userRole === "student") {
+        const studentimage = document.querySelector(".problem-image-overlay");
+        const studenttext = document.querySelector(".problem-text");
+        studentimage.src = overlay_image;
+        studenttext.textContent = res.text;
+      }
+    });
   };
 
   // 피드백 제출 핸들러
@@ -194,12 +215,17 @@ const Room = () => {
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+        window.socket = socketConnection;
+
+        setisSocketConnection(true);
 
         // 소켓 이벤트 리스너 등록
+        /*
         socketConnection.on("overlay_image", (overlay_image) => {
           const imagelocation = document.querySelector(".questionImage");
           imagelocation.src = overlay_image;
         });
+        */
 
         socketConnection.on("alert_end", () => {
           alert("수업이 종료되었습니다.");
@@ -220,6 +246,16 @@ const Room = () => {
     if (myStream) {
       makeConnection();
     }
+
+    return () => {
+      // 컴포넌트 언마운트 시 연결 정리
+      if (myPeerConnection) {
+        myPeerConnection.close();
+      }
+      if (myStream) {
+        myStream.getTracks().forEach((track) => track.stop());
+      }
+    };
   }, [myStream]);
 
   // 사용 가능한 카메라 가져오기
@@ -243,6 +279,7 @@ const Room = () => {
 
   // 카메라와 마이크 활성화
   const getMedia = async (deviceId) => {
+    setCamLoading(false);
     const constraints = {
       audio: true,
       video: deviceId
@@ -257,8 +294,11 @@ const Room = () => {
       if (!deviceId) {
         await getCameras(stream); // 카메라 옵션 설정
       }
+      setCamLoading(true);
     } catch (e) {
       console.log(e);
+    } finally {
+      setCamLoading(true);
     }
   };
 
@@ -305,8 +345,10 @@ const Room = () => {
 
     // 상대방 스트림 수신
     peerConnection.addEventListener("track", (data) => {
-      peerFace.current.srcObject = data.streams[0];
-      setPeerConnected(true);
+      if (peerFace.current) {
+        peerFace.current.srcObject = data.streams[0];
+        setPeerConnected(true);
+      }
     });
 
     // 연결 상태 변경 감지
@@ -370,10 +412,12 @@ const Room = () => {
       }
     });
 
+    /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
       navigate("/student_home");
     });
+    */
 
     return () => {
       socket.off("welcome");
@@ -392,7 +436,12 @@ const Room = () => {
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
-    return <p>loading...</p>;
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>수업 페이지 불러오는 중...</p>
+      </div>
+    );
   }
 
   // 수업 종료 핸들러
@@ -400,22 +449,19 @@ const Room = () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
     navigate("/TeacherHome");
+    socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
 
-    /*
-
-      socket.on("alert_end", () => {
-        alert("수업이 종료되었습니다아.");
-        navigate("/student_home");
-      });
-
-      */
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
   };
 
   // 학생 화면 추가
   if (userRole === "student") {
     const problem = problemData[selectedButtonId];
 
-    return (
+    return isSocketConnection ? (
       <div className="student-container">
         <div className="video-container">
           {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
@@ -427,37 +473,37 @@ const Room = () => {
               playsInline
               className="student-video"
             />
-            {problem && (
-              <img
-                src={problem.image_url}
-                alt={`Problem ${selectedButtonId}`}
-                className="problem-image-overlay"
-              />
-            )}
+            <img src="" alt="" className="problem-image-overlay" />
           </div>
 
           {/* 중간: 문제 텍스트 */}
-          {problem ? (
-            <p className="problem-text">{problem.text}</p>
-          ) : (
-            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
-          )}
+          <p className="problem-text">문제가 선택되지 않았습니다.</p>
 
           {/* 하단: 교사 비디오 */}
           <video
             ref={peerFace}
             autoPlay
             playsInline
-            className="teacher-video"
+            className="student-video"
           />
           {/* 여기도 TotalAnimation 컴포넌트 추가해야 학생화면에 애니메이션 뜨나? */}
         </div>
+      </div>
+    ) : (
+      <div className="loader3">
+        <div className="spinner3"></div>
+        <p>캠 켜는 중...</p>
       </div>
     );
   }
 
   return (
     <div className="classroom-container">
+      {showResizeMessage && (
+        <div className="plz-resize-message">
+          <p>화면을 축소해주세요!</p>
+        </div>
+      )}
       {/* 헤더 */}
       <div className="header">
         <span className="student-id">{studentId}</span>
@@ -480,9 +526,14 @@ const Room = () => {
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-          <video className="video" ref={peerFace} autoPlay playsInline />
+          <video
+            className="teacher-video"
+            ref={peerFace}
+            autoPlay
+            playsInline
+          />
           <img className="questionImage" src="" alt="" />
-
+          <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
             <div className="animation-overlay">
@@ -497,13 +548,36 @@ const Room = () => {
 
       {/* 하단 영역 */}
       <div className="bottom">
-        <video ref={myFace} className="video" autoPlay muted playsInline />
-        <div className="SelectedQuestion">
-          <SelectedQuestion
-            selectedId={selectedButtonId}
-            sendButtonClick={sendButtonClick}
+        {camLoading ? (
+          <video
+            ref={myFace}
+            className="teacher-video"
+            autoPlay
+            muted
+            playsInline
           />
-        </div>
+        ) : (
+          <div className="cam-loading">
+            <div className="loader">
+              <div className="spinner"></div>
+              <p>캠 켜는 중...</p>
+            </div>
+          </div>
+        )}
+        {isSocketConnection ? (
+          <div className="SelectedQuestion">
+            <SelectedQuestion
+              selectedId={selectedButtonId}
+              sendButtonClick={sendButtonClick}
+            />
+          </div>
+        ) : (
+          <div className="loader2">
+            <div className="spinner2"></div>
+            <p>캠 켜는 중...</p>
+          </div>
+        )}
+
         <div>
           <ScoreAndFeedBack
             selectedId={selectedId}
@@ -521,10 +595,10 @@ const Room = () => {
 
       {/* 미디어 컨트롤 버튼 */}
       <button onClick={handleMuteClick} className="media-set">
-        {muted ? "Unmute" : "Mute"}
+        {muted ? "마이크 켜기" : "마이크 끄기"}
       </button>
       <button onClick={handleCameraClick} className="media-set">
-        {cameraOff ? "Turn Camera On" : "Turn Camera Off"}
+        {cameraOff ? "카메라 켜기" : "카메라 끄기"}
       </button>
     </div>
   );
