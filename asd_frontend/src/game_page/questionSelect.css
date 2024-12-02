@@ -10,7 +10,6 @@
   margin-bottom: 20px;
   padding-left: 30px;
   box-sizing: border-box;
-  background-color: #fff;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -28,9 +27,19 @@
   width: 165px;
   height: 120px;
   border-radius: 10px;
-  background-color: #ddd;
   border: none;
   cursor: pointer;
   background-size: cover;
   transition: 0.3s ease;
+  background-size: contain;
+  background-position: center;
+  padding: 0;
+}
+
+.question-image {
+  width: 100%;
+  object-fit: cover;
+  object-position: center;
+  clip-path: inset(25% 25% 25% 25%);
+  transform: scale(2);
 }

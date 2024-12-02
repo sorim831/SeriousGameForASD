@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./questionSelect.css";
+import problemData from "./problemData.json";
 
 const QuestionSelect = ({ onButtonClick }) => {
   const [selectedButtonId, setSelectedButtonId] = useState(null);
@@ -23,7 +24,11 @@ const QuestionSelect = ({ onButtonClick }) => {
               id={`1-${index + 1}`}
               onClick={() => handleButtonClick(`1-${index + 1}`)}
             >
-              1-{index + 1}
+              <img
+                src={problemData[`1-${index + 1}`]?.teacher_image}
+                alt={`1-${index + 1}`}
+                className="question-image"
+              />
             </button>
           </li>
         ))}
@@ -39,7 +44,11 @@ const QuestionSelect = ({ onButtonClick }) => {
               id={`2-${index + 1}`}
               onClick={() => handleButtonClick(`2-${index + 1}`)}
             >
-              2-{index + 1}
+              <img
+                src={problemData[`2-${index + 1}`]?.teacher_image}
+                alt={`2-${index + 1}`}
+                className="question-image"
+              />
             </button>
           </li>
         ))}
@@ -55,7 +64,11 @@ const QuestionSelect = ({ onButtonClick }) => {
               id={`3-${index + 1}`}
               onClick={() => handleButtonClick(`3-${index + 1}`)}
             >
-              3-{index + 1}
+              <img
+                src={problemData[`3-${index + 1}`]?.teacher_image}
+                alt={`3-${index + 1}`}
+                className="question-image"
+              />
             </button>
           </li>
         ))}
@@ -71,7 +84,11 @@ const QuestionSelect = ({ onButtonClick }) => {
               id={`4-${index + 1}`}
               onClick={() => handleButtonClick(`4-${index + 1}`)}
             >
-              4-{index + 1}
+              <img
+                src={problemData[`4-${index + 1}`]?.teacher_image}
+                alt={`4-${index + 1}`}
+                className="question-image"
+              />
             </button>
           </li>
         ))}
@@ -87,7 +104,11 @@ const QuestionSelect = ({ onButtonClick }) => {
               id={`5-${index + 1}`}
               onClick={() => handleButtonClick(`5-${index + 1}`)}
             >
-              5-{index + 1}
+              <img
+                src={problemData[`5-${index + 1}`]?.teacher_image}
+                alt={`5-${index + 1}`}
+                className="question-image"
+              />
             </button>
           </li>
         ))}
