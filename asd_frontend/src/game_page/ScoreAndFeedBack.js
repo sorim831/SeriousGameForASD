@@ -58,7 +58,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
     // 데이터 전송 객체 생성
     const feedbackData = {
-      student_id: studentId, // 학생 아이디
+      student_fk: studentId, // 학생 아이디
       student_action: emotionCategory, // 감정 이름
       student_score: score, // 점수
       student_opinion: feedback, // 피드백

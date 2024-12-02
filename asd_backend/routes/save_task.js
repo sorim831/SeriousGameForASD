@@ -4,7 +4,7 @@ const router = express.Router();
 const db = require("../lib/db");
 
 router.post("/", async (req, res) => {
-  const { student_id, student_action, student_score, student_opinion } =
+  const { student_fk, student_action, student_score, student_opinion } =
     req.body;
 
   const updateStudent = "updateStudentInfo";
@@ -16,7 +16,7 @@ router.post("/", async (req, res) => {
 
   try {
     await db.query(updateStudent, [
-      student_id,
+      student_fk,
       student_action,
       student_score,
       student_opinion,
@@ -38,9 +38,9 @@ router.post("/", async (req, res) => {
 
     await db.query(updateAverage, [
       action_name,
-      student_id,
+      student_fk,
       student_action,
-      student_id,
+      student_opinion,
     ]);
 
     res.json({ message: "데이터가 성공적으로 저장되었습니당" });

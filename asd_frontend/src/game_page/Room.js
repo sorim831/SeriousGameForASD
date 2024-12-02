@@ -46,6 +46,31 @@ const Room = () => {
   const studentId = location.state?.studentId;
 
   useEffect(() => {
+    if (!socket) return;
+
+    // 애니메이션 이벤트 수신
+    socket.on("triggerAnimation", () => {
+      console.log("애니메이션 이벤트 수신");
+      playTotalAnimation();
+    });
+
+    return () => socket.off("triggerAnimation");
+  }, [socket]);
+
+  const playTotalAnimation = () => {
+    // TotalAnimation 실행 로직
+    const animationElement = document.querySelector(".TotalAnimation");
+    if (animationElement) {
+      animationElement.classList.add("active"); // 애니메이션 시작
+
+      //video-overlay-container (학생 화면 - 학생 카메라 부분) 에 전송된 애니메이션이 출력되게 하기
+
+      // 일정 시간 후 애니메이션 종료
+      setTimeout(() => animationElement.classList.remove("active"), 4000);
+    }
+  };
+
+  useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
       const filteredStudents = students.filter(
         (student) => student.student_id === roomId
@@ -102,6 +127,9 @@ const Room = () => {
 
       // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
       setTimeout(() => setAnimationVisible(false), 3000);
+
+      // 서버로 애니메이션 이벤트 전송
+      socket.emit("playAnimation", roomId);
     }
   };
 
@@ -422,6 +450,7 @@ const Room = () => {
             playsInline
             className="teacher-video"
           />
+          {/* 여기도 TotalAnimation 컴포넌트 추가해야 학생화면에 애니메이션 뜨나? */}
         </div>
       </div>
     );

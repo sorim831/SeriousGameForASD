@@ -67,6 +67,12 @@ const socketHandler = (server) => {
       socket.to(roomName).emit("overlay_image", overlay_image);
     });
 
+    // playAnimation 애니메이션 이벤트 처리
+    socket.on("playAnimation", (roomId) => {
+      console.log(`애니메이션 요청, 방 ID: ${roomId}`);
+      socket.to(roomId).emit("triggerAnimation");
+    });
+
     // 수업 종료 처리
     socket.on("end_class", (roomId) => {
       socket.to(roomId).emit("alert_end");
