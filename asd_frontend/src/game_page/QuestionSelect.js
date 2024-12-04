@@ -8,7 +8,8 @@ const QuestionSelect = ({ onButtonClick }) => {
   // 버튼 클릭 시 실행되는 함수
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
-    onButtonClick(id);
+    const image = problemData[id]?.teacher_image;
+    onButtonClick(id, image);
   };
 
   return (

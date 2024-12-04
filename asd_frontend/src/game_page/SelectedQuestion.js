@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from "react";
 import "./selected-question.css";
 
-const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
+const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
   const [imageLocation, setImageLocation] = useState("");
+
   useEffect(() => {
-    window.socket.on("overlay_image", (overlay_image) => {
+    window.socket.on("overlay_selected_image", (overlay_image, res) => {
+      console.log("socket.on -> overlay_selected_image", overlay_image);
       setImageLocation(overlay_image);
-      //const imagelocation = document.querySelector(".questionImage");
-      //imagelocation.src = overlay_image;
     });
-  });
+
+    if (selectedId) {
+      const image = problemData[selectedId]?.teacher_image;
+      setImageLocation(image);
+    }
+
+    return () => {
+      window.socket.off("overlay_selected_image");
+    };
+  }, [selectedId, problemData]);
 
   const generateQuestionText = (id) => {
     if (!id) return "문제";

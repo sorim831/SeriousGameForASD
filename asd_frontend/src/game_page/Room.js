@@ -124,22 +124,7 @@ const Room = () => {
     const imageName = selectedButtonId;
 
     socket.emit("selectedimagePath", imageName, roomId);
-
-    socket.on("overlay_selected_image", (overlay_image, res) => {
-      console.log("gd");
-      console.log(overlay_image, "gddddgdd");
-      const imagelocation = document.querySelector(".questionImage");
-      const textlocation = document.querySelector(".questionText");
-      imagelocation.src = overlay_image;
-      textlocation.textContent = res.text;
-
-      if (userRole === "student") {
-        const studentimage = document.querySelector(".problem-image-overlay");
-        const studenttext = document.querySelector(".problem-text");
-        studentimage.src = overlay_image;
-        studenttext.textContent = res.text;
-      }
-    });
+    console.log("emit", roomId, imageName);
   };
 
   // 자세히 보기 버튼 이벤트 (서버로 데이터 전송 + 소켓으로 학생에게 애니메이션)
@@ -438,6 +423,35 @@ const Room = () => {
       socket.emit("join_room", roomId);
     }
   }, [socket, roomId]);
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("overlay_selected_image", (overlay_image, res) => {
+      const imagelocation = document.querySelector(".questionImage");
+      const textlocation = document.querySelector(".questionText");
+
+      if (imagelocation && textlocation) {
+        imagelocation.src = overlay_image;
+        textlocation.textContent = res.text;
+      }
+
+      if (userRole === "student") {
+        const studentimage = document.querySelector(".problem-image-overlay");
+        const studenttext = document.querySelector(".problem-text");
+
+        if (studentimage && studenttext) {
+          studentimage.src = overlay_image;
+          studenttext.textContent = res.text;
+        }
+      }
+    });
+
+    return () => {
+      if (socket) {
+        socket.off("overlay_selected_image");
+      }
+    };
+  }, [socket, userRole]);
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
@@ -550,7 +564,15 @@ const Room = () => {
           )}
         </div>
         <div className="QuestionSelect">
-          <QuestionSelect onButtonClick={handleButtonClick} />
+          <QuestionSelect
+            onButtonClick={(id, image) => {
+              handleButtonClick(id);
+              const questionImage = document.querySelector(".questionImage");
+              if (questionImage) {
+                questionImage.src = image;
+              }
+            }}
+          />
         </div>
       </div>
 
@@ -577,6 +599,7 @@ const Room = () => {
             <SelectedQuestion
               selectedId={selectedButtonId}
               sendButtonClick={sendButtonClick}
+              problemData={problemData}
             />
           </div>
         ) : (

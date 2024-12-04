@@ -86,25 +86,12 @@ const socketHandler = (server) => {
 
         const res = {
           text: selectedData.text,
+          image:
+            selectedData.student_image || `/images/student/${imageName}.png`,
         };
-        const imgPath = `/images/student/${imageName}.png`;
 
-        const overlay_image = imgPath;
-        // FE로 이미지 경로 전송 ( fe에서 on)
-        socket.to(roomName).emit("overlay_selected_image", overlay_image, res);
-
-        //socket.to(roomName).emit("overlay_selected_text", res);
+        io.to(roomName).emit("overlay_selected_image", res.image, res);
       });
-
-      /*
-
-      const imgPath = `/images/student/${imageName}.png`;
-
-      const overlay_image = imgPath;
-      // FE로 이미지 경로 전송 ( fe에서 on)
-      socket.to(roomName).emit("overlay_selected_image", overlay_image);
-
-      */
     });
 
     // 애니메이션 이벤트 처리

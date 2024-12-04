@@ -97,8 +97,7 @@
 .video-overlay-container {
   position: relative;
   width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
+  height: 100%;
 }
 
 .student-video-at-student {
