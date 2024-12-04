@@ -39,13 +39,19 @@
 .video-container {
   position: relative;
   display: inline-block;
+  width: 100%;
 }
 
 .teacher-video {
-  width: 400px;
-  border-color: #ccc;
-  border-radius: 0%;
-  border-radius: 10px;
+  width: 380px;
+  height: 310px;
+  margin: 0 10px 10px 10px;
+  transform: scaleX(-1);
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 
 .cam-loading {
@@ -70,7 +76,13 @@
   height: auto;
   pointer-events: none;
 }
-
+.problem-image-overlay-for-teacher {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: auto;
+}
 .teacher-animation-overlay {
   position: absolute;
   top: 0;
@@ -156,15 +168,6 @@
   color: gray;
 }
 
-.teacher-video {
-  width: 100%;
-  max-width: 380px;
-  height: auto;
-  margin: 20px 10px 10px 10px;
-  transform: scaleX(-1);
-  object-fit: cover;
-}
-
 .plz-resize-message {
   position: fixed;
   top: 0;
@@ -182,7 +185,7 @@
   font-weight: bold;
 }
 
-.classroom-header {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -197,15 +200,5 @@
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  margin-left: 1050px;
-}
-
-.student-info {
-  padding: 10px 15px;
-  background-color: #807e7e;
-  color: white;
-  border: none;
-  border-radius: 7px;
-  cursor: pointer;
-  margin-left: 1050px;
+  margin-right: 10px;
 }

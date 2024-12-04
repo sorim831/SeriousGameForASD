@@ -106,6 +106,10 @@ const socketHandler = (server) => {
     socket.on("end_class", (roomId) => {
       socket.to(roomId).emit("alert_end");
     });
+
+    socket.on("clearOverlay", (roomName) => {
+      io.to(roomName).emit("clearOverlay");
+    });
   });
 };
 

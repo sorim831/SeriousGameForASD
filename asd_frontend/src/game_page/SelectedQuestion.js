@@ -28,15 +28,32 @@ const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
 
   const questionText = generateQuestionText(selectedId);
 
+  useEffect(() => {
+    console.log("selectedId", selectedId);
+  }, [selectedId]);
+
   return (
-    <div className="selected-question-container">
-      <p className="selected-question">
-        {selectedId ? `${selectedId}` : "선택된 질문이 없습니다."}
-      </p>
+    <div
+      className="selected-question-container"
+      style={{ position: "relative" }}
+    >
+      {!selectedId && (
+        <div className="no-selected-question-overlay">
+          <p className="no-selected-question-overlay-text">
+            "문제 목록 중에서 문제를 선택해주세요."
+          </p>
+        </div>
+      )}
       <img className="selected-image" src={imageLocation} alt="" />
       <div id="question-description-container">
         <p id="question-description">{questionText}</p>
-        <button id="send-question" onClick={() => sendButtonClick(selectedId)}>
+        <p>{selectedId}</p>
+        <button
+          id="send-question"
+          className={selectedId ? "" : "send-question-disabled"}
+          onClick={() => sendButtonClick(selectedId)}
+          disabled={!selectedId}
+        >
           확인
         </button>
       </div>

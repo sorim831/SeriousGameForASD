@@ -47,6 +47,7 @@ const Room = () => {
     feedback: "",
   });
   const [camLoading, setCamLoading] = useState(false);
+  const [currentImagePath, setCurrentImagePath] = useState("");
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -124,20 +125,46 @@ const Room = () => {
     const imageName = selectedButtonId;
 
     socket.emit("selectedimagePath", imageName, roomId);
-    console.log("emit", roomId, imageName);
+
+    // 이미지 경로 설정
+    const imagePath = `/images/student/${imageName}.png`;
+
+    // useState를 사용하여 이미지 경로 상태 관리 추가
+    setCurrentImagePath(imagePath);
+
+    const studentImageForTeacher = document.querySelector(
+      ".problem-image-overlay-for-teacher"
+    );
+    if (studentImageForTeacher) {
+      studentImageForTeacher.src = imagePath;
+      studentImageForTeacher.style.display = "block"; // 이미지가 보이도록 설정
+      console.log("Teacher overlay image updated:", imagePath);
+    }
   };
 
   // 자세히 보기 버튼 이벤트 (서버로 데이터 전송 + 소켓으로 학생에게 애니메이션)
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
+    setSelectedId(null);
+    setSelectedButtonId(null);
+
+    // 문제 이미지 오버레이 초기화
+    const teacherOverlayImage = document.querySelector(
+      ".problem-image-overlay-for-teacher"
+    );
+    if (teacherOverlayImage) {
+      teacherOverlayImage.src = "";
+      teacherOverlayImage.style.display = "none";
+    }
+
+    // 학생 화면의 오버레이 초기화를 위한 소켓 이벤트 발생
+    if (socket) {
+      socket.emit("clearOverlay", roomId);
+    }
 
     if (data.score >= 4) {
       setAnimationVisible(true);
-
-      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
       setTimeout(() => setAnimationVisible(false), 3000);
-
-      // 서버로 애니메이션 이벤트 전송
       if (socket) {
         socket.emit("playAnimation", roomId);
       }
@@ -417,32 +444,37 @@ const Room = () => {
     };
   }, [socket, myPeerConnection, roomId]);
 
-  // 룸 참여 메시지 전송
+  // 룸 참여 메지 전송
   useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
     }
   }, [socket, roomId]);
+
   useEffect(() => {
     if (!socket) return;
 
     socket.on("overlay_selected_image", (overlay_image, res) => {
       const imagelocation = document.querySelector(".questionImage");
       const textlocation = document.querySelector(".questionText");
+      const studentimage = document.querySelector(".problem-image-overlay");
 
-      if (imagelocation && textlocation) {
+      const studenttext = document.querySelector(".problem-text");
+
+      if (imagelocation) {
         imagelocation.src = overlay_image;
+      }
+
+      if (textlocation) {
         textlocation.textContent = res.text;
       }
 
-      if (userRole === "student") {
-        const studentimage = document.querySelector(".problem-image-overlay");
-        const studenttext = document.querySelector(".problem-text");
+      if (studentimage) {
+        studentimage.src = overlay_image;
+      }
 
-        if (studentimage && studenttext) {
-          studentimage.src = overlay_image;
-          studenttext.textContent = res.text;
-        }
+      if (studenttext) {
+        studenttext.textContent = res.text;
       }
     });
 
@@ -451,7 +483,27 @@ const Room = () => {
         socket.off("overlay_selected_image");
       }
     };
-  }, [socket, userRole]);
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("clearOverlay", () => {
+      const studentOverlay = document.querySelector(".problem-image-overlay");
+      const questionText = document.querySelector(".problem-text");
+
+      if (studentOverlay) {
+        studentOverlay.src = "";
+      }
+      if (questionText) {
+        questionText.textContent = "문제가 선택되지 않았습니다.";
+      }
+    });
+
+    return () => {
+      socket.off("clearOverlay");
+    };
+  }, [socket]);
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
@@ -478,8 +530,6 @@ const Room = () => {
 
   // 학생 화면 추가
   if (userRole === "student") {
-    const problem = problemData[selectedButtonId];
-
     return isSocketConnection ? (
       <div className="student-container">
         <div className="video-container">
@@ -529,19 +579,20 @@ const Room = () => {
       {/* 헤더 */}
       <div className="header">
         <span className="student-id">{studentId}</span>
-        <button className="student-info" onClick={handleStudentDataClick}>
-          학생 정보
-        </button>
-
-        {studentDataVisible && roomStudents.length > 0 ? (
-          <StudentData
-            studentData={roomStudents}
-            onClose={handleStudentDataClose}
-          />
-        ) : null}
-        <button className="end-class-button" onClick={handleEndClass}>
-          수업 종료
-        </button>
+        <div>
+          <button className="student-info" onClick={handleStudentDataClick}>
+            학생 정보
+          </button>
+          {studentDataVisible && roomStudents.length > 0 ? (
+            <StudentData
+              studentData={roomStudents}
+              onClose={handleStudentDataClose}
+            />
+          ) : null}
+          <button className="end-class-button" onClick={handleEndClass}>
+            수업 종료
+          </button>
+        </div>
       </div>
 
       {/* 상단 영역 */}
@@ -554,7 +605,7 @@ const Room = () => {
             autoPlay
             playsInline
           />
-          <img className="questionImage" src="" alt="" />
+          <img src="" alt="" className="problem-image-overlay-for-teacher" />
           <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
@@ -565,12 +616,8 @@ const Room = () => {
         </div>
         <div className="QuestionSelect">
           <QuestionSelect
-            onButtonClick={(id, image) => {
+            onButtonClick={(id) => {
               handleButtonClick(id);
-              const questionImage = document.querySelector(".questionImage");
-              if (questionImage) {
-                questionImage.src = image;
-              }
             }}
           />
         </div>

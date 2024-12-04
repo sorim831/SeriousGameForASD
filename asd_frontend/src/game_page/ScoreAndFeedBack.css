@@ -1,11 +1,12 @@
 .score-and-feedback-container {
   border: 1px solid #ccc;
-  width: 300px;
+  width: 320px;
   height: 310px;
   margin: 0 10px;
   border-radius: 20px;
   background-color: #fff;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
 }
 
 .teacher-score {
@@ -14,4 +15,32 @@
 
 .feedback-textarea {
   background-color: transparent;
+}
+
+.score-and-feedback-text-disabled {
+  cursor: not-allowed;
+}
+
+.score-and-feedback-text-disabled:hover {
+  cursor: not-allowed;
+}
+
+.score-input-div-disabled-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+}
+
+.score-input-div-disabled-overlay-text {
+  font-size: 20px;
+  color: #333;
 }
