@@ -48,17 +48,17 @@ function StudentHome() {
 
   const fetchStudentScore = async () => {
     try {
-      const response = await fetch(`${address}/scores_for_tree.js`, {
+      const response = await fetch(`${address}/scores_for_tree`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-      
+
       const result = await response.json();
       console.log("dddcc");
       if (result.success) {
-        setStudentScore(result.student_total_score); 
+        setStudentScore(result.student_total_score);
       } else {
         console.error("점수 불러오기 실패:", result.message);
       }

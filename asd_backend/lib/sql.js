@@ -58,5 +58,5 @@ module.exports = {
     "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_id = ? AND student_action = ?) WHERE student_id = ?",
 
   sumStudentScore:
-    "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_id = ?",
+    "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_fk = ?",
 };

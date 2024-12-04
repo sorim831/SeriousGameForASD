@@ -1,15 +1,15 @@
-//scores_for_tree.js
+//scores_for_tree
 const express = require("express");
 const { verifyToken } = require("./middlewares");
 const db = require("../lib/db");
 const router = express.Router();
 
 router.get("/", verifyToken, (req, res) => {
-  const studentId = req.user.id;
+  const studentId = req.decoded.id;
 
   db.query("sumStudentScore", [studentId])
     .then(([results]) => {
-      const totalScore = results[0].student_total_score || 0;
+      const totalScore = results[0]?.student_total_score || 0;
 
       res.json({
         success: true,

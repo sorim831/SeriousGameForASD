@@ -68,7 +68,7 @@ app.use("/update_student_info", updateStudentInfo);
 app.use("/load_game_history", loadGameHistory);
 app.use("/save_task", saveGameTask);
 
-app.use("/sum_score", sumScore);
+app.use("/scores_for_tree", sumScore);
 //app.use("/token", tokenRouter);
 
 module.exports = app;
