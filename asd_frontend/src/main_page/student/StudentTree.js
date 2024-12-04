@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 import styles from "./StudentTree.module.css";
 
-const score = 10;
-const TREE_SIZE = 50; // 나무 크기 (px)
-const MIN_DISTANCE = 40; // 나무들 사이의 최소 거리
+const TREE_SIZE = 50; 
+const MIN_DISTANCE = 40; 
 
-const StudentTree = () => {
+const calculateTreeCount = (score) => {
+  return Math.floor(Math.log(1 + score) * 5);
+};
+
+const StudentTree = ({ score }) => {
   const [treePositions, setTreePositions] = useState([]);
   const [treeImages, setTreeImages] = useState([]);
 
@@ -22,8 +25,9 @@ const StudentTree = () => {
 
     const positions = [];
     const maxAttempts = 100;
+    const treeCount = calculateTreeCount(score);
 
-    for (let i = 0; i < score; i++) {
+    for (let i = 0; i < treeCount; i++) {
       let validPosition = false;
       let attempts = 0;
 
@@ -55,7 +59,7 @@ const StudentTree = () => {
         top: pos.top + "%",
       }))
     );
-  }, [treeImages]);
+  }, [treeImages, score]);
 
   return (
     <div className={styles.tree}>

@@ -6,6 +6,7 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function StudentHome() {
   const [userId, setUserId] = useState(null);
+  const [studentScore, setStudentScore] = useState();
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
@@ -21,9 +22,7 @@ function StudentHome() {
             Authorization: `Bearer ${token}`, // Bearer 형식으로 토큰 전송
           },
         });
-
         const result = await response.json();
-
         if (result.success) {
           console.log(result.user.id);
           if (result.user.role !== "student") {
@@ -32,6 +31,7 @@ function StudentHome() {
           } else {
             console.log("good!");
             setUserId(result.user.id);
+            fetchStudentScore(result.user.id);
           }
         } else {
           // 토큰이 유효하지 않으면 로그인 페이지로 리다이렉트
@@ -46,17 +46,31 @@ function StudentHome() {
     }
   };
 
+  const fetchStudentScore = async () => {
+    try {
+      const response = await fetch(`${address}/scores_for_tree.js`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+      
+      const result = await response.json();
+      console.log("dddcc");
+      if (result.success) {
+        setStudentScore(result.student_total_score); 
+      } else {
+        console.error("점수 불러오기 실패:", result.message);
+      }
+    } catch (error) {
+      console.error("점수 불러오는 중 오류 발생:", error);
+    }
+  };
+
   // 페이지 로드 시 토큰을 확인
   useEffect(() => {
     checkAccessToken();
   }, []);
-
-  // // 로그아웃 기능 임시로 만듦
-  // const handleLogout = () => {
-  //   localStorage.removeItem("token");
-  //   alert("로그인 화면으로 넘어갑니다.");
-  //   window.location.href = "/student_login";
-  // };
 
   const handleGameStart = () => {
     if (userId) {
@@ -73,12 +87,7 @@ function StudentHome() {
           </button>
         </div>
       </div>
-      <StudentTree />
-
-      {/* 학생 개인 휴대폰으로 진행하는데, 로그아웃 기능이 필요할까 싶네요. */}
-      {/* <button id="logout" onClick={handleLogout}>
-        로그아웃 
-      </button> */}
+      <StudentTree score={studentScore} />
     </div>
   );
 }
