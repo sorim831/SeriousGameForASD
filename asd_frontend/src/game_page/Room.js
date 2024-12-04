@@ -126,10 +126,8 @@ const Room = () => {
 
     socket.emit("selectedimagePath", imageName, roomId);
 
-    // 이미지 경로 설정
     const imagePath = `/images/student/${imageName}.png`;
 
-    // useState를 사용하여 이미지 경로 상태 관리 추가
     setCurrentImagePath(imagePath);
 
     const studentImageForTeacher = document.querySelector(
@@ -148,7 +146,6 @@ const Room = () => {
     setSelectedId(null);
     setSelectedButtonId(null);
 
-    // 문제 이미지 오버레이 초기화
     const teacherOverlayImage = document.querySelector(
       ".problem-image-overlay-for-teacher"
     );
@@ -157,7 +154,6 @@ const Room = () => {
       teacherOverlayImage.style.display = "none";
     }
 
-    // 학생 화면의 오버레이 초기화를 위한 소켓 이벤트 발생
     if (socket) {
       socket.emit("clearOverlay", roomId);
     }
@@ -444,7 +440,6 @@ const Room = () => {
     };
   }, [socket, myPeerConnection, roomId]);
 
-  // 룸 참여 메지 전송
   useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
@@ -496,7 +491,7 @@ const Room = () => {
         studentOverlay.src = "";
       }
       if (questionText) {
-        questionText.textContent = "문제가 선택되지 않았습니다.";
+        questionText.textContent = "";
       }
     });
 
@@ -532,15 +527,15 @@ const Room = () => {
   if (userRole === "student") {
     return isSocketConnection ? (
       <div className="student-container">
-        <div className="video-container">
+        <div className="video-container-for-student-box">
           {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
-          <div className="video-overlay-container">
+          <div className="video-overlay-container-for-student">
             <video
               ref={myFace}
               autoPlay
               muted
               playsInline
-              className="student-video"
+              className="student-video-for-student"
             />
             <img src="" alt="" className="problem-image-overlay" />
           </div>
@@ -551,14 +546,16 @@ const Room = () => {
             </div>
           )}
           {/* 중간: 문제 텍스트 */}
-          <p className="problem-text">문제가 선택되지 않았습니다.</p>
+          <p className="problem-text"></p>
           {/* 하단: 교사 비디오 */}
-          <video
-            ref={peerFace}
-            autoPlay
-            playsInline
-            className="student-video"
-          />
+          <div className="video-overlay-container-for-student">
+            <video
+              ref={peerFace}
+              autoPlay
+              playsInline
+              className="teacher-video-at-student"
+            />
+          </div>
         </div>
       </div>
     ) : (
@@ -600,7 +597,7 @@ const Room = () => {
         <div className="video-container">
           {/* 비디오 화면 */}
           <video
-            className="teacher-video"
+            className="student-video-at-teacher"
             ref={peerFace}
             autoPlay
             playsInline
