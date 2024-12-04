@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./selected-question.css";
 
-const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
+const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
+  const [imageLocation, setImageLocation] = useState("");
+
+  useEffect(() => {
+    window.socket.on("overlay_selected_image", (overlay_image, res) => {
+      console.log("socket.on -> overlay_selected_image", overlay_image);
+      setImageLocation(overlay_image);
+    });
+
+    if (selectedId) {
+      const image = problemData[selectedId]?.teacher_image;
+      setImageLocation(image);
+    }
+
+    return () => {
+      window.socket.off("overlay_selected_image");
+    };
+  }, [selectedId, problemData]);
+
   const generateQuestionText = (id) => {
     if (!id) return "문제";
     const [category, number] = id.split("-");
@@ -10,14 +28,32 @@ const SelectedQuestion = ({ selectedId, sendButtonClick }) => {
 
   const questionText = generateQuestionText(selectedId);
 
+  useEffect(() => {
+    console.log("selectedId", selectedId);
+  }, [selectedId]);
+
   return (
-    <div className="selected-question-container">
-      <p className="selected-question">
-        {selectedId ? `${selectedId}` : "선택된 질문이 없습니다."}
-      </p>
+    <div
+      className="selected-question-container"
+      style={{ position: "relative" }}
+    >
+      {!selectedId && (
+        <div className="no-selected-question-overlay">
+          <p className="no-selected-question-overlay-text">
+            "문제 목록 중에서 문제를 선택해주세요."
+          </p>
+        </div>
+      )}
+      <img className="selected-image" src={imageLocation} alt="" />
       <div id="question-description-container">
         <p id="question-description">{questionText}</p>
-        <button id="send-question" onClick={() => sendButtonClick(selectedId)}>
+        <p>{selectedId}</p>
+        <button
+          id="send-question"
+          className={selectedId ? "" : "send-question-disabled"}
+          onClick={() => sendButtonClick(selectedId)}
+          disabled={!selectedId}
+        >
           확인
         </button>
       </div>

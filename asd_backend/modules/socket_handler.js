@@ -2,6 +2,9 @@ const { Server } = require("socket.io");
 
 const rooms = new Map();
 
+const fs = require("fs");
+const path = require("path");
+
 const socketHandler = (server) => {
   const io = new Server(server, {
     cors: {
@@ -59,17 +62,53 @@ const socketHandler = (server) => {
 
     // 특정 이미지를 요청하는 이벤트 ( fe에서 에밋 )
     socket.on("imagePath", (imageName, roomName) => {
-      // imgNAme은 ex) 1-1.jpg
-      // 이미지 경로
-      const imgPath = `/img/${imageName}.jpg`;
+      let imgPath;
+
+      imgPath = `/images/teacher/${imageName}.jpg`;
+
       const overlay_image = imgPath;
       // FE로 이미지 경로 전송 ( fe에서 on)
       socket.to(roomName).emit("overlay_image", overlay_image);
     });
 
+    // 요청된 특정 이미지를 출력 요청하는 이벤트 ( fe에서 에밋 )
+    socket.on("selectedimagePath", (imageName, roomName) => {
+      const filePath = path.join(
+        "../asd_frontend/src/game_page/problemData.json"
+      );
+      fs.readFile(filePath, "utf-8", (err, data) => {
+        if (err) {
+          console.error("json없음", err);
+          return;
+        }
+        const problemData = JSON.parse(data);
+        const selectedData = problemData[imageName];
+
+        const res = {
+          text: selectedData.text,
+          image:
+            selectedData.student_image || `/images/student/${imageName}.png`,
+        };
+
+        io.to(roomName).emit("overlay_selected_image", res.image, res);
+      });
+    });
+
+    // 애니메이션 이벤트 처리
+    io.on("connection", (socket) => {
+      socket.on("playAnimation", (roomId) => {
+        console.log(`애니메이션 이벤트: ${roomId}`);
+        socket.to(roomId).emit("playAnimation");
+      });
+    });
+
     // 수업 종료 처리
     socket.on("end_class", (roomId) => {
       socket.to(roomId).emit("alert_end");
+    });
+
+    socket.on("clearOverlay", (roomName) => {
+      io.to(roomName).emit("clearOverlay");
     });
   });
 };

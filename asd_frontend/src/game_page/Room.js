@@ -23,6 +23,7 @@ const Room = () => {
   const [muted, setMuted] = useState(false);
   const [cameraOff, setCameraOff] = useState(false);
   const [socket, setSocket] = useState(null);
+  const [isSocketConnection, setisSocketConnection] = useState(false);
   const [myPeerConnection, setMyPeerConnection] = useState(null);
   const [peerConnected, setPeerConnected] = useState(false);
   const [userRole, setUserRole] = useState("");
@@ -34,12 +35,20 @@ const Room = () => {
   const [animationVisible, setAnimationVisible] = useState(false);
   const [showResizeMessage, setShowResizeMessage] = useState(false);
   const [studentID, setStudentId] = useState(null);
+  const [studentDataVisible, setStudentDataVisible] = useState(false);
+  const [roomStudents, setRoomStudents] = useState([]);
+  const [error, setError] = useState(null);
+  const location = useLocation();
+  const students = location.state?.students;
+  const studentId = location.state?.studentId;
 
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
     feedback: "",
   });
   const [camLoading, setCamLoading] = useState(false);
+  const [currentImagePath, setCurrentImagePath] = useState("");
+
   useEffect(() => {
     const checkScreenSize = () => {
       setShowResizeMessage(window.innerWidth < 1600);
@@ -52,6 +61,23 @@ const Room = () => {
   }, []);
 
   useEffect(() => {
+    if (!socket) return;
+
+    // 학생 화면 애니메이션 트리거
+    socket.on("playAnimation", () => {
+      console.log("애니메이션 이벤트 수신: 학생 화면");
+      setAnimationVisible(true);
+
+      // 일정 시간 후 애니메이션 숨기기
+      setTimeout(() => setAnimationVisible(false), 4000);
+    });
+
+    return () => {
+      socket.off("playAnimation");
+    };
+  }, [socket]);
+
+  useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
       const filteredStudents = students.filter(
         (student) => student.student_id === roomId
@@ -62,13 +88,6 @@ const Room = () => {
       console.error("Invalid students or roomId:", { students, roomId });
     }
   }, [students, roomId]);
-
-  const [studentDataVisible, setStudentDataVisible] = useState(false);
-  const [roomStudents, setRoomStudents] = useState([]);
-  const [error, setError] = useState(null);
-  const location = useLocation();
-  const students = location.state?.students;
-  const studentId = location.state?.studentId;
 
   useEffect(() => {
     if (students && Array.isArray(students) && roomId) {
@@ -95,38 +114,56 @@ const Room = () => {
   // 질문 선택 핸들러
   const handleButtonClick = (id) => {
     setSelectedButtonId(id);
+    const imageName = id;
+    //console.log(imageName);
+    socket.emit("imagePath", imageName, roomId);
   };
 
   // 선택 ID 전송 핸들러
   const sendButtonClick = () => {
     setSelectedId(selectedButtonId);
-
     const imageName = selectedButtonId;
-    //console.log(imageName);
-    socket.emit("imagePath", imageName, roomId);
 
-    /*
+    socket.emit("selectedimagePath", imageName, roomId);
 
-    socket.on("overlay_image", (overlay_image) => {
-      console.log(overlay_image, "gdgdddffddddd");
-      const imagelocation = document.querySelector(".questionImage");
-      //console.log(imagelocation);
-      imagelocation.src = overlay_image;
-    });
+    const imagePath = `/images/student/${imageName}.png`;
 
-    */
+    setCurrentImagePath(imagePath);
+
+    const studentImageForTeacher = document.querySelector(
+      ".problem-image-overlay-for-teacher"
+    );
+    if (studentImageForTeacher) {
+      studentImageForTeacher.src = imagePath;
+      studentImageForTeacher.style.display = "block"; // 이미지가 보이도록 설정
+      console.log("Teacher overlay image updated:", imagePath);
+    }
   };
 
-  // 피드백 제출 핸들러
+  // 자세히 보기 버튼 이벤트 (서버로 데이터 전송 + 소켓으로 학생에게 애니메이션)
   const handleFeedbackSubmit = (data) => {
     setScoreAndFeedBackData(data);
+    setSelectedId(null);
+    setSelectedButtonId(null);
 
-    // 점수가 4점 이상일 경우 애니메이션 표시
+    const teacherOverlayImage = document.querySelector(
+      ".problem-image-overlay-for-teacher"
+    );
+    if (teacherOverlayImage) {
+      teacherOverlayImage.src = "";
+      teacherOverlayImage.style.display = "none";
+    }
+
+    if (socket) {
+      socket.emit("clearOverlay", roomId);
+    }
+
     if (data.score >= 4) {
       setAnimationVisible(true);
-
-      // 일정 시간 후 애니메이션 숨기기 (예: 3초 후)
       setTimeout(() => setAnimationVisible(false), 3000);
+      if (socket) {
+        socket.emit("playAnimation", roomId);
+      }
     }
   };
 
@@ -191,12 +228,17 @@ const Room = () => {
         // 소켓 연결 생성
         const socketConnection = io(`${address}`, { query: { userId } });
         setSocket(socketConnection);
+        window.socket = socketConnection;
+
+        setisSocketConnection(true);
 
         // 소켓 이벤트 리스너 등록
+        /*
         socketConnection.on("overlay_image", (overlay_image) => {
           const imagelocation = document.querySelector(".questionImage");
           imagelocation.src = overlay_image;
         });
+        */
 
         socketConnection.on("alert_end", () => {
           alert("수업이 종료되었습니다.");
@@ -383,10 +425,12 @@ const Room = () => {
       }
     });
 
+    /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
       navigate("/student_home");
     });
+    */
 
     return () => {
       socket.off("welcome");
@@ -396,12 +440,65 @@ const Room = () => {
     };
   }, [socket, myPeerConnection, roomId]);
 
-  // 룸 참여 메시지 전송
   useEffect(() => {
     if (roomId && socket) {
       socket.emit("join_room", roomId);
     }
   }, [socket, roomId]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("overlay_selected_image", (overlay_image, res) => {
+      const imagelocation = document.querySelector(".questionImage");
+      const textlocation = document.querySelector(".questionText");
+      const studentimage = document.querySelector(".problem-image-overlay");
+
+      const studenttext = document.querySelector(".problem-text");
+
+      if (imagelocation) {
+        imagelocation.src = overlay_image;
+      }
+
+      if (textlocation) {
+        textlocation.textContent = res.text;
+      }
+
+      if (studentimage) {
+        studentimage.src = overlay_image;
+      }
+
+      if (studenttext) {
+        studenttext.textContent = res.text;
+      }
+    });
+
+    return () => {
+      if (socket) {
+        socket.off("overlay_selected_image");
+      }
+    };
+  }, [socket]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("clearOverlay", () => {
+      const studentOverlay = document.querySelector(".problem-image-overlay");
+      const questionText = document.querySelector(".problem-text");
+
+      if (studentOverlay) {
+        studentOverlay.src = "";
+      }
+      if (questionText) {
+        questionText.textContent = "";
+      }
+    });
+
+    return () => {
+      socket.off("clearOverlay");
+    };
+  }, [socket]);
 
   // 로딩 상태일 경우 로딩 메시지 표시
   if (loading) {
@@ -418,57 +515,53 @@ const Room = () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
     navigate("/TeacherHome");
+    socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
 
-    /*
-
-      socket.on("alert_end", () => {
-        alert("수업이 종료되었습니다아.");
-        navigate("/student_home");
-      });
-
-      */
+    socket.on("alert_end", () => {
+      alert("수업이 종료되었습니다.");
+      navigate("/student_home");
+    });
   };
 
   // 학생 화면 추가
   if (userRole === "student") {
-    const problem = problemData[selectedButtonId];
-
-    return (
+    return isSocketConnection ? (
       <div className="student-container">
-        <div className="video-container">
+        <div className="video-container-for-student-box">
           {/* 상단: 학생 비디오 (이미지 오버레이 포함) */}
-          <div className="video-overlay-container">
+          <div className="video-overlay-container-for-student">
             <video
               ref={myFace}
               autoPlay
               muted
               playsInline
-              className="student-video"
+              className="student-video-for-student"
             />
-            {problem && (
-              <img
-                src={problem.image_url}
-                alt={`Problem ${selectedButtonId}`}
-                className="problem-image-overlay"
-              />
-            )}
+            <img src="" alt="" className="problem-image-overlay" />
           </div>
 
-          {/* 중간: 문제 텍스트 */}
-          {problem ? (
-            <p className="problem-text">{problem.text}</p>
-          ) : (
-            <p className="problem-placeholder">문제가 선택되지 않았습니다.</p>
+          {animationVisible && (
+            <div className="student-animation-overlay">
+              <TotalAnimation />
+            </div>
           )}
-
+          {/* 중간: 문제 텍스트 */}
+          <p className="problem-text"></p>
           {/* 하단: 교사 비디오 */}
-          <video
-            ref={peerFace}
-            autoPlay
-            playsInline
-            className="student-video"
-          />
+          <div className="video-overlay-container-for-student">
+            <video
+              ref={peerFace}
+              autoPlay
+              playsInline
+              className="teacher-video-at-student"
+            />
+          </div>
         </div>
+      </div>
+    ) : (
+      <div className="loader3">
+        <div className="spinner3"></div>
+        <p>캠 켜는 중...</p>
       </div>
     );
   }
@@ -483,44 +576,47 @@ const Room = () => {
       {/* 헤더 */}
       <div className="header">
         <span className="student-id">{studentId}</span>
-        <button className="student-info" onClick={handleStudentDataClick}>
-          학생 정보
-        </button>
-
-        {studentDataVisible && roomStudents.length > 0 ? (
-          <StudentData
-            studentData={roomStudents}
-            onClose={handleStudentDataClose}
-          />
-        ) : null}
-        <button className="end-class-button" onClick={handleEndClass}>
-          수업 종료
-        </button>
+        <div>
+          <button className="student-info" onClick={handleStudentDataClick}>
+            학생 정보
+          </button>
+          {studentDataVisible && roomStudents.length > 0 ? (
+            <StudentData
+              studentData={roomStudents}
+              onClose={handleStudentDataClose}
+            />
+          ) : null}
+          <button className="end-class-button" onClick={handleEndClass}>
+            수업 종료
+          </button>
+        </div>
       </div>
 
       {/* 상단 영역 */}
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
-
           <video
-            className="teacher-video"
+            className="student-video-at-teacher"
             ref={peerFace}
             autoPlay
             playsInline
           />
-
-          <img className="questionImage" src="" alt="" />
-
+          <img src="" alt="" className="problem-image-overlay-for-teacher" />
+          <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
-            <div className="animation-overlay">
+            <div className="teacher-animation-overlay">
               <TotalAnimation />
             </div>
           )}
         </div>
         <div className="QuestionSelect">
-          <QuestionSelect onButtonClick={handleButtonClick} />
+          <QuestionSelect
+            onButtonClick={(id) => {
+              handleButtonClick(id);
+            }}
+          />
         </div>
       </div>
 
@@ -542,13 +638,21 @@ const Room = () => {
             </div>
           </div>
         )}
+        {isSocketConnection ? (
+          <div className="SelectedQuestion">
+            <SelectedQuestion
+              selectedId={selectedButtonId}
+              sendButtonClick={sendButtonClick}
+              problemData={problemData}
+            />
+          </div>
+        ) : (
+          <div className="loader2">
+            <div className="spinner2"></div>
+            <p>캠 켜는 중...</p>
+          </div>
+        )}
 
-        <div className="SelectedQuestion">
-          <SelectedQuestion
-            selectedId={selectedButtonId}
-            sendButtonClick={sendButtonClick}
-          />
-        </div>
         <div>
           <ScoreAndFeedBack
             selectedId={selectedId}

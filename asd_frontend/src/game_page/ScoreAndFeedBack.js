@@ -23,6 +23,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
   };
 
   const handleScoreChange = (e) => {
+    if (!selectedId) return;
     const value = e.target.value.replace(/[^0-9]/g, "");
 
     if (value === "" || (Number(value) >= 0 && Number(value) <= 10)) {
@@ -32,7 +33,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
   // 감정 카테고리와 문제 ID로 문제 텍스트 생성
   const generateQuestionText = (selectedId) => {
-    if (!selectedId) return "문제";
+    if (!selectedId) return "";
     const [category, number] = selectedId.split("-");
     return `${getEmotionCategory(category)}문제`;
   };
@@ -47,6 +48,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!selectedId || inputScore === "") return;
 
     // 입력된 점수가 숫자인지 확인
     const score = Number(inputScore);
@@ -66,7 +68,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
     // 데이터 전송 객체 생성
     const feedbackData = {
-      student_id: studentId, // 학생 아이디
+      student_fk: studentId, // 학생 아이디
       student_action: emotionCategory, // 감정 이름
       student_score: score, // 점수
       student_opinion: feedback, // 피드백
@@ -97,17 +99,30 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
     }
   };
   if (isLoading) {
-    return <p>학생 정보를 불러오는 중입니다...</p>;
-  }
-
-  if (isLoading) {
-    return <p>학생 정보를 불러오는 중입니다...</p>;
+    return (
+      <div className="score-and-feedback-container">
+        <div className="loader">
+          <div className="spinner"></div>
+          <p>학생 정보를 불러오는 중입니다...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="score-and-feedback-container">
+    <div
+      className="score-and-feedback-container"
+      style={{ position: "relative" }}
+    >
       <form onSubmit={handleSubmit}>
         <div className="score-input-div">
+          {!selectedId && (
+            <div className="score-input-div-disabled-overlay">
+              <p className="score-input-div-disabled-overlay-text">
+                문제를 제시하지 않았어요.
+              </p>
+            </div>
+          )}
           <span className="emotion">{generateQuestionText(selectedId)}</span>
 
           <input
@@ -115,11 +130,14 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
             min="0"
             max="10"
             step="1"
-            className="teacher-score"
+            className={`teacher-score ${
+              !selectedId ? "score-and-feedback-text-disabled" : ""
+            }`}
             value={inputScore}
             onChange={handleScoreChange}
             placeholder="0~10 점 입력"
             style={{ textAlign: "right" }}
+            disabled={!selectedId}
           />
           <span>점</span>
         </div>
@@ -127,12 +145,23 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
         <div className="feedback-textarea-div">
           <textarea
             placeholder="피드백을 입력하세요"
-            className="feedback-textarea"
+            className={`feedback-textarea ${
+              !selectedId ? "score-and-feedback-text-disabled" : ""
+            }`}
             value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
+            onChange={(e) => selectedId && setFeedback(e.target.value)}
+            disabled={!selectedId}
           />
         </div>
-        <button type="submit" className="game-feedback-button">
+        <button
+          type="submit"
+          className={`game-feedback-button ${
+            !selectedId || inputScore === ""
+              ? "score-and-feedback-text-disabled"
+              : ""
+          }`}
+          disabled={!selectedId || inputScore === ""}
+        >
           저장 및 다음 상황
         </button>
       </form>
