@@ -47,25 +47,41 @@ function StudentHome() {
   };
 
   const fetchStudentScore = async () => {
+    const url = `${address}/scores_for_tree`;
+    console.log(`Requesting student score from: ${url}`); // 요청 URL 확인
+  
     try {
-      const response = await fetch(`${address}/scores_for_tree`, {
+      const response = await fetch(url, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-
+  
+      // 응답 상태 코드 확인
+      console.log(`Response status: ${response.status}`);
+      console.log(`Response headers:`, response.headers);
+  
+      // 응답이 성공인지 확인
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
       const result = await response.json();
-      console.log("dddcc");
+      console.log(`Response data:`, result); // 응답 데이터 확인
+  
       if (result.success) {
+        console.log("Student total score:", result.student_total_score);
         setStudentScore(result.student_total_score);
       } else {
-        console.error("점수 불러오기 실패:", result.message);
+        console.error("Failed to fetch score:", result.message);
       }
     } catch (error) {
-      console.error("점수 불러오는 중 오류 발생:", error);
+      // 오류 출력
+      console.error("Error fetching student score:", error);
     }
   };
+  
 
   // 페이지 로드 시 토큰을 확인
   useEffect(() => {

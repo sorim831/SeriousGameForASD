@@ -34,7 +34,7 @@ module.exports = {
     "SELECT student_score_happy, student_score_sad, student_score_scary, student_score_disgusting, student_score_angry FROM student_table WHERE student_id = ?",
   updateStudentInfo:
     "INSERT INTO student_scores_table (student_fk, student_action, student_score, student_opinion) VALUES (?,?,?,?)", // 학생 게임 기록 저장
-  updateTotalStuentInfo:
+  updateTotalStudentInfo:
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
 
   getStudentTotalHistory:
