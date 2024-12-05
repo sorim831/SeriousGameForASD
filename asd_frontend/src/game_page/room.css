@@ -134,6 +134,7 @@
   top: 0;
   left: 0;
   width: 100%;
+  height: auto;
   object-fit: cover; /* 비디오와 크기를 맞춤 */
   z-index: 2; /* 비디오 위에 표시 */
   pointer-events: none; /* 클릭 방지 */
@@ -213,13 +214,19 @@
 }
 
 .video-container-for-student-box {
+  /*
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  */
+  position: relative;
+  display: inline-block;
+  width: 100%;
 }
 
 .student-video-for-student {
+  /*
   width: 280px;
   height: calc(280px * 4 / 3);
   border-radius: 20px;
@@ -227,6 +234,16 @@
   background-color: #ccc;
   transform: scaleX(-1);
   object-fit: cover;
+  */
+  width: 232.5px;
+  height: 310px;
+  margin: 0 83.75px 10px 83.75px;
+  transform: scaleX(-1);
+  object-fit: cover;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ccc;
+  box-sizing: border-box;
 }
 .video-overlay-container-for-student {
   width: 100%;

@@ -36,7 +36,7 @@ const QuestionSelect = ({ onButtonClick }) => {
       </ul>
       <ul>
         <li>😭슬픔😭</li>
-        {Array.from({ length: 3 }).map((_, index) => (
+        {Array.from({ length: 2 }).map((_, index) => (
           <li key={`2-${index + 1}`}>
             <button
               className={`question ${

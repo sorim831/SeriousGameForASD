@@ -127,6 +127,7 @@ const Room = () => {
     socket.emit("selectedimagePath", imageName, roomId);
 
     const imagePath = `/images/student/${imageName}.png`;
+    //const imagePath_teacher = `/images/teacher/${imageName}.png`;
 
     setCurrentImagePath(imagePath);
 
