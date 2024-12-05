@@ -7,7 +7,6 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 function StudentHome() {
   const [userId, setUserId] = useState(null);
   const [studentScore, setStudentScore] = useState();
-
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -48,7 +47,7 @@ function StudentHome() {
 
   const fetchStudentScore = async () => {
     const url = `${address}/scores_for_tree`;
-    console.log(`Requesting student score from: ${url}`); // 요청 URL 확인
+    console.log(`Requesting student score from: ${url}`);
   
     try {
       const response = await fetch(url, {
@@ -58,26 +57,25 @@ function StudentHome() {
         },
       });
   
-      // 응답 상태 코드 확인
       console.log(`Response status: ${response.status}`);
       console.log(`Response headers:`, response.headers);
   
-      // 응답이 성공인지 확인
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
   
       const result = await response.json();
-      console.log(`Response data:`, result); // 응답 데이터 확인
+      console.log(`Response data:`, result);
   
       if (result.success) {
-        console.log("Student total score:", result.student_total_score);
-        setStudentScore(result.student_total_score);
+        const numericScore = Number(result.student_total_score); 
+        console.log(`Student Score fetched from server:`, numericScore);
+        console.log(`Type of fetched score after conversion:`, typeof numericScore);
+        setStudentScore(numericScore); 
       } else {
         console.error("Failed to fetch score:", result.message);
       }
     } catch (error) {
-      // 오류 출력
       console.error("Error fetching student score:", error);
     }
   };

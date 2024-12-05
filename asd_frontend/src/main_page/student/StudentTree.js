@@ -5,7 +5,10 @@ const TREE_SIZE = 50;
 const MIN_DISTANCE = 40; 
 
 const calculateTreeCount = (score) => {
-  return Math.floor(Math.log(1 + score) * 5);
+  console.log("Input Score:", score);
+  console.log("Math.log(1 + score):", Math.log(1 + score));
+  console.log("Calculated Tree Count:", Math.floor(Math.log(1 + score)*5));
+  return Math.floor(Math.log(1 + score)*5);
 };
 
 const StudentTree = ({ score }) => {
@@ -26,6 +29,7 @@ const StudentTree = ({ score }) => {
     const positions = [];
     const maxAttempts = 100;
     const treeCount = calculateTreeCount(score);
+    console.log("Calculated Tree Count:", treeCount);
 
     for (let i = 0; i < treeCount; i++) {
       let validPosition = false;
@@ -51,6 +55,8 @@ const StudentTree = ({ score }) => {
         attempts++;
       }
     }
+    
+    console.log("Generated Tree Positions:", positions.length);
 
     setTreePositions(
       positions.map((pos) => ({
@@ -80,5 +86,6 @@ const StudentTree = ({ score }) => {
     </div>
   );
 };
+
 
 export default StudentTree;

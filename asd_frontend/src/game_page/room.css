@@ -88,10 +88,12 @@
 }
 .problem-image-overlay-for-teacher {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: auto;
+  top: 50%; 
+  left: 45%; 
+  transform: translate(-50%, -50%); 
+  width: 600px;
+  height: 400px;
+  z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
 }
 .teacher-animation-overlay {
   position: absolute;
