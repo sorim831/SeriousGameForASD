@@ -86,8 +86,13 @@ const TeacherHome = () => {
 
   // 학생 정보 자세히보기 버튼 이벤트
   const handleViewDetails = (student) => {
-    setSelectedStudent(student); // 학생 객체 전체를 저장
-    setShowStudentInfo(true);
+    if (selectedStudent && selectedStudent.student_id === student.student_id) {
+      setShowStudentInfo(false);
+      setSelectedStudent(null);
+    } else {
+      setSelectedStudent(student);
+      setShowStudentInfo(true);
+    }
   };
 
   // 자세히 보기 창 닫기
