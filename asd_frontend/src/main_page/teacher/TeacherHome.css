@@ -56,12 +56,12 @@
   border: none;
   cursor: pointer;
   font-size: 18px;
-  float: right;
-  margin-right: 30px;
+  transition: 0.1s ease-out;
 }
 
 #student-add:hover {
   background-color: #cccccc;
+  transform: scale(1.03);
 }
 
 .teacher-home-header {
@@ -91,7 +91,7 @@
   display: flex;
   cursor: pointer;
   align-items: center;
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
   justify-content: space-between;
 }
 .teacher-home-student-info {
@@ -100,14 +100,14 @@
 }
 .teacher-home-student-item:hover .teacher-home-student-name {
   transform: scale(1.03);
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
   text-decoration: underline;
 }
 .teacher-home-student-name {
   font-size: 22px;
   font-weight: 600;
   margin: 0 10px 0 10px;
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
   color: #333;
 }
 .teacher-home-student-gender,
@@ -124,7 +124,7 @@
   cursor: pointer;
   font-size: 18px;
   background-color: #f0f0f0;
-  transition: 0.2s ease-out;
+  transition: 0.1s ease-out;
 }
 .teacher-home-student-game-start:hover {
   transform: scale(1.03);
@@ -143,4 +143,18 @@
 }
 .teacher-home-student-add:hover {
   background-color: #e0e0e0;
+}
+
+#go-back {
+  border: none;
+  background-color: transparent;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: underline;
+  color: #666;
+  margin-top: 8px;
+}
+
+.teacher-home {
+  min-width: 300px;
 }

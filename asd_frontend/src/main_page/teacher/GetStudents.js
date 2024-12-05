@@ -115,8 +115,13 @@ const GetStudent = () => {
 
   // "자세히 보기" 버튼 클릭 이벤트
   const handleViewDetails = (student) => {
-    setSelectedStudent(student);
-    setShowStudentInfo(true);
+    if (selectedStudent && selectedStudent.id === student.id) {
+      setShowStudentInfo(false);
+      setSelectedStudent(null);
+    } else {
+      setSelectedStudent(student);
+      setShowStudentInfo(true);
+    }
   };
 
   // StudentInfo 컴포넌트 닫기
@@ -130,41 +135,67 @@ const GetStudent = () => {
     navigate("/TeacherHome");
   };
 
+  const formatGender = (gender) => {
+    return gender === "male" ? "남" : "여";
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("ko-KR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
   return (
     <div className="teacher-home">
-      <h2 id="teacher-name">매칭 가능한 학생 리스트</h2>
+      <h2 id="teacher-name" style={{ marginBottom: "30px" }}>
+        학생 추가
+      </h2>
       {error && <p>{error.message}</p>}
-      <ul>
+      <ul className="teacher-home-student-list">
         {students.map((student, index) => (
-          <li className="student-select" key={index}>
-            <span className="student-name">{student.student_name}</span>
-            <p className="student-gender">({student.student_gender})</p>
-            <p className="student-birthday">{student.student_birthday}</p>
-            <button
-              className="student-is-online"
-              onClick={() => handleViewDetails(student)}
-            >
-              자세히보기
-            </button>
+          <li
+            className="teacher-home-student-item"
+            key={index}
+            onClick={() => handleViewDetails(student)}
+            style={{ height: "43px" }}
+          >
+            <div className="teacher-home-student-info">
+              <p className="teacher-home-student-name">
+                {student.student_name}
+              </p>
+              <p className="teacher-home-student-gender">
+                ({formatGender(student.student_gender)})
+              </p>
+              <p className="teacher-home-student-birthday">
+                {formatDate(student.student_birthday)}
+              </p>
+            </div>
+            {showStudentInfo &&
+              selectedStudent &&
+              selectedStudent.id === student.id && (
+                <div>
+                  <StudentInfo
+                    onClose={handleCloseFeedback}
+                    studentData={selectedStudent}
+                  />
+                  <button
+                    id="student-add"
+                    style={{ float: "right" }}
+                    onClick={() => handleConnectStudent(selectedStudent.id)}
+                  >
+                    내 학생으로 등록
+                  </button>
+                </div>
+              )}
           </li>
         ))}
       </ul>
 
-      {showStudentInfo && selectedStudent && (
-        <StudentInfo
-          onClose={handleCloseFeedback}
-          studentData={selectedStudent} // 선택된 학생 데이터만 전달
-        />
-      )}
-      <button id="student-add" onClick={handleBack}>
+      <button id="go-back" onClick={handleBack}>
         뒤로 가기
-      </button>
-      <button
-        id="logout"
-        disabled={!selectedStudent}
-        onClick={() => handleConnectStudent(selectedStudent.id)}
-      >
-        내 학생으로 등록
       </button>
     </div>
   );
