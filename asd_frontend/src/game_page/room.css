@@ -88,22 +88,22 @@
 }
 .problem-image-overlay-for-teacher {
   position: absolute;
-  top: 50%; 
-  left: 45%; 
-  transform: translate(-50%, -50%); 
+  top: 50%;
+  left: 45%;
+  transform: translate(-50%, -50%);
   width: 600px;
   height: 400px;
   z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
 }
+
 .teacher-animation-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 232.5px;
+  margin-left: 82px;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
   pointer-events: none;
   z-index: 10;
   overflow: hidden;
@@ -155,11 +155,10 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 232.5px;
+  margin-left: 82px;
   height: 100%;
   display: flex;
-  justify-content: center;
-  align-items: center;
   pointer-events: none;
   z-index: 10;
   overflow: hidden;
