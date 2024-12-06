@@ -40,6 +40,11 @@ form.login-form button {
   cursor: pointer;
 }
 
+.teachererrorMessage {
+  color: red;
+  font-size: 14px;
+}
+
 form.login-form {
   width: 400px;
   padding: 40px;
