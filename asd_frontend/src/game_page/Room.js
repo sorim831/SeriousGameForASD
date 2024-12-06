@@ -65,7 +65,7 @@ const Room = () => {
 
     // 학생 화면 애니메이션 트리거
     socket.on("playAnimation", () => {
-      console.log("애니메이션 이벤트 수신: 학생 화면");
+      //console.log("애니메이션 이벤트 수신: 학생 화면");
       setAnimationVisible(true);
 
       // 일정 시간 후 애니메이션 숨기기
@@ -82,7 +82,7 @@ const Room = () => {
       const filteredStudents = students.filter(
         (student) => student.student_id === roomId
       );
-      console.log("Filtered students:", filteredStudents);
+      //console.log("Filtered students:", filteredStudents);
       setRoomStudents(filteredStudents);
     } else {
       console.error("Invalid students or roomId:", { students, roomId });
@@ -94,7 +94,7 @@ const Room = () => {
       const filteredStudents = students.filter(
         (student) => student.student_id === roomId
       );
-      console.log("Filtered students:", filteredStudents);
+      //console.log("Filtered students:", filteredStudents);
       setRoomStudents(filteredStudents);
     } else {
       console.error("Invalid students or roomId:", { students, roomId });
@@ -102,7 +102,7 @@ const Room = () => {
   }, [students, roomId]);
 
   const handleStudentDataClick = () => {
-    console.log("Before toggle:", studentDataVisible);
+    //console.log("Before toggle:", studentDataVisible);
 
     setStudentDataVisible(true);
   };
@@ -137,7 +137,7 @@ const Room = () => {
     if (studentImageForTeacher) {
       studentImageForTeacher.src = imagePath;
       studentImageForTeacher.style.display = "block"; // 이미지가 보이도록 설정
-      console.log("Teacher overlay image updated:", imagePath);
+      //console.log("Teacher overlay image updated:", imagePath);
     }
   };
 
@@ -384,11 +384,11 @@ const Room = () => {
   }, [roomId]);
 
   useEffect(() => {
-    console.log("socket:", socket);
-    console.log("myPeerConnection:", myPeerConnection);
-    console.log("roomId:", roomId);
+    //console.log("socket:", socket);
+    //console.log("myPeerConnection:", myPeerConnection);
+    //console.log("roomId:", roomId);
     if (!socket || !myPeerConnection) return;
-    console.log("asdf");
+    //console.log("asdf");
 
     socket.on("welcome", async () => {
       const offer = await myPeerConnection.createOffer({ iceRestart: true });

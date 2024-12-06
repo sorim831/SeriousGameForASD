@@ -23,12 +23,12 @@ function StudentHome() {
         });
         const result = await response.json();
         if (result.success) {
-          console.log(result.user.id);
+          //console.log(result.user.id);
           if (result.user.role !== "student") {
             localStorage.removeItem("token");
             window.location.href = "/main";
           } else {
-            console.log("good!");
+            //console.log("good!");
             setUserId(result.user.id);
             fetchStudentScore(result.user.id);
           }
@@ -47,7 +47,7 @@ function StudentHome() {
 
   const fetchStudentScore = async () => {
     const url = `${address}/scores_for_tree`;
-    console.log(`Requesting student score from: ${url}`);
+    //console.log(`Requesting student score from: ${url}`);
   
     try {
       const response = await fetch(url, {
@@ -57,20 +57,20 @@ function StudentHome() {
         },
       });
   
-      console.log(`Response status: ${response.status}`);
-      console.log(`Response headers:`, response.headers);
+      //console.log(`Response status: ${response.status}`);
+      //console.log(`Response headers:`, response.headers);
   
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
   
       const result = await response.json();
-      console.log(`Response data:`, result);
+      //console.log(`Response data:`, result);
   
       if (result.success) {
         const numericScore = Number(result.student_total_score); 
-        console.log(`Student Score fetched from server:`, numericScore);
-        console.log(`Type of fetched score after conversion:`, typeof numericScore);
+        //console.log(`Student Score fetched from server:`, numericScore);
+        //console.log(`Type of fetched score after conversion:`, typeof numericScore);
         setStudentScore(numericScore); 
       } else {
         console.error("Failed to fetch score:", result.message);

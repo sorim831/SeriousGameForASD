@@ -35,10 +35,10 @@ const socketHandler = (server) => {
       req.headers["x-forwarded-for"] || req.connection.remoteAddress;
     const userId = req._query.userId;
 
-    console.log("connection!");
-    console.log("socket ID : ", socket_id);
-    console.log("client IP : ", client_ip);
-    console.log("user ID : ", userId);
+    //console.log("connection!");
+    //console.log("socket ID : ", socket_id);
+    //console.log("client IP : ", client_ip);
+    //console.log("user ID : ", userId);
 
     const users = {};
     users[socket_id] = { userId };
@@ -101,7 +101,7 @@ const socketHandler = (server) => {
     // 애니메이션 이벤트 처리
     io.on("connection", (socket) => {
       socket.on("playAnimation", (roomId) => {
-        console.log(`애니메이션 이벤트: ${roomId}`);
+        //console.log(`애니메이션 이벤트: ${roomId}`);
         socket.to(roomId).emit("playAnimation");
       });
     });

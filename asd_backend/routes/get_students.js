@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.get("/", verifyToken, (req, res) => {
   const teacher_id = req.decoded.id;
-  console.log(teacher_id);
+  //console.log(teacher_id);
 
   db.query("getTeacherIdQuery", [teacher_id]).then((results) => {
     if (results.length === 0) {
