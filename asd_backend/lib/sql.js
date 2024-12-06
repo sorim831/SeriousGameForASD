@@ -67,7 +67,7 @@ module.exports = {
     "WHERE sst.student_fk = ? AND DATE_FORMAT(sst.date, '%y.%m.%d') = ?",
 
   updateAverageScore:
-    "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_id = ? AND student_action = ?) WHERE student_id = ?",
+    "UPDATE student_table SET ?? = (SELECT AVG(student_score) FROM student_scores_table WHERE student_fk = ? AND student_action = ?) WHERE student_id = ?",
 
   sumStudentScore:
     "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_fk = ?",

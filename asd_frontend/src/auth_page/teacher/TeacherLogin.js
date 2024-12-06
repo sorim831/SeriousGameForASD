@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./TeacherLogin.css";
+import styles from "./TeacherLogin.css";
 
 function Login() {
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -7,6 +8,7 @@ function Login() {
   const [teacherId, setTeacherId] = useState("");
   const [teacherPassword, setTeacherPassword] = useState("");
   //const [teacherName, setTeacherName] = useState("");
+  const [error, setError] = useState("");
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
@@ -59,7 +61,9 @@ function Login() {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/TeacherHome ";
       } else {
-        alert(result.message); // 실패 메시지 표시
+        //alert(result.message); // 실패 메시지 표시
+
+        setError(result.message);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -96,10 +100,12 @@ function Login() {
             className="teacher-login-pw-input"
           />
         </div>
+        {error && <p className="teachererrorMessage">{error}</p>}
         <div className="teacher-login-btn-box">
           <a href="/teacher_register" className="teacher-login-register-a ">
             회원가입
           </a>
+          
           <button type="submit" className="teacher-login-login-btn">
             로그인
           </button>

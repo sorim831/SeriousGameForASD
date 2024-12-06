@@ -104,7 +104,7 @@ router.get(
     const student_id = req.params.student_id;
     const date = req.params.date;
     const query = "getStudentHistoryDetail";
-    console.log(student_id, date);
+    //console.log(student_id, date);
 
     db.query(query, [student_id, date])
       .then((rows) => {

@@ -4,16 +4,16 @@ const db = require("../lib/db");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 router.get("/", (req, res) => {
-  console.log("in update_student_info");
+  //console.log("in update_student_info");
   res.send("update_student_info");
 });
 
 // 학생 정보 업데이트 라우터
 router.post("/total_comment", (req, res) => {
-  console.log(req.body);
+  //console.log(req.body);
   const student_id = req.body.student_id;
   const student_opinion = req.body.student_opinion;
-  console.log("in total_comment");
+  //console.log("in total_comment");
 
   const query = "updateStudentTotalComment";
 
