@@ -207,6 +207,7 @@ const StudentInfo = ({ onClose, studentData }) => {
         max: 10,
       },
     },
+    spanGaps: true,
   };
 
   return (

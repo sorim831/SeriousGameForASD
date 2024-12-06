@@ -69,7 +69,7 @@ const Room = () => {
       setAnimationVisible(true);
 
       // 일정 시간 후 애니메이션 숨기기
-      setTimeout(() => setAnimationVisible(false), 4000);
+      setTimeout(() => setAnimationVisible(false), 5000);
     });
 
     return () => {
@@ -538,14 +538,13 @@ const Room = () => {
               playsInline
               className="student-video-for-student"
             />
+            {animationVisible && (
+              <div className="student-animation-overlay">
+                <TotalAnimation />
+              </div>
+            )}
             <img src="" alt="" className="problem-image-overlay" />
           </div>
-
-          {animationVisible && (
-            <div className="student-animation-overlay">
-              <TotalAnimation />
-            </div>
-          )}
           {/* 중간: 문제 텍스트 */}
           <p className="problem-text"></p>
           {/* 하단: 교사 비디오 */}
@@ -603,14 +602,14 @@ const Room = () => {
             autoPlay
             playsInline
           />
-          <img src="" alt="" className="problem-image-overlay-for-teacher" />
-          <p className="questionText"></p>
           {/* TotalAnimation 컴포넌트 */}
           {animationVisible && (
             <div className="teacher-animation-overlay">
               <TotalAnimation />
             </div>
           )}
+          <img src="" alt="" className="problem-image-overlay-for-teacher" />
+          <p className="questionText"></p>
         </div>
         <div className="QuestionSelect">
           <QuestionSelect
