@@ -86,7 +86,7 @@ router.get("/total_history/:student_id", verifyToken, (req, res) => {
           disgusting: row.disgusting,
           angry: row.angry,
           score: row.score,
-          opinion: "테스트용 opinion... 아마 gpt 쓰지 않을까요?",
+          opinion: row.student_opinion,
         };
       });
       res.json({ rows: rowsWithOpinion });

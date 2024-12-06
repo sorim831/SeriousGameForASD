@@ -38,17 +38,29 @@ module.exports = {
     "UPDATE student_table SET student_score = ?, student_opinion = ? WHERE student_id = ?", // 최종 결과 저장
 
   getStudentTotalHistory:
-    "SELECT DATE_FORMAT(date, '%y.%m.%d') as date, " +
-    "ROUND(AVG(CASE WHEN student_action = 'happy' THEN student_score END), 2) as happy, " +
-    "ROUND(AVG(CASE WHEN student_action = 'sad' THEN student_score END), 2) as sad, " +
-    "ROUND(AVG(CASE WHEN student_action = 'scary' THEN student_score END), 2) as scary, " +
-    "ROUND(AVG(CASE WHEN student_action = 'disgusting' THEN student_score END), 2) as disgusting, " +
-    "ROUND(AVG(CASE WHEN student_action = 'angry' THEN student_score END), 2) as angry, " +
-    "ROUND(AVG(student_score), 2) as score " +
-    "FROM student_scores_table " +
-    "WHERE student_fk = ? " +
-    "GROUP BY DATE_FORMAT(date, '%y.%m.%d') " +
-    "ORDER BY date;",
+    "SELECT " +
+    "formatted_date as date, " +
+    "happy, sad, scary, disgusting, angry, score, " +
+    "MAX(crt.student_opinion) as student_opinion " +
+    "FROM (" +
+    "SELECT " +
+    "DATE_FORMAT(sst.date, '%y.%m.%d') as formatted_date, " +
+    "ROUND(AVG(CASE WHEN sst.student_action = 'happy' THEN sst.student_score END), 2) as happy, " +
+    "ROUND(AVG(CASE WHEN sst.student_action = 'sad' THEN sst.student_score END), 2) as sad, " +
+    "ROUND(AVG(CASE WHEN sst.student_action = 'scary' THEN sst.student_score END), 2) as scary, " +
+    "ROUND(AVG(CASE WHEN sst.student_action = 'disgusting' THEN sst.student_score END), 2) as disgusting, " +
+    "ROUND(AVG(CASE WHEN sst.student_action = 'angry' THEN sst.student_score END), 2) as angry, " +
+    "ROUND(AVG(sst.student_score), 2) as score, " +
+    "sst.student_fk " +
+    "FROM student_scores_table sst " +
+    "WHERE sst.student_fk = ? " +
+    "GROUP BY DATE_FORMAT(sst.date, '%y.%m.%d'), sst.student_fk " +
+    ") scores " +
+    "LEFT JOIN class_result_table crt ON " +
+    "crt.student_fk = scores.student_fk AND " +
+    "DATE_FORMAT(crt.date, '%y.%m.%d') = formatted_date " +
+    "GROUP BY formatted_date, happy, sad, scary, disgusting, angry, score " +
+    "ORDER BY formatted_date",
 
   getStudentHistoryDetail:
     "SELECT sst.* FROM student_scores_table sst " +
@@ -59,4 +71,26 @@ module.exports = {
 
   sumStudentScore:
     "SELECT SUM(student_score) AS student_total_score FROM student_scores_table WHERE student_fk = ?",
+
+  getUnsavedDates: `
+    SELECT 
+      DATE_FORMAT(sst.date, '%y.%m.%d') as formatted_date,
+      GROUP_CONCAT(
+        CONCAT(sst.student_action, ': ', sst.student_opinion)
+        ORDER BY sst.student_action
+        SEPARATOR ', '
+      ) as student_total_action_and_opinion
+    FROM student_scores_table sst
+    WHERE sst.student_fk = ?
+    AND NOT EXISTS (
+      SELECT 1 
+      FROM class_result_table crt 
+      WHERE crt.student_fk = sst.student_fk 
+      AND DATE_FORMAT(crt.date, '%y.%m.%d') = DATE_FORMAT(sst.date, '%y.%m.%d')
+    )
+    GROUP BY DATE_FORMAT(sst.date, '%y.%m.%d')
+    ORDER BY formatted_date
+  `,
+  insertStudentTotalComment:
+    "INSERT INTO class_result_table (student_fk, student_opinion, date) VALUES (?, ?, ?)",
 };

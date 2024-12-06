@@ -41,6 +41,8 @@ const Room = () => {
   const location = useLocation();
   const students = location.state?.students;
   const studentId = location.state?.studentId;
+  const [isSaving, setIsSaving] = useState(false);
+  const [isEnding, setIsEnding] = useState(false);
 
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
@@ -243,7 +245,11 @@ const Room = () => {
 
         socketConnection.on("alert_end", () => {
           alert("수업이 종료되었습니다.");
-          navigate("/student_home");
+          if (userRole === "teacher") {
+            navigate("/TeacherHome");
+          } else {
+            navigate("/student_home");
+          }
         });
 
         return () => socketConnection.disconnect(); // 컴포넌트 종료 시 소켓 해제
@@ -515,12 +521,47 @@ const Room = () => {
   const handleEndClass = async () => {
     const confirmEnd = window.confirm("수업을 종료하시겠습니까?");
     if (!confirmEnd) return;
-    navigate("/TeacherHome");
-    socket.emit("end_class", roomId); // 서버에 종료 이벤트 전송
+
+    const token = localStorage.getItem("token");
+
+    try {
+      setIsSaving(true);
+      const response = await axios.post(
+        `${address}/update_student_info/update_opinion`,
+        {
+          student_id: studentId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response);
+      setIsSaving(false);
+      setIsEnding(true);
+    } catch (error) {
+      alert(`server error // ${error}`);
+      setIsSaving(false);
+      return;
+    }
+    socket.emit("end_class", roomId);
+
+    if (userRole === "teacher") {
+      navigate("/TeacherHome");
+    } else {
+      navigate("/student_home");
+    }
+    socket.emit("end_class", roomId);
 
     socket.on("alert_end", () => {
+      setIsEnding(false);
       alert("수업이 종료되었습니다.");
-      navigate("/student_home");
+      if (userRole === "teacher") {
+        navigate("/TeacherHome");
+      } else {
+        navigate("/student_home");
+      }
     });
   };
 
@@ -587,13 +628,21 @@ const Room = () => {
               onClose={handleStudentDataClose}
             />
           ) : null}
-          <button className="end-class-button" onClick={handleEndClass}>
-            수업 종료
+          <button
+            className="end-class-button"
+            onClick={handleEndClass}
+            disabled={isSaving || isEnding}
+          >
+            {isSaving
+              ? "수업 저장 중..."
+              : isEnding
+              ? "수업 종료 중..."
+              : "수업 종료"}
           </button>
         </div>
       </div>
 
-      {/* 상단 영역 */}
+      {/* 상단 역 */}
       <div className="top">
         <div className="video-container">
           {/* 비디오 화면 */}
