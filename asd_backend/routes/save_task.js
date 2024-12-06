@@ -36,11 +36,13 @@ router.post("/", async (req, res) => {
       return res.json({ message: "잘못된 값입니다." });
     }
 
+    const student_id = student_fk;
+
     await db.query(updateAverage, [
       action_name,
       student_fk,
       student_action,
-      student_opinion,
+      student_id,
     ]);
 
     res.json({ message: "데이터가 성공적으로 저장되었습니당" });
