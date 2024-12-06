@@ -32,7 +32,7 @@ const TeacherHome = () => {
         });
 
         const result = await response.json();
-        console.log(result);
+        //console.log(result);
 
         if (result.success) {
           if (result.user.role !== "teacher") {
@@ -103,7 +103,7 @@ const TeacherHome = () => {
 
   // 게임 시작
   const handleGameStart = (studentId) => {
-    console.log(`${studentId}의 게임이 시작되었습니다.`);
+    //console.log(`${studentId}의 게임이 시작되었습니다.`);
     navigate(`/room/${studentId}`, { state: { studentId, students } });
   };
 

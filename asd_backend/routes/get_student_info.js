@@ -86,7 +86,7 @@ router.get("/total_history/:student_id", verifyToken, (req, res) => {
           disgusting: row.disgusting,
           angry: row.angry,
           score: row.score,
-          opinion: "테스트용 opinion... 아마 gpt 쓰지 않을까요?",
+          opinion: row.student_opinion,
         };
       });
       res.json({ rows: rowsWithOpinion });
@@ -104,7 +104,7 @@ router.get(
     const student_id = req.params.student_id;
     const date = req.params.date;
     const query = "getStudentHistoryDetail";
-    console.log(student_id, date);
+    //console.log(student_id, date);
 
     db.query(query, [student_id, date])
       .then((rows) => {

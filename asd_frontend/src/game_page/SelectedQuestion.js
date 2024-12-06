@@ -6,7 +6,7 @@ const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
 
   useEffect(() => {
     window.socket.on("overlay_selected_image", (overlay_image, res) => {
-      console.log("socket.on -> overlay_selected_image", overlay_image);
+      //console.log("socket.on -> overlay_selected_image", overlay_image);
       setImageLocation(overlay_image);
     });
 
@@ -29,7 +29,7 @@ const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
   const questionText = generateQuestionText(selectedId);
 
   useEffect(() => {
-    console.log("selectedId", selectedId);
+    //console.log("selectedId", selectedId);
   }, [selectedId]);
 
   return (

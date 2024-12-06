@@ -53,7 +53,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
     // 입력된 점수가 숫자인지 확인
     const score = Number(inputScore);
 
-    console.log("전달할 데이터:", { score, selectedId }); // 데이터 확인
+    //console.log("전달할 데이터:", { score, selectedId }); // 데이터 확인
 
     // 점수와 점수 아이디 값을 `ClassData`로 전달
     onSubmitFeedback({ score, selectedId });
@@ -83,7 +83,7 @@ function ScoreAndFeedBack({ selectedId, onSubmitFeedback, studentId }) {
 
       if (response.ok) {
         const result = await response.json();
-        console.log(result.message || "피드백이 성공적으로 저장되었습니다!");
+        //console.log(result.message || "피드백이 성공적으로 저장되었습니다!");
 
         onSubmitFeedback({ score, selectedId });
 

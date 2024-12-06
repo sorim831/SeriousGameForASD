@@ -7,14 +7,14 @@ const router = express.Router();
 router.get("/", verifyToken, async (req, res) => {
   const studentId = req.decoded.id;
 
-  console.log("Student ID received from token:", studentId); 
+  //console.log("Student ID received from token:", studentId); 
 
   try {
     const results = await db.query("sumStudentScore", [studentId]);
-    console.log("Query Results:", results); 
+    //console.log("Query Results:", results); 
 
     const totalScore = results[0]?.student_total_score || 0;
-    console.log("Total Score Calculated:", totalScore); 
+    //console.log("Total Score Calculated:", totalScore); 
 
     res.json({
       success: true,
