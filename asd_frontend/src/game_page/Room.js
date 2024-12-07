@@ -251,7 +251,7 @@ const Room = () => {
           if (userRole === "teacher") {
             navigate("/TeacherHome");
           } else {
-            navigate("/student_home");
+            navigate("/home");
           }
         });
 
@@ -438,7 +438,7 @@ const Room = () => {
     /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
-      navigate("/student_home");
+      navigate("/home");
     });
     */
 
@@ -553,7 +553,7 @@ const Room = () => {
     if (userRole === "teacher") {
       navigate("/TeacherHome");
     } else {
-      navigate("/student_home");
+      navigate("/home");
     }
     socket.emit("end_class", roomId);
 
@@ -563,7 +563,7 @@ const Room = () => {
       if (userRole === "teacher") {
         navigate("/TeacherHome");
       } else {
-        navigate("/student_home");
+        navigate("/home");
       }
     });
   };
