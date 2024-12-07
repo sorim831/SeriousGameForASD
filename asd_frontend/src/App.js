@@ -28,12 +28,12 @@ function App() {
     <Router>
       <Routes>
         <Route path="/main" element={<First />} />
-        <Route path="/" element={<Navigate to="/student_home" />} />
-        <Route path="/student_home" element={<StudentHome />} />
+        <Route path="/" element={<Navigate to="/home" />} />
+        <Route path="/home" element={<StudentHome />} />
         <Route path="/teacher_register" element={<TeacherRegister />} />
         <Route path="/student_register" element={<StudentRegister />} />
         <Route path="/teacher_login" element={<TeacherLogin />} />
-        <Route path="/student_login" element={<StudentLogin />} />
+        <Route path="/login" element={<StudentLogin />} />
         <Route path="/TeacherHome" element={<TeacherHome />} />
         <Route path="/get_students" element={<GetStudents />} />
         <Route path="/score_and_feedback" element={<ScoreAndFeedBack />} />

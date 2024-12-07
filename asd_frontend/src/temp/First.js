@@ -39,7 +39,7 @@ function First() {
   const handleLogin = (e) => {
     e.preventDefault();
     if (Student) {
-      window.location.href = "/student_login";
+      window.location.href = "/login";
     } else {
       window.location.href = "/teacher_login";
     }

@@ -19,12 +19,12 @@ function Register() {
         const result = await response.json();
 
         if (result.success) {
-          window.location.href = "/student_home";
+          window.location.href = "/home";
         }
       } catch (error) {
         console.error("토큰 검증 중 오류 발생:", error);
         localStorage.removeItem("token");
-        window.location.href = "/student_login";
+        window.location.href = "/login";
       }
     }
   };
@@ -119,7 +119,7 @@ function Register() {
       const result = await response.text();
       setError(result);
       if (response.ok) {
-        window.location.href = "/student_login";
+        window.location.href = "/login";
       }
     } catch (error) {
       console.error("Error:", error);
@@ -244,7 +244,7 @@ function Register() {
         </div>
         {error && <p className={styles.errorMessage}>{error}</p>}
         <div className={styles.btnBox}>
-          <a href="/student_login" className={styles.goBackBtn}>
+          <a href="/login" className={styles.goBackBtn}>
             뒤로가기
           </a>
           <button type="submit" className={styles.registerBtn}>

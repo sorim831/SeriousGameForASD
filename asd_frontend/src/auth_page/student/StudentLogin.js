@@ -108,7 +108,7 @@ function Login() {
       const result = await response.json();
       if (result.success) {
         localStorage.setItem("token", result.token); // 토큰 저장
-        window.location.href = "/student_home";
+        window.location.href = "/home";
       } else {
         setError(result.message); // 실패 메시지 표시
       }
@@ -132,7 +132,7 @@ function Login() {
       {isLoggedIn ? (
         <div className={styles.loginForm}>
           <p className={styles.loginMessage}>이미 로그인이 되어있어요.</p>
-          <a className={styles.goBackBtn} href="/student_home">
+          <a className={styles.goBackBtn} href="/home">
             돌아가기
           </a>
           <button onClick={handleLogout} className={styles.logoutBtn}>
