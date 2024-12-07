@@ -205,6 +205,9 @@ feedback-list body {
   font-size: 14px;
   color: #555;
 }
+#previous-feedback {
+  margin-bottom: 60px;
+}
 
 .feedback-list {
   position: fixed;
