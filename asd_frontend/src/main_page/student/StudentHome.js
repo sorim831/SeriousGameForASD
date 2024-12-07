@@ -6,6 +6,7 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 function StudentHome() {
   const [userId, setUserId] = useState(null);
+  const [userFullId, setUserFullId] = useState(null);
   const [studentScore, setStudentScore] = useState();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -32,6 +33,7 @@ function StudentHome() {
           } else {
             // console.log("good!");
             setUserId(result.user.id.slice(0, -9));
+            setUserFullId(result.user.id);
             setIsLoggedIn(true);
             fetchStudentScore(result.user.id);
           }
@@ -89,17 +91,19 @@ function StudentHome() {
   }, []);
 
   const handleGameStart = () => {
-    if (userId) {
-      window.location.href = `/room/${userId}`;
+    if (userFullId) {
+      window.location.href = `/room/${userFullId}`;
     }
   };
 
   if (!isLoggedIn) {
     return (
-      <div className="loader">
-        <div className="spinner"></div>
-        <p>불러오는 중...</p>
-      </div>
+      <>
+        <div className="loader">
+          <div className="spinner"></div>
+          <p>불러오는 중...</p>
+        </div>
+      </>
     );
   }
 

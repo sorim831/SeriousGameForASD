@@ -43,7 +43,7 @@ const StudentTree = ({ score }) => {
 
       while (!validPosition && attempts < maxAttempts) {
         const newPosition = {
-          left: Math.random() * 80 + 10,
+          left: Math.random() * 85 + 1,
           bottom: Math.random() * 30 + 10,
           treeImage: treeImages[Math.floor(Math.random() * treeImages.length)],
         };

@@ -587,7 +587,9 @@ const Room = () => {
             <img src="" alt="" className="problem-image-overlay" />
           </div>
           {/* 중간: 문제 텍스트 */}
-          <p className="problem-text"></p>
+          <div className="problem-text-box">
+            <p className="problem-text"></p>
+          </div>
           {/* 하단: 교사 비디오 */}
           <div className="video-overlay-container-for-student">
             <video

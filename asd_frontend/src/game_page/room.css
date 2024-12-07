@@ -88,12 +88,20 @@
 }
 .problem-image-overlay-for-teacher {
   position: absolute;
-  top: 70%; 
-  left: 45%; 
-  transform: translate(-50%, -50%); 
+  top: 70%;
+  left: 45%;
+  transform: translate(-50%, -50%);
   width: 500px;
   height: 300px;
   z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+  border: none;
+  outline: none;
+  display: none;
+  opacity: 0.9;
+}
+
+.problem-image-overlay-for-teacher[src]:not([src=""]) {
+  display: block;
 }
 
 .teacher-animation-overlay {
@@ -133,12 +141,19 @@
 
 .problem-image-overlay {
   position: absolute;
-  top: 70%; 
-  left: 45%; 
-  transform: translate(-50%, -50%); 
+  top: 70%;
+  left: 45%;
+  transform: translate(-50%, -50%);
   width: 500px;
   height: 300px;
   z-index: 10; /* 다른 요소 위에 표시되도록 설정 */
+  border: none;
+  outline: none;
+  display: none;
+}
+
+.problem-image-overlay[src]:not([src=""]) {
+  display: block;
 }
 
 .student-video {
@@ -163,12 +178,21 @@
   overflow: hidden;
 }
 
+.problem-text-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
 /* 문제 텍스트 */
 .problem-text {
   margin: 20px 0;
-  font-size: 16px;
+  font-size: 18px;
   text-align: center;
   color: #333;
+  font-weight: bold;
+  width: 80%;
 }
 
 .problem-placeholder {
