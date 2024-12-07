@@ -12,6 +12,7 @@ const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
 
     if (selectedId) {
       const image = problemData[selectedId]?.teacher_image;
+
       setImageLocation(image);
     }
 
@@ -23,7 +24,7 @@ const SelectedQuestion = ({ selectedId, sendButtonClick, problemData }) => {
   const generateQuestionText = (id) => {
     if (!id) return "문제";
     const [category, number] = id.split("-");
-    return `${category}-${number} 문제`;
+    return `${problemData[id]?.text ? `${problemData[id]?.text}` : ""}`;
   };
 
   const questionText = generateQuestionText(selectedId);

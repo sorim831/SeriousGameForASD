@@ -30,6 +30,9 @@ const QuestionSelect = ({ onButtonClick }) => {
                 alt={`1-${index + 1}`}
                 className="question-image"
               />
+              <span className="hover-text">
+                {problemData[`1-${index + 1}`]?.text}
+              </span>
             </button>
           </li>
         ))}
@@ -50,6 +53,9 @@ const QuestionSelect = ({ onButtonClick }) => {
                 alt={`2-${index + 1}`}
                 className="question-image"
               />
+              <span className="hover-text">
+                {problemData[`2-${index + 1}`]?.text}
+              </span>
             </button>
           </li>
         ))}
@@ -70,6 +76,9 @@ const QuestionSelect = ({ onButtonClick }) => {
                 alt={`3-${index + 1}`}
                 className="question-image"
               />
+              <span className="hover-text">
+                {problemData[`3-${index + 1}`]?.text}
+              </span>
             </button>
           </li>
         ))}
@@ -90,6 +99,9 @@ const QuestionSelect = ({ onButtonClick }) => {
                 alt={`4-${index + 1}`}
                 className="question-image"
               />
+              <span className="hover-text">
+                {problemData[`4-${index + 1}`]?.text}
+              </span>
             </button>
           </li>
         ))}
@@ -110,6 +122,9 @@ const QuestionSelect = ({ onButtonClick }) => {
                 alt={`5-${index + 1}`}
                 className="question-image"
               />
+              <span className="hover-text">
+                {problemData[`5-${index + 1}`]?.text}
+              </span>
             </button>
           </li>
         ))}

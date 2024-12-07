@@ -183,16 +183,17 @@
   justify-content: center;
   align-items: center;
   width: 100%;
+  font-weight: bold;
+  padding: 0 20px;
+  margin: 20px 0;
 }
 
 /* 문제 텍스트 */
 .problem-text {
-  margin: 20px 0;
+  margin: 0;
   font-size: 18px;
   text-align: center;
   color: #333;
-  font-weight: bold;
-  width: 80%;
 }
 
 .problem-placeholder {
