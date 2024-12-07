@@ -73,6 +73,10 @@ function Register() {
       setError("이름을 입력해주세요.");
       return;
     }
+    if (studentName.length > 8) {
+      setError("이름을 확인해주세요!");
+      return;
+    }
     if (!studentPhone.trim()) {
       setError("전화번호를 입력해주세요.");
       return;

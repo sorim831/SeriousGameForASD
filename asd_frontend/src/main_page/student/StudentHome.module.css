@@ -1,5 +1,5 @@
 .gameBoxOverlay {
-  position: fixed;
+  position: absolute;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
@@ -9,12 +9,19 @@
 }
 
 .gameBox {
-  padding: 25px 40px;
+  padding: 20px 25px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(15px);
+  transition: all 0.1s ease-out;
 }
+
+.gameBox:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(30px);
+}
+
 .gameButton {
   background-color: rgba(0, 128, 0, 0.5);
   color: white;
@@ -23,7 +30,7 @@
   border-radius: 5px;
   backdrop-filter: blur(15px);
   cursor: pointer;
-  transition: all 0.3s ease-out;
+  transition: all 0.1s ease-out;
   font-size: 16px;
 }
 .gameButton:hover {
@@ -44,14 +51,22 @@
 }
 
 .welcomeMessage {
+  position: absolute;
+  top: 30px;
+  transform: translateX(-50%);
   text-align: center;
-  margin: 20px auto;
-  margin-top: 250px;
+  white-space: nowrap;
   font-size: 24px;
   font-weight: bold;
-  color: #2c3e50; 
-  background-color: rgba(255, 255, 255, 0.8); 
-  padding: 10px 20px;
-  border-radius: 10px; 
-  display: inline-block; 
+  color: #2c3e50;
+  padding: 20px 30px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(15px);
+  transition: all 0.1s ease-out;
+}
+.welcomeMessage:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(30px);
 }

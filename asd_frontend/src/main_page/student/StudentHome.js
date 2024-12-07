@@ -7,6 +7,8 @@ const address = process.env.REACT_APP_BACKEND_ADDRESS;
 function StudentHome() {
   const [userId, setUserId] = useState(null);
   const [studentScore, setStudentScore] = useState();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
 
@@ -29,7 +31,8 @@ function StudentHome() {
             window.location.href = "/main";
           } else {
             // console.log("good!");
-            setUserId(result.user.id);
+            setUserId(result.user.id.slice(0, -9));
+            setIsLoggedIn(true);
             fetchStudentScore(result.user.id);
           }
         } else {
@@ -48,7 +51,7 @@ function StudentHome() {
   const fetchStudentScore = async () => {
     const url = `${address}/scores_for_tree`;
     // console.log(`Requesting student score from: ${url}`);
-  
+
     try {
       const response = await fetch(url, {
         method: "GET",
@@ -56,22 +59,22 @@ function StudentHome() {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
       });
-  
+
       // console.log(`Response status: ${response.status}`);
       // console.log(`Response headers:`, response.headers);
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const result = await response.json();
       // console.log(`Response data:`, result);
-  
+
       if (result.success) {
-        const numericScore = Number(result.student_total_score); 
+        const numericScore = Number(result.student_total_score);
         // console.log(`Student Score fetched from server:`, numericScore);
         // console.log(`Type of fetched score after conversion:`, typeof numericScore);
-        setStudentScore(numericScore); 
+        setStudentScore(numericScore);
       } else {
         // console.error("Failed to fetch score:", result.message);
       }
@@ -79,7 +82,6 @@ function StudentHome() {
       // console.error("Error fetching student score:", error);
     }
   };
-  
 
   // 페이지 로드 시 토큰을 확인
   useEffect(() => {
@@ -92,16 +94,27 @@ function StudentHome() {
     }
   };
 
+  if (!isLoggedIn) {
+    return (
+      <div className="loader">
+        <div className="spinner"></div>
+        <p>불러오는 중...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.App}>
-    <div className={styles.welcomeMessage}>
-      <h2 style={{ fontSize: "28px", fontWeight: "bold" }}>
-        안녕하세요! <span style={{ color: "#4caf50" }}>{userId}</span>님,
-      </h2>
-      <p style={{ fontSize: "20px", color: "#2c3e50" }}>
-        오늘도 <span style={{ fontWeight: "bold", color: "#4caf50" }}>숲</span>을 만들어볼까요? 🌳
-      </p>
-    </div>
+      <div className={styles.welcomeMessage}>
+        <h2 style={{ fontSize: "28px", fontWeight: "bold" }}>
+          안녕하세요! <span style={{ color: "#4caf50" }}>{userId}</span>님,
+        </h2>
+        <p style={{ fontSize: "20px", color: "#2c3e50" }}>
+          오늘도{" "}
+          <span style={{ fontWeight: "bold", color: "#4caf50" }}>숲</span>을
+          가꾸어 볼까요? 🌳
+        </p>
+      </div>
       <div className={styles.gameBoxOverlay}>
         <div className={styles.gameBox}>
           <button className={styles.gameButton} onClick={handleGameStart}>
@@ -110,7 +123,11 @@ function StudentHome() {
         </div>
       </div>
       <StudentTree score={studentScore} />
-      <img src="/images/1.png" className={styles.backgroundImg} alt="Background" />
+      <img
+        src="/images/1.png"
+        className={styles.backgroundImg}
+        alt="Field Background"
+      />
     </div>
   );
 }

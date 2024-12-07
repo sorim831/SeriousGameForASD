@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "./StudentTree.module.css";
 
-const TREE_SIZE = 50; 
-const MIN_DISTANCE = 40; 
+const TREE_SIZE = 50;
+const MIN_DISTANCE = 40;
 
 const calculateTreeCount = (score) => {
-  // console.log("Input Score:", score);
-  // console.log("Math.log(1 + score):", Math.log(1 + score));
-  // console.log("Calculated Tree Count:", Math.floor(Math.log(1 + score) * 3));
   return Math.floor(Math.log(1 + score) * 4);
 };
 
@@ -29,16 +26,14 @@ const StudentTree = ({ score }) => {
     const positions = [];
     const maxAttempts = 100;
     const treeCount = calculateTreeCount(score);
-    // console.log("Calculated Tree Count:", treeCount);
 
-    const excludeAreas = [
-      { left: 10, right: 90, top: 55, bottom: 70 }, 
-      { left: 40, right: 60, top: 85, bottom: 95 }, 
-    ];
+    const excludeAreas = [{ left: 45, right: 55, top: 0, bottom: 10 }];
 
     const isInsideExcludedArea = (x, y) => {
       return excludeAreas.some((area) => {
-        return x >= area.left && x <= area.right && y >= area.top && y <= area.bottom;
+        return (
+          x >= area.left && x <= area.right && y >= area.top && y <= area.bottom
+        );
       });
     };
 
@@ -48,8 +43,8 @@ const StudentTree = ({ score }) => {
 
       while (!validPosition && attempts < maxAttempts) {
         const newPosition = {
-          left: Math.random() * 80 + 10, // 가로 10% ~ 90%
-          top: Math.random() * 40 + 50, // 세로 50% ~ 100%
+          left: Math.random() * 80 + 10,
+          top: Math.random() * 30 + 50,
           treeImage: treeImages[Math.floor(Math.random() * treeImages.length)],
         };
 
@@ -72,8 +67,6 @@ const StudentTree = ({ score }) => {
       }
     }
 
-    // console.log("Generated Tree Positions:", positions.length);
-
     setTreePositions(
       positions.map((pos) => ({
         ...pos,
@@ -89,7 +82,7 @@ const StudentTree = ({ score }) => {
         <img
           key={index}
           src={position.treeImage}
-          alt="Student Tree"
+          alt="Tree"
           style={{
             position: "absolute",
             left: position.left,
