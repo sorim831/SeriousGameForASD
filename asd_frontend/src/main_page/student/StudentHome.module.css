@@ -1,5 +1,5 @@
 .gameBoxOverlay {
-  position: absolute;
+  position: fixed;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
@@ -32,6 +32,7 @@
   cursor: pointer;
   transition: all 0.1s ease-out;
   font-size: 16px;
+  white-space: nowrap;
 }
 .gameButton:hover {
   scale: 1.05;

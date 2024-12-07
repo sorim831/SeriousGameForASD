@@ -27,12 +27,12 @@ const StudentTree = ({ score }) => {
     const maxAttempts = 100;
     const treeCount = calculateTreeCount(score);
 
-    const excludeAreas = [{ left: 45, right: 55, top: 0, bottom: 10 }];
+    const excludeAreas = [{ left: 45, right: 55, bottom: 90, top: 100 }];
 
     const isInsideExcludedArea = (x, y) => {
       return excludeAreas.some((area) => {
         return (
-          x >= area.left && x <= area.right && y >= area.top && y <= area.bottom
+          x >= area.left && x <= area.right && y >= area.bottom && y <= area.top
         );
       });
     };
@@ -44,18 +44,18 @@ const StudentTree = ({ score }) => {
       while (!validPosition && attempts < maxAttempts) {
         const newPosition = {
           left: Math.random() * 80 + 10,
-          top: Math.random() * 30 + 50,
+          bottom: Math.random() * 30 + 10,
           treeImage: treeImages[Math.floor(Math.random() * treeImages.length)],
         };
 
-        if (isInsideExcludedArea(newPosition.left, newPosition.top)) {
+        if (isInsideExcludedArea(newPosition.left, newPosition.bottom)) {
           attempts++;
           continue;
         }
 
         validPosition = positions.every((pos) => {
           const dx = Math.abs(pos.left - newPosition.left);
-          const dy = Math.abs(pos.top - newPosition.top);
+          const dy = Math.abs(pos.bottom - newPosition.bottom);
           const distance = Math.sqrt(dx * dx + dy * dy);
           return (distance * window.innerWidth) / 100 > MIN_DISTANCE;
         });
@@ -71,7 +71,7 @@ const StudentTree = ({ score }) => {
       positions.map((pos) => ({
         ...pos,
         left: pos.left + "%",
-        top: pos.top + "%",
+        bottom: pos.bottom + "%",
       }))
     );
   }, [treeImages, score]);
@@ -84,9 +84,9 @@ const StudentTree = ({ score }) => {
           src={position.treeImage}
           alt="Tree"
           style={{
-            position: "absolute",
+            position: "fixed",
             left: position.left,
-            top: position.top,
+            bottom: position.bottom,
             width: `${TREE_SIZE}px`,
             height: "auto",
           }}
