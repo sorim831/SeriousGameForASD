@@ -38,7 +38,7 @@ router.get("/", (req, res) => {
       res.status(500).json({
         code: 500,
         success: false,
-        message: "데이터베이스 오류 발생",
+        message: "처리 중 오류가 발생했어요. 다시 시도해주세요.",
         students: [],
       });
     });

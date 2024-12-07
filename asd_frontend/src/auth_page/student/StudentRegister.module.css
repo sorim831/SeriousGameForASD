@@ -12,6 +12,7 @@
 .errorMessage {
   color: red;
   font-size: 14px;
+  margin: 0px;
 }
 .title {
   font-size: 24px;
@@ -33,6 +34,11 @@
   box-sizing: border-box;
   font-size: 16px;
   box-sizing: border-box;
+}
+.nameInput:focus,
+.phoneInput:focus,
+.selectBox:focus {
+  outline: 2px solid green;
 }
 .nameLabel {
   white-space: nowrap;
@@ -77,11 +83,15 @@
 .genderInput {
   margin: 0 7px;
 }
+.genderInput:checked {
+  outline: 2px solid green;
+}
 .btnBox {
   width: 260px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-top: 20px;
 }
 .goBackBtn {
   color: #666;
@@ -98,4 +108,17 @@
 }
 .registerBtn:hover {
   transform: scale(1.03);
+}
+.selectBox {
+  padding: 7px 5px;
+  font-size: 16px;
+  margin: 0 2px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+.genderInput input[type="radio"] {
+  accent-color: green;
+  width: 16px;
+  height: 16px;
 }

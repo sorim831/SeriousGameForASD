@@ -46,6 +46,7 @@ function Register() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     const years = [];
@@ -69,20 +70,12 @@ function Register() {
   const handleStudentRegister = async (e) => {
     e.preventDefault();
 
-    if (!studentName.trim()) {
-      setError("이름을 입력해주세요.");
-      return;
-    }
-    if (studentName.length > 8) {
+    if (!studentName.trim() || studentName.length > 8) {
       setError("이름을 확인해주세요!");
       return;
     }
-    if (!studentPhone.trim()) {
-      setError("전화번호를 입력해주세요.");
-      return;
-    }
-    if (studentPhone.length !== 11) {
-      setError("전화번호는 11자리여야 합니다.");
+    if (!studentPhone.trim() || studentPhone.length !== 11) {
+      setError("전화번호를 확인해주세요.");
       return;
     }
     if (
@@ -127,12 +120,95 @@ function Register() {
     }
   };
 
+  const checkValidation = () => {
+    if (!studentName.trim() || studentName.length > 8) {
+      setError("이름을 확인해주세요!");
+      return;
+    }
+    if (!studentPhone.trim() || studentPhone.length !== 11) {
+      setError("전화번호를 확인해주세요.");
+      return;
+    }
+    if (
+      !studentBirthday.year ||
+      !studentBirthday.month ||
+      !studentBirthday.day
+    ) {
+      setError("생년월일을 모두 선택해주세요.");
+      return;
+    }
+    if (!studentGender) {
+      setError("성별을 체크해주세요.");
+      return;
+    } else {
+      setError("");
+    }
+  };
+
   const handleStudentBirthdayChange = (e) => {
     setStudentBirthday({ ...studentBirthday, [e.target.name]: e.target.value });
   };
 
   const handleGenderChange = (e) => {
     setStudentGender(e.target.value);
+    checkValidation();
+  };
+
+  const handleNameChange = (e) => {
+    setStudentName(e.target.value);
+    setError("");
+  };
+
+  const handlePhoneChange = (e) => {
+    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
+    if (onlyNums.length <= 11) {
+      setStudentPhone(onlyNums);
+    }
+    setError("");
+  };
+
+  const validateAndNext = () => {
+    if (currentStep === 1) {
+      if (!studentName.trim()) {
+        setError("이름을 입력해주세요.");
+        return;
+      }
+      if (studentName.length > 8) {
+        setError("이름이 너무 깁니다.");
+        return;
+      }
+      setCurrentStep(2);
+      setError("");
+    } else if (currentStep === 2) {
+      if (!studentPhone.trim()) {
+        setError("전화번호를 입력해주세요.");
+        return;
+      }
+      if (studentPhone.length !== 11) {
+        setError("전화번호는 11자리여야 합니다.");
+        return;
+      }
+      setCurrentStep(3);
+      setError("");
+    } else if (currentStep === 3) {
+      if (
+        !studentBirthday.year ||
+        !studentBirthday.month ||
+        !studentBirthday.day
+      ) {
+        setError("생년월일을 모두 선택해주세요.");
+        return;
+      }
+      setCurrentStep(4);
+      setError("");
+    }
+  };
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && currentStep < 4) {
+      e.preventDefault();
+      validateAndNext();
+    }
   };
 
   if (loading) {
@@ -151,6 +227,7 @@ function Register() {
         action="/student_register_process"
         method="post"
         onSubmit={handleStudentRegister}
+        onKeyPress={handleKeyPress}
       >
         <h1 className={styles.title}>신규 등록</h1>
         <div className={styles.nameBox}>
@@ -160,96 +237,111 @@ function Register() {
             type="text"
             name="name"
             placeholder="이름"
-            onChange={(e) => setStudentName(e.target.value)}
+            value={studentName}
+            onChange={handleNameChange}
           />
         </div>
-        <div className={styles.phoneBox}>
-          <label className={styles.phoneLabel}>전화번호:</label>
-          <input
-            className={styles.phoneInput}
-            type="text"
-            name="phone"
-            placeholder="전화번호"
-            onChange={(e) => {
-              const onlyNums = e.target.value.replace(/[^0-9]/g, "");
-              if (onlyNums.length <= 11) {
-                setStudentPhone(onlyNums);
-              }
-            }}
-            value={studentPhone}
-            style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
-          />
-        </div>
-        <div className={styles.birthdayInfo}>
-          <label>생일:</label>
-          <select
-            className={styles.selectBox}
-            name="year"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected></option>
-            {studentYear.map((year) => (
-              <option key={year} value={year}>
-                {year}
-              </option>
-            ))}
-          </select>
-          <label>년</label>
-          <select
-            className={styles.selectBox}
-            name="month"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected></option>
-            {studentMonth.map((month) => (
-              <option key={month} value={month}>
-                {month}
-              </option>
-            ))}
-          </select>
-          <label>월</label>
-          <select
-            className={styles.selectBox}
-            name="day"
-            onChange={handleStudentBirthdayChange}
-          >
-            <option disabled selected></option>
-            {studentDay.map((day) => (
-              <option key={day} value={day}>
-                {day}
-              </option>
-            ))}
-          </select>
-          <label>일</label>
-        </div>
-        <div className={styles.genderBox}>
-          <label className={styles.genderInput}>
+        {currentStep >= 2 && (
+          <div className={styles.phoneBox}>
+            <label className={styles.phoneLabel}>전화번호:</label>
             <input
-              type="radio"
-              value="male"
-              checked={studentGender === "male"}
-              onChange={handleGenderChange}
+              className={styles.phoneInput}
+              type="text"
+              name="phone"
+              placeholder="전화번호"
+              onChange={handlePhoneChange}
+              value={studentPhone}
+              style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
             />
-            남성
-          </label>
-          <label className={styles.genderInput}>
-            <input
-              type="radio"
-              value="female"
-              checked={studentGender === "female"}
-              onChange={handleGenderChange}
-            />
-            여성
-          </label>
-        </div>
+          </div>
+        )}
+        {currentStep >= 3 && (
+          <div className={styles.birthdayInfo}>
+            <label>생일:</label>
+            <select
+              className={styles.selectBox}
+              name="year"
+              onChange={handleStudentBirthdayChange}
+              value={studentBirthday.year}
+            >
+              <option value="">년</option>
+              {studentYear.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+            <label>년</label>
+            <select
+              className={styles.selectBox}
+              name="month"
+              onChange={handleStudentBirthdayChange}
+              value={studentBirthday.month}
+            >
+              <option value="">월</option>
+              {studentMonth.map((month) => (
+                <option key={month} value={month}>
+                  {month}
+                </option>
+              ))}
+            </select>
+            <label>월</label>
+            <select
+              className={styles.selectBox}
+              name="day"
+              onChange={handleStudentBirthdayChange}
+              value={studentBirthday.day}
+            >
+              <option value="">일</option>
+              {studentDay.map((day) => (
+                <option key={day} value={day}>
+                  {day}
+                </option>
+              ))}
+            </select>
+            <label>일</label>
+          </div>
+        )}
+        {currentStep >= 4 && (
+          <div className={styles.genderBox}>
+            <label className={styles.genderInput}>
+              <input
+                type="radio"
+                value="male"
+                checked={studentGender === "male"}
+                onChange={handleGenderChange}
+              />
+              남성
+            </label>
+            <label className={styles.genderInput}>
+              <input
+                type="radio"
+                value="female"
+                checked={studentGender === "female"}
+                onChange={handleGenderChange}
+              />
+              여성
+            </label>
+          </div>
+        )}
         {error && <p className={styles.errorMessage}>{error}</p>}
         <div className={styles.btnBox}>
           <a href="/login" className={styles.goBackBtn}>
             뒤로가기
           </a>
-          <button type="submit" className={styles.registerBtn}>
-            등록
-          </button>
+          {currentStep < 4 ? (
+            <button
+              type="button"
+              onClick={validateAndNext}
+              className={styles.registerBtn}
+            >
+              다음
+            </button>
+          ) : (
+            <button type="submit" className={styles.registerBtn}>
+              등록
+            </button>
+          )}
         </div>
       </form>
     </div>

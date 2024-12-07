@@ -15,7 +15,9 @@ function Login() {
   });
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [birthdayError, setBirthdayError] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const checkAccessToken = async () => {
     const token = localStorage.getItem("token");
@@ -41,6 +43,14 @@ function Login() {
       } finally {
         setLoading(false);
       }
+    }
+  };
+
+  const checkValidationName = (name) => {
+    if (!name) {
+      setNameError("이름을 입력해주세요.");
+    } else {
+      setNameError("");
     }
   };
 
@@ -77,7 +87,7 @@ function Login() {
     e.preventDefault();
 
     if (!studentName) {
-      setError("이름을 입력해주세요.");
+      setNameError("이름을 입력해주세요.");
       return;
     }
     if (
@@ -85,7 +95,7 @@ function Login() {
       !studentBirthday.month ||
       !studentBirthday.day
     ) {
-      setError("생년월일을 모두 선택해주세요.");
+      setBirthdayError("생년월일을 모두 선택해주세요.");
       return;
     }
 
@@ -110,11 +120,11 @@ function Login() {
         localStorage.setItem("token", result.token); // 토큰 저장
         window.location.href = "/home";
       } else {
-        setError(result.message); // 실패 메시지 표시
+        setErrorMessage(result.message);
       }
     } catch (error) {
       console.error("Error:", error);
-      setError("학생 로그인 중 오류 발생");
+      setErrorMessage("로그인 중 오류가 발생했어요.");
     }
   };
 
@@ -148,69 +158,82 @@ function Login() {
           <h1 className={styles.title}>로그인</h1>
           <div className={styles.nameBox}>
             <label className={styles.nameLabel}>이름:</label>
-            <input
-              type="text"
-              name="name"
-              placeholder="이름"
-              onChange={(e) => setStudentName(e.target.value)}
-              className={styles.nameInput}
-              autoComplete="on"
-              tabIndex="1"
-            />
+            <div className={styles.inputWrapper}>
+              <input
+                type="text"
+                name="name"
+                placeholder="이름"
+                onChange={(e) => {
+                  setStudentName(e.target.value);
+                  checkValidationName(e.target.value);
+                }}
+                className={styles.nameInput}
+                autoComplete="on"
+                tabIndex="1"
+              />
+              {nameError && <p className={styles.errorMessage}>{nameError}</p>}
+            </div>
           </div>
           <div className={styles.birthdayInfo}>
             <label>생일:</label>
-            <div className={styles.birthdayBox}>
-              <select
-                className={styles.selectBox}
-                name="year"
-                onChange={handleStudentBirthdayChange}
-                tabIndex="2"
-              >
-                <option disabled selected></option>
-                {studentYear.map((year) => (
-                  <option key={year} value={year}>
-                    {year}
-                  </option>
-                ))}
-              </select>
-              <label>년</label>
-            </div>
-            <div className={styles.birthdayBox}>
-              <select
-                className={styles.selectBox}
-                name="month"
-                onChange={handleStudentBirthdayChange}
-                tabIndex="3"
-              >
-                <option disabled selected></option>
-                {studentMonth.map((month) => (
-                  <option key={month} value={month}>
-                    {month}
-                  </option>
-                ))}
-              </select>
-              <label>월</label>
-            </div>
-            <div className={styles.birthdayBox}>
-              <select
-                className={styles.selectBox}
-                name="day"
-                onChange={handleStudentBirthdayChange}
-                tabIndex="4"
-              >
-                <option disabled selected></option>
-                {studentDay.map((day) => (
-                  <option key={day} value={day}>
-                    {day}
-                  </option>
-                ))}
-              </select>
-              <label>일</label>
+            <div className={styles.birthdayBoxWrapper}>
+              <div className={styles.birthdayBox}>
+                <select
+                  className={styles.selectBox}
+                  name="year"
+                  onChange={handleStudentBirthdayChange}
+                  tabIndex="2"
+                >
+                  <option disabled selected></option>
+                  {studentYear.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                <label className={styles.birthdayLabel}>년</label>
+              </div>
+              <div className={styles.birthdayBox}>
+                <select
+                  className={styles.selectBox}
+                  name="month"
+                  onChange={handleStudentBirthdayChange}
+                  tabIndex="3"
+                >
+                  <option disabled selected></option>
+                  {studentMonth.map((month) => (
+                    <option key={month} value={month}>
+                      {month}
+                    </option>
+                  ))}
+                </select>
+                <label className={styles.birthdayLabel}>월</label>
+              </div>
+              <div className={styles.birthdayBox}>
+                <select
+                  className={styles.selectBox}
+                  name="day"
+                  onChange={handleStudentBirthdayChange}
+                  tabIndex="4"
+                >
+                  <option disabled selected></option>
+                  {studentDay.map((day) => (
+                    <option key={day} value={day}>
+                      {day}
+                    </option>
+                  ))}
+                </select>
+                <label className={styles.birthdayLabel}>일</label>
+              </div>
+              {birthdayError && (
+                <p className={styles.errorMessage}>{birthdayError}</p>
+              )}
             </div>
           </div>
-          {error && <p className={styles.errorMessage}>{error}</p>}
           <div className={styles.btnBox}>
+            {errorMessage && (
+              <p className={styles.errorMessageError}>{errorMessage}</p>
+            )}
             <a
               className={styles.registerBtn}
               href="/student_register"
