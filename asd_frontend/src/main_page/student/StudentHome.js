@@ -108,30 +108,32 @@ function StudentHome() {
   }
 
   return (
-    <div className={styles.App}>
-      <div className={styles.welcomeMessage}>
-        <h2 style={{ fontSize: "28px", fontWeight: "bold" }}>
-          안녕하세요! <span style={{ color: "#4caf50" }}>{userId}</span>님,
-        </h2>
-        <p style={{ fontSize: "20px", color: "#2c3e50" }}>
-          오늘도{" "}
-          <span style={{ fontWeight: "bold", color: "#4caf50" }}>숲</span>을
-          가꾸어 볼까요? 🌳
-        </p>
-      </div>
-      <div className={styles.gameBoxOverlay}>
-        <div className={styles.gameBox}>
-          <button className={styles.gameButton} onClick={handleGameStart}>
-            게임 시작
-          </button>
+    <div className={styles.studentHome}>
+      <div className={styles.back}>
+        <div className={styles.welcomeMessage}>
+          <h2 style={{ fontSize: "28px", fontWeight: "bold" }}>
+            안녕하세요! <span style={{ color: "#4caf50" }}>{userId}</span>님,
+          </h2>
+          <p style={{ fontSize: "20px", color: "#2c3e50" }}>
+            오늘도{" "}
+            <span style={{ fontWeight: "bold", color: "#4caf50" }}>숲</span>을
+            가꾸어 볼까요? 🌳
+          </p>
         </div>
+        <div className={styles.gameBoxOverlay}>
+          <div className={styles.gameBox}>
+            <button className={styles.gameButton} onClick={handleGameStart}>
+              게임 시작
+            </button>
+          </div>
+        </div>
+        <StudentTree score={studentScore} />
+        <img
+          src="/images/1.png"
+          className={styles.backgroundImg}
+          alt="Field Background"
+        />
       </div>
-      <StudentTree score={studentScore} />
-      <img
-        src="/images/1.png"
-        className={styles.backgroundImg}
-        alt="Field Background"
-      />
     </div>
   );
 }

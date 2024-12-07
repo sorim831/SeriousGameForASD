@@ -14,6 +14,9 @@ import { useLocation } from "react-router-dom";
 import problemData from "./problemData.json";
 
 import "../loader.css";
+
+import "./room.css";
+
 const address = process.env.REACT_APP_BACKEND_ADDRESS;
 
 const Room = () => {
@@ -248,7 +251,7 @@ const Room = () => {
           if (userRole === "teacher") {
             navigate("/TeacherHome");
           } else {
-            navigate("/home");
+            navigate("/student_home");
           }
         });
 
@@ -435,7 +438,7 @@ const Room = () => {
     /*
     socket.on("alert_end", () => {
       alert("수업이 종료되었습니다.");
-      navigate("/home");
+      navigate("/student_home");
     });
     */
 
@@ -550,7 +553,7 @@ const Room = () => {
     if (userRole === "teacher") {
       navigate("/TeacherHome");
     } else {
-      navigate("/home");
+      navigate("/student_home");
     }
     socket.emit("end_class", roomId);
 
@@ -560,7 +563,7 @@ const Room = () => {
       if (userRole === "teacher") {
         navigate("/TeacherHome");
       } else {
-        navigate("/home");
+        navigate("/student_home");
       }
     });
   };

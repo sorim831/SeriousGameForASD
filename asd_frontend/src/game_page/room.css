@@ -51,6 +51,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
   box-sizing: border-box;
+  background-color: #ccc;
 }
 .teacher-video {
   width: 380px;
@@ -62,6 +63,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
   box-sizing: border-box;
+  background-color: #ccc;
 }
 
 .cam-loading {
@@ -247,7 +249,23 @@
   */
   position: relative;
   display: inline-block;
-  width: 100%;
+  width: 400px;
+  height: 100vh;
+  background-color: #8ac294;
+}
+
+.student-container {
+  height: 100vh;
+  width: 100vw;
+  background-image: url("./background-blur.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-blend-mode: darken;
+  background-color: rgba(0, 30, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .student-video-for-student {
@@ -269,6 +287,8 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border: 1px solid #ccc;
   box-sizing: border-box;
+  margin-top: 40px;
+  background-color: #ccc;
 }
 .video-overlay-container-for-student {
   width: 100%;
@@ -284,4 +304,5 @@
   width: 90%;
   border-radius: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 330px;
 }
