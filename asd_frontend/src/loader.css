@@ -11,7 +11,7 @@
   background: var(--_g) 0 0, var(--_g) 100% 0, var(--_g) 100% 100%,
     var(--_g) 0 100%;
   background-size: 40% 40%;
-  animation: l38 0.5s infinite;
+  animation: l38 0.8s infinite;
   margin-top: 30px;
 }
 @keyframes l38 {

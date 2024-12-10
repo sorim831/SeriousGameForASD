@@ -46,6 +46,7 @@ const Room = () => {
   const studentId = location.state?.studentId;
   const [isSaving, setIsSaving] = useState(false);
   const [isEnding, setIsEnding] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
   const [scoreAndFeedBackData, setScoreAndFeedBackData] = useState({
     score: null,
@@ -90,19 +91,7 @@ const Room = () => {
       //console.log("Filtered students:", filteredStudents);
       setRoomStudents(filteredStudents);
     } else {
-      console.error("Invalid students or roomId:", { students, roomId });
-    }
-  }, [students, roomId]);
-
-  useEffect(() => {
-    if (students && Array.isArray(students) && roomId) {
-      const filteredStudents = students.filter(
-        (student) => student.student_id === roomId
-      );
-      //console.log("Filtered students:", filteredStudents);
-      setRoomStudents(filteredStudents);
-    } else {
-      console.error("Invalid students or roomId:", { students, roomId });
+      // console.error("Invalid students or roomId:", { students, roomId });
     }
   }, [students, roomId]);
 
@@ -400,6 +389,7 @@ const Room = () => {
     //console.log("asdf");
 
     socket.on("welcome", async () => {
+      setIsConnected(true);
       const offer = await myPeerConnection.createOffer({ iceRestart: true });
       await myPeerConnection.setLocalDescription(offer);
       socket.emit("offer", offer, roomId);
@@ -591,7 +581,9 @@ const Room = () => {
           </div>
           {/* 중간: 문제 텍스트 */}
           <div className="problem-text-box">
-            <p className="problem-text"></p>
+            <p className="problem-text">
+              {!isConnected ? "선생님을 기다리는 중이에요." : ""}
+            </p>
           </div>
           {/* 하단: 교사 비디오 */}
           <div className="video-overlay-container-for-student">
@@ -601,13 +593,18 @@ const Room = () => {
               playsInline
               className="teacher-video-at-student"
             />
+            {!isConnected && (
+              <div className="loaderAtRoom">
+                <div className="spinnerAtRoom"></div>
+              </div>
+            )}
           </div>
         </div>
       </div>
     ) : (
       <div className="loader3">
         <div className="spinner3"></div>
-        <p>캠 켜는 중...</p>
+        <p>연결 중...</p>
       </div>
     );
   }
