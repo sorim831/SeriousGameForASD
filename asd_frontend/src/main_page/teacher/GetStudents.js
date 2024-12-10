@@ -20,7 +20,7 @@ const GetStudent = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      window.location.href = "/main";
+      window.location.href = "/login";
       return;
     } else {
       try {
@@ -36,18 +36,18 @@ const GetStudent = () => {
         if (result.success) {
           if (result.user.role !== "teacher") {
             localStorage.removeItem("token");
-            window.location.href = "/main";
+            window.location.href = "/login";
           } else {
             setTeacher(result.user.id);
           }
         } else {
           localStorage.removeItem("token");
-          window.location.href = "/main";
+          window.location.href = "/login";
         }
       } catch (error) {
         console.error(error);
         localStorage.removeItem("token");
-        window.location.href = "/main";
+        window.location.href = "/login";
       }
     }
     try {
@@ -69,7 +69,7 @@ const GetStudent = () => {
   const handleConnectStudent = async (studentId) => {
     const token = localStorage.getItem("token");
     if (!token) {
-      window.location.href = "/main";
+      window.location.href = "/login";
       return;
     }
 

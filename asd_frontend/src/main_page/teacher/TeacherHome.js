@@ -20,7 +20,7 @@ const TeacherHome = () => {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      window.location.href = "/main";
+      window.location.href = "/login";
       return;
     } else {
       try {
@@ -37,18 +37,18 @@ const TeacherHome = () => {
         if (result.success) {
           if (result.user.role !== "teacher") {
             localStorage.removeItem("token");
-            window.location.href = "/main";
+            window.location.href = "/login";
           } else {
             setTeacher(result.user.name);
           }
         } else {
           localStorage.removeItem("token");
-          window.location.href = "/main";
+          window.location.href = "/login";
         }
       } catch (error) {
         console.error(error);
         localStorage.removeItem("token");
-        window.location.href = "/main";
+        window.location.href = "/login";
       }
     }
 

@@ -178,7 +178,7 @@ const Room = () => {
     const checkAccessToken = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/main");
+        navigate("/login");
         return;
       }
 
@@ -190,7 +190,7 @@ const Room = () => {
 
         const result = await response.json();
         if (result.user.role !== "teacher" && result.user.role !== "student") {
-          navigate("/main");
+          navigate("/login");
           return;
         }
 
@@ -198,7 +198,7 @@ const Room = () => {
         setLoading(false); // 로딩 종료
       } catch (error) {
         console.error("checkAccessToken error:", error);
-        navigate("/main");
+        navigate("/login");
       }
     };
 
@@ -225,7 +225,7 @@ const Room = () => {
         const result = await studentResponse.json();
 
         if (!result.success) {
-          window.location.href = "/main";
+          window.location.href = "/login";
         }
 
         setStudentId(result.user.id);

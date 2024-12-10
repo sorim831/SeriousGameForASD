@@ -29,7 +29,7 @@ function StudentHome() {
           // console.log(result.user.id);
           if (result.user.role !== "student") {
             localStorage.removeItem("token");
-            window.location.href = "/main";
+            window.location.href = "/login";
           } else {
             // console.log("good!");
             setUserId(result.user.id.slice(0, -9));
