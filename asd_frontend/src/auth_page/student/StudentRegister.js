@@ -160,11 +160,15 @@ function Register() {
   };
 
   const handlePhoneChange = (e) => {
-    const onlyNums = e.target.value.replace(/[^0-9]/g, "");
-    if (onlyNums.length <= 11) {
-      setStudentPhone(onlyNums);
+    const value = e.target.value;
+    if (/[^0-9]/.test(value)) {
+      setError("숫자만 입력해주세요");
+    } else {
+      if (value.length <= 11) {
+        setStudentPhone(value);
+      }
+      setError("");
     }
-    setError("");
   };
 
   const validateAndNext = () => {
@@ -239,6 +243,7 @@ function Register() {
             placeholder="이름"
             value={studentName}
             onChange={handleNameChange}
+            tabIndex={1}
           />
         </div>
         {currentStep >= 2 && (
@@ -252,6 +257,7 @@ function Register() {
               onChange={handlePhoneChange}
               value={studentPhone}
               style={{ WebkitAppearance: "none", MozAppearance: "textfield" }}
+              tabIndex={2}
             />
           </div>
         )}
@@ -263,6 +269,7 @@ function Register() {
               name="year"
               onChange={handleStudentBirthdayChange}
               value={studentBirthday.year}
+              tabIndex={3}
             >
               <option value="">년</option>
               {studentYear.map((year) => (
@@ -277,6 +284,7 @@ function Register() {
               name="month"
               onChange={handleStudentBirthdayChange}
               value={studentBirthday.month}
+              tabIndex={4}
             >
               <option value="">월</option>
               {studentMonth.map((month) => (
@@ -291,6 +299,7 @@ function Register() {
               name="day"
               onChange={handleStudentBirthdayChange}
               value={studentBirthday.day}
+              tabIndex={5}
             >
               <option value="">일</option>
               {studentDay.map((day) => (
@@ -310,6 +319,7 @@ function Register() {
                 value="male"
                 checked={studentGender === "male"}
                 onChange={handleGenderChange}
+                tabIndex={6}
               />
               남성
             </label>
@@ -319,6 +329,7 @@ function Register() {
                 value="female"
                 checked={studentGender === "female"}
                 onChange={handleGenderChange}
+                tabIndex={7}
               />
               여성
             </label>
@@ -326,7 +337,7 @@ function Register() {
         )}
         {error && <p className={styles.errorMessage}>{error}</p>}
         <div className={styles.btnBox}>
-          <a href="/login" className={styles.goBackBtn}>
+          <a href="/login" className={styles.goBackBtn} tabIndex={9}>
             뒤로가기
           </a>
           {currentStep < 4 ? (
@@ -334,11 +345,12 @@ function Register() {
               type="button"
               onClick={validateAndNext}
               className={styles.registerBtn}
+              tabIndex={8}
             >
               다음
             </button>
           ) : (
-            <button type="submit" className={styles.registerBtn}>
+            <button type="submit" className={styles.registerBtn} tabIndex={8}>
               등록
             </button>
           )}

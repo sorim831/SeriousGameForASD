@@ -64,7 +64,10 @@ router.post("/", async (req, res) => {
     }
   } catch (err) {
     console.error(err);
-    res.send({ success: false, message: "로그인 중 오류 발생" });
+    res.send({
+      success: false,
+      message: "예상치 못한 오류가 발생했어요. 한번 더 시도해주세요.",
+    });
   }
 });
 

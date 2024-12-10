@@ -43,6 +43,7 @@ form.login-form button {
 .teachererrorMessage {
   color: red;
   font-size: 14px;
+  margin: -25px 0 15px 0;
 }
 
 form.login-form {
@@ -70,6 +71,9 @@ form.login-form {
   box-sizing: border-box;
   font-size: 16px;
 }
+.teacher-login-id-input:focus {
+  outline: solid 2px green;
+}
 
 .teacher-login-pw-input {
   width: 185px;
@@ -78,6 +82,9 @@ form.login-form {
   border-radius: 5px;
   box-sizing: border-box;
   font-size: 16px;
+}
+.teacher-login-pw-input:focus {
+  outline: solid 2px green;
 }
 
 .teacher-login-id-label,
@@ -96,6 +103,9 @@ form.login-form {
 .teacher-login-register-a {
   color: #666;
 }
+.teacher-login-register-a:focus {
+  outline: solid 2px green;
+}
 .teacher-login-login-btn {
   background-color: green;
   color: white;
@@ -105,6 +115,9 @@ form.login-form {
   font-size: 15px;
   cursor: pointer;
   box-sizing: border-box;
+}
+.teacher-login-login-btn:focus {
+  outline: solid 2px #4caf50;
 }
 .teacher-login-title {
   font-size: 24px;

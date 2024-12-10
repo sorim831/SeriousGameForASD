@@ -72,12 +72,15 @@ router.post("/", async (req, res) => {
       //res.send("아이디 또는 비밀번호가 유효하지 않습니다");
       res.send({
         success: false,
-        message: "아이디 또는 비밀번호가 유효하지 않습니다",
+        message: "아이디 또는 비밀번호가 유효하지 않아요.",
       });
     }
   } catch (err) {
     console.error(err);
-    res.send({ success: false, message: "로그인 중 오류 발생" });
+    res.send({
+      success: false,
+      message: "예상치 못한 오류가 발생했어요. 한번 더 시도해주세요.",
+    });
   }
 });
 module.exports = router;

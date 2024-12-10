@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import "./TeacherLogin.css";
-import styles from "./TeacherLogin.css";
 
 function Login() {
   const address = process.env.REACT_APP_BACKEND_ADDRESS;
@@ -88,6 +87,7 @@ function Login() {
             placeholder="아이디"
             onChange={(e) => setTeacherId(e.target.value)}
             className="teacher-login-id-input"
+            tabIndex={1}
           />
         </div>
         <div className="teacher-login-pw-box">
@@ -98,15 +98,24 @@ function Login() {
             placeholder="비밀번호"
             onChange={(e) => setTeacherPassword(e.target.value)}
             className="teacher-login-pw-input"
+            tabIndex={2}
           />
         </div>
         {error && <p className="teachererrorMessage">{error}</p>}
         <div className="teacher-login-btn-box">
-          <a href="/teacher_register" className="teacher-login-register-a ">
+          <a
+            href="/teacher_register"
+            className="teacher-login-register-a"
+            tabIndex={4}
+          >
             회원가입
           </a>
-          
-          <button type="submit" className="teacher-login-login-btn">
+
+          <button
+            type="submit"
+            className="teacher-login-login-btn"
+            tabIndex={3}
+          >
             로그인
           </button>
         </div>
